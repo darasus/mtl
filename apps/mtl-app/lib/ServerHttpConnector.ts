@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { IncomingMessage } from 'http';
 import * as AxiosLogger from 'axios-logger';
-import { NextApiRequestCookies } from 'next/dist/next-server/server/api-utils';
+import { NextApiRequestCookies } from 'next/dist/server/api-utils';
 
 interface Props {
   req?: IncomingMessage & {
