@@ -1,7 +1,7 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
-import { IncomingMessage } from "http";
-import { NextApiRequestCookies } from "next/dist/server/api-utils";
-import * as AxiosLogger from "axios-logger";
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { IncomingMessage } from 'http';
+import * as AxiosLogger from 'axios-logger';
+import { NextApiRequestCookies } from 'next/dist/next-server/server/api-utils';
 
 interface Props {
   req?: IncomingMessage & {
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const config = {
-  dateFormat: "HH:MM:ss",
+  dateFormat: 'HH:MM:ss',
   status: true,
   headers: true,
   method: true,
@@ -31,16 +31,16 @@ export class ServerHttpConnector {
   }
 
   get(url: string) {
-    return this.request(url, { method: "GET" });
+    return this.request(url, { method: 'GET' });
   }
   post(url: string, body: Record<string, unknown>) {
-    return this.request(url, { method: "POST", data: body });
+    return this.request(url, { method: 'POST', data: body });
   }
   put(url: string, body: Record<string, unknown>) {
-    return this.request(url, { method: "PUT", data: body });
+    return this.request(url, { method: 'PUT', data: body });
   }
   delete(url: string) {
-    return this.request(url, { method: "DELETE" });
+    return this.request(url, { method: 'DELETE' });
   }
 
   createRequest = (props?: { config?: AxiosRequestConfig }) => {
