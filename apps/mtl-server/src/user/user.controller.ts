@@ -8,6 +8,6 @@ export class UserController {
 
   @Get('user/:id')
   getUserById(@Param('id') id: string) {
-    return this.userService.user({ id });
+    return this.userService.getUserById(id);
   }
 }
