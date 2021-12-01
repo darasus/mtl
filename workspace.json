@@ -21,7 +21,8 @@
           "executor": "@nrwl/next:server",
           "options": {
             "buildTarget": "mtl-app:build",
-            "dev": true
+            "dev": true,
+            "port": 3000
           },
           "configurations": {
             "production": {

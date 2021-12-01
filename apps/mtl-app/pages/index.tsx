@@ -1,102 +1,105 @@
-import styled from '@emotion/styled';
+import { GetServerSideProps } from "next";
+import { Post } from "../components/Post";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Center,
+  Flex,
+  Spinner,
+} from "@chakra-ui/react";
+import React from "react";
+import { useFeedQuery } from "../hooks/query/useFeedQuery";
+import { Layout } from "../layouts/Layout";
+import { Head } from "../components/Head";
+import { Intro } from "../components/Intro";
+import { FeedType } from "../types/FeedType";
+import { Heading } from "../components/Heading";
+import { useMe } from "../hooks/useMe";
+import { getSession } from "@auth0/nextjs-auth0";
 
-const StyledPage = styled.div`
-  .page {
-  }
-`;
+const Index: React.FC = () => {
+  const [feedType, setFeedType] = React.useState(FeedType.Latest);
+  const feed = useFeedQuery({ feedType });
+  const me = useMe();
+  const isMeLoading = me?.isLoading;
 
-export function Index() {
-  /*
-   * Replace the elements below with your own.
-   *
-   * Note: The corresponding styles are in the ./index.@emotion/styled file.
-   */
   return (
-    <StyledPage>
-      <h2>Resources &amp; Tools</h2>
-      <p>Thank you for using and showing some ♥ for Nx.</p>
-      <div className="flex github-star-container">
-        <a
-          href="https://github.com/nrwl/nx"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {' '}
-          If you like Nx, please give it a star:
-          <div className="github-star-badge">
-            <img src="/star.svg" className="material-icons" alt="" />
-            Star
-          </div>
-        </a>
-      </div>
-      <p>Here are some links to help you get started.</p>
-      <ul className="resources">
-        <li className="col-span-2">
-          <a
-            className="resource flex"
-            href="https://egghead.io/playlists/scale-react-development-with-nx-4038"
-          >
-            Scale React Development with Nx (Course)
-          </a>
-        </li>
-        <li className="col-span-2">
-          <a
-            className="resource flex"
-            href="https://nx.dev/latest/react/tutorial/01-create-application"
-          >
-            Interactive tutorial
-          </a>
-        </li>
-        <li className="col-span-2">
-          <a className="resource flex" href="https://nx.app/">
-            <svg
-              width="36"
-              height="36"
-              viewBox="0 0 120 120"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M120 15V30C103.44 30 90 43.44 90 60C90 76.56 76.56 90 60 90C43.44 90 30 103.44 30 120H15C6.72 120 0 113.28 0 105V15C0 6.72 6.72 0 15 0H105C113.28 0 120 6.72 120 15Z"
-                fill="#0E2039"
-              />
-              <path
-                d="M120 30V105C120 113.28 113.28 120 105 120H30C30 103.44 43.44 90 60 90C76.56 90 90 76.56 90 60C90 43.44 103.44 30 120 30Z"
-                fill="white"
-              />
-            </svg>
-            <span className="gutter-left">Nx Cloud</span>
-          </a>
-        </li>
-      </ul>
-      <h2>Next Steps</h2>
-      <p>Here are some things you can do with Nx.</p>
-      <details open>
-        <summary>Add UI library</summary>
-        <pre>{`# Generate UI lib
-nx g @nrwl/react:lib ui
-
-# Add a component
-nx g @nrwl/react:component xyz --project ui`}</pre>
-      </details>
-      <details>
-        <summary>View dependency graph</summary>
-        <pre>{`nx dep-graph`}</pre>
-      </details>
-      <details>
-        <summary>Run affected commands</summary>
-        <pre>{`# see what's been affected by changes
-nx affected:dep-graph
-
-# run tests for current changes
-nx affected:test
-
-# run e2e tests for current changes
-nx affected:e2e
-`}</pre>
-      </details>
-    </StyledPage>
+    <>
+      <Head title="Home" urlPath="" />
+      <Layout>
+        <main>
+          {!me && !isMeLoading && (
+            <Box mt={10} mb={20}>
+              <Center>
+                <Intro withSignIn />
+              </Center>
+            </Box>
+          )}
+          <Heading title="Library feed">
+            <ButtonGroup isAttached variant="solid">
+              <Button
+                size="xs"
+                variant={feedType === FeedType.Latest ? "cta" : "solid"}
+                onClick={() => setFeedType(FeedType.Latest)}
+                mr="0px"
+              >
+                Latest
+              </Button>
+              <Button
+                size="xs"
+                variant={feedType === FeedType.Following ? "cta" : "solid"}
+                onClick={() => setFeedType(FeedType.Following)}
+              >
+                Following
+              </Button>
+            </ButtonGroup>
+          </Heading>
+          {feed.isLoading && (
+            <Flex justifyContent="center" mt={5} mb={5}>
+              <Spinner />
+            </Flex>
+          )}
+          {feed.data?.pages?.map((page) => {
+            return page.items?.map((post) => {
+              return (
+                <Box key={post.id} mb={6}>
+                  <Post
+                    postId={post.id}
+                    isMyPost={post.authorId === me?.user?.id}
+                  />
+                </Box>
+              );
+            });
+          })}
+          {feed.hasNextPage && (
+            <Flex justifyContent="center">
+              <Button
+                color="brand"
+                borderColor="brand"
+                variant="outline"
+                size="sm"
+                isLoading={feed.isFetchingNextPage}
+                onClick={() => feed.fetchNextPage()}
+              >
+                Load more...
+              </Button>
+            </Flex>
+          )}
+        </main>
+      </Layout>
+    </>
   );
-}
+};
 
 export default Index;
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await getSession(req, res);
+  return {
+    props: {
+      cookies: req.headers.cookie ?? "",
+      user: session?.user || null,
+    },
+  };
+};

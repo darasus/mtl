@@ -1,0 +1,123 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["dataProxy"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id           String        @id @default(cuid())
+  title        String
+  content      String?
+  description  String?
+  published    Boolean       @default(false)
+  author       User?         @relation(fields: [authorId], references: [id])
+  authorId     String?
+  likes        Like[]
+  comments     Comment[]
+  codeLanguage CodeLanguage?
+  tags         TagsOnPosts[]
+  createdAt    DateTime      @default(now()) @map(name: "created_at")
+  updatedAt    DateTime      @default(now()) @map(name: "updated_at")
+  activity     Activity[]
+}
+
+model User {
+  id               String     @id @default(uuid())
+  name             String     @map(name: "name")
+  image            String?    @map(name: "image")
+  nickname         String     @unique @map(name: "nickname")
+  email            String     @unique
+  emailVerified    Boolean    @default(false) @map(name: "email_verified")
+  password         String
+  createdAt        DateTime   @default(now()) @map(name: "created_at")
+  updatedAt        DateTime   @updatedAt @map(name: "updated_at")
+  posts            Post[]
+  comments         Comment[]
+  likes            Like[]
+  following        Follow[]   @relation("follower")
+  followers        Follow[]   @relation("following")
+  authoredActivity Activity[] @relation("author")
+  ownedActivity    Activity[] @relation("owner")
+
+  @@map(name: "users")
+}
+
+model Comment {
+  id        String     @id @default(cuid())
+  post      Post       @relation(fields: [postId], references: [id])
+  postId    String
+  content   String
+  createdAt DateTime   @default(now()) @map(name: "created_at")
+  updatedAt DateTime   @default(now()) @map(name: "updated_at")
+  author    User?      @relation(fields: [authorId], references: [id])
+  authorId  String?
+  Activity  Activity[]
+}
+
+model Like {
+  id        String     @id @default(cuid())
+  post      Post       @relation(fields: [postId], references: [id])
+  postId    String
+  createdAt DateTime   @default(now()) @map(name: "created_at")
+  updatedAt DateTime   @default(now()) @map(name: "updated_at")
+  author    User?      @relation(fields: [authorId], references: [id])
+  authorId  String?
+  activity  Activity[]
+}
+
+model Follow {
+  follower    User       @relation("follower", fields: [followerId], references: [id])
+  followerId  String
+  following   User       @relation("following", fields: [followingId], references: [id])
+  followingId String
+  activity    Activity[]
+
+  @@id([followerId, followingId])
+}
+
+model Activity {
+  id                String   @id @default(cuid())
+  unread            Boolean  @default(true)
+  post              Post?    @relation(fields: [postId], references: [id])
+  postId            String?
+  like              Like?    @relation(fields: [likeId], references: [id])
+  likeId            String?
+  follow            Follow?  @relation(fields: [followFollowerId, followFollowingId], references: [followerId, followingId])
+  followId          String?
+  comment           Comment? @relation(fields: [commentId], references: [id])
+  commentId         String?
+  createdAt         DateTime @default(now()) @map(name: "created_at")
+  updatedAt         DateTime @default(now()) @map(name: "updated_at")
+  author            User     @relation(name: "author", fields: [authorId], references: [id])
+  authorId          String
+  owner             User     @relation(name: "owner", fields: [ownerId], references: [id])
+  ownerId           String
+  followFollowerId  String?
+  followFollowingId String?
+}
+
+model Tag {
+  id        String        @id @default(cuid())
+  name      String        @unique
+  createdAt DateTime      @default(now()) @map(name: "created_at")
+  updatedAt DateTime      @default(now()) @map(name: "updated_at")
+  posts     TagsOnPosts[]
+}
+
+model TagsOnPosts {
+  post   Post   @relation(fields: [postId], references: [id])
+  postId String
+  tag    Tag    @relation(fields: [tagId], references: [id])
+  tagId  String
+
+  @@id([postId, tagId])
+}
+
+enum CodeLanguage {
+  JAVASCRIPT
+  TYPESCRIPT
+}
