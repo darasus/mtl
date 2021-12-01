@@ -1,20 +1,20 @@
-import invariant from "invariant";
-import type { NextApiRequest, NextApiResponse } from "next";
-import { FeedService } from "../../lib/prismaServices/FeedService";
-import { getUserSession } from "../../lib/getUserSession";
-import { FeedType } from "../../types/FeedType";
-import { processErrorResponse } from "../../utils/error";
+import invariant from 'invariant';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { FeedService } from '../../lib/prismaServices/FeedService';
+import { getUserSession } from '../../lib/getUserSession';
+import { FeedType } from '../../types/FeedType';
+import { processErrorResponse } from '../../utils/error';
 
 export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   invariant(
-    req.method === "GET",
+    req.method === 'GET',
     `The HTTP ${req.method} method is not supported at this route.`
   );
   invariant(
-    typeof req.query.feedType === "string",
+    typeof req.query.feedType === 'string',
     `The HTTP ${req.method} method is not supported at this route.`
   );
 
