@@ -14,13 +14,9 @@
     "default": {
       "runner": "@nrwl/nx-cloud",
       "options": {
-        "cacheableOperations": [
-          "build",
-          "lint",
-          "test",
-          "e2e"
-        ],
-        "accessToken": "ZThkNzA0NWEtYWE2Ni00MDBiLThiOWYtMGY1MjFkYmY0NDNhfHJlYWQtd3JpdGU="
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "accessToken": "ZThkNzA0NWEtYWE2Ni00MDBiLThiOWYtMGY1MjFkYmY0NDNhfHJlYWQtd3JpdGU=",
+        "parallel": 1
       }
     }
   },
@@ -32,15 +28,21 @@
       }
     ]
   },
-  "projects": {
-    "mtl-app": {
-      "tags": []
+  "cli": {
+    "defaultCollection": "@nrwl/next"
+  },
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "babel": true
+      }
     },
-    "mtl-app-e2e": {
-      "tags": [],
-      "implicitDependencies": [
-        "mtl-app"
-      ]
+    "@nrwl/next": {
+      "application": {
+        "style": "@emotion/styled",
+        "linter": "eslint"
+      }
     }
-  }
+  },
+  "defaultProject": "mtl-app"
 }

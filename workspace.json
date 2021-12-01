@@ -49,9 +49,11 @@
           "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/mtl-app/**/*.{ts,tsx,js,jsx}"]
-          }
+          },
+          "outputs": ["{options.outputFile}"]
         }
-      }
+      },
+      "tags": []
     },
     "mtl-app-e2e": {
       "root": "apps/mtl-app-e2e",
@@ -75,26 +77,64 @@
           "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/mtl-app-e2e/**/*.{js,ts}"]
+          },
+          "outputs": ["{options.outputFile}"]
+        }
+      },
+      "tags": [],
+      "implicitDependencies": ["mtl-app"]
+    },
+    "mtl-server": {
+      "root": "apps/mtl-server",
+      "sourceRoot": "apps/mtl-server/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/mtl-server",
+            "main": "apps/mtl-server/src/main.ts",
+            "tsConfig": "apps/mtl-server/tsconfig.app.json",
+            "assets": ["apps/mtl-server/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/mtl-server/src/environments/environment.ts",
+                  "with": "apps/mtl-server/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "mtl-server:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["apps/mtl-server/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/mtl-server"],
+          "options": {
+            "jestConfig": "apps/mtl-server/jest.config.js",
+            "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     }
-  },
-  "cli": {
-    "defaultCollection": "@nrwl/next"
-  },
-  "generators": {
-    "@nrwl/react": {
-      "application": {
-        "babel": true
-      }
-    },
-    "@nrwl/next": {
-      "application": {
-        "style": "@emotion/styled",
-        "linter": "eslint"
-      }
-    }
-  },
-  "defaultProject": "mtl-app"
+  }
 }
