@@ -1,23 +1,23 @@
-import invariant from "invariant";
-import type { NextApiRequest, NextApiResponse } from "next";
-import { ActivityService } from "../../../../../lib/prismaServices/ActivityService";
-import { FollowService } from "../../../../../lib/prismaServices/FollowService";
-import { getUserSession } from "../../../../../lib/getUserSession";
-import { processErrorResponse } from "../../../../../utils/error";
+import invariant from 'invariant';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { ActivityService } from '../../../../../lib/prismaServices/ActivityService';
+import { FollowService } from '../../../../../lib/prismaServices/FollowService';
+import { getUserSession } from '../../../../../lib/getUserSession';
+import { processErrorResponse } from '../../../../../utils/error';
 
 export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  invariant(typeof req.query.id === "string", "User ID is not provided");
+  invariant(typeof req.query.id === 'string', 'User ID is not provided');
   invariant(
-    req.method === "POST" || req.method === "GET",
+    req.method === 'POST' || req.method === 'GET',
     `The HTTP ${req.method} method is not supported at this route.`
   );
   const followService = new FollowService();
   const activityService = new ActivityService();
 
-  if (req.method === "GET") {
+  if (req.method === 'GET') {
     try {
       const session = await getUserSession({ req, res });
 
@@ -36,7 +36,7 @@ export default async function handle(
     }
   }
 
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     try {
       const session = await getUserSession({ req, res });
 

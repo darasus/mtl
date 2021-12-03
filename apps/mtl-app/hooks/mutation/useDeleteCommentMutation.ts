@@ -1,12 +1,12 @@
-import { useMutation, useQueryClient } from "react-query";
-import { useFetcher } from "../useFetcher";
-import { clientCacheKey } from "../../lib/ClientCacheKey";
-import { withToast } from "../../utils/withToast";
+import { useMutation, useQueryClient } from 'react-query';
+import { useFetcher } from '../useFetcher';
+import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { withToast } from '../../utils/withToast';
 
 const toastConfig = {
-  loading: "Deleting comment...",
-  success: "Comment deleted!",
-  error: "Comment is not deleted.",
+  loading: 'Deleting comment...',
+  success: 'Comment deleted!',
+  error: 'Comment is not deleted.',
 };
 
 export const useDeleteCommentMutation = () => {

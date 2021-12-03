@@ -1,13 +1,13 @@
-import { Button, Flex, Text, Box, Input } from "@chakra-ui/react";
-import Image from "next/image";
-import React from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useColors } from "../../hooks/useColors";
-import { useCommentsQuery } from "../../hooks/query/useCommentsQuery";
-import { DeleteCommentButton } from "./DeleteCommentButton";
-import { useAddCommentMutation } from "../../hooks/mutation/useAddCommentMutation";
-import { usePrevious } from "../../hooks/usePrevious";
-import { useMe } from "../../hooks/useMe";
+import { Button, Flex, Text, Box, Input } from '@chakra-ui/react';
+import Image from 'next/image';
+import React from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useColors } from '../../hooks/useColors';
+import { useCommentsQuery } from '../../hooks/query/useCommentsQuery';
+import { DeleteCommentButton } from './DeleteCommentButton';
+import { useAddCommentMutation } from '../../hooks/mutation/useAddCommentMutation';
+import { usePrevious } from '../../hooks/usePrevious';
+import { useMe } from '../../hooks/useMe';
 
 interface Props {
   postId: string;
@@ -24,7 +24,7 @@ export const Comments: React.FC<Props> = ({ postId }) => {
   const { borderColor, secondaryTextColor } = useColors();
   const { mutateAsync: commentPost } = useAddCommentMutation();
   const { control, handleSubmit, reset } = useForm({
-    defaultValues: { comment: "" },
+    defaultValues: { comment: '' },
   });
 
   const submit = React.useMemo(
@@ -63,7 +63,7 @@ export const Comments: React.FC<Props> = ({ postId }) => {
             <Button
               onClick={handleLoadMore}
               isLoading={comments.isFetching}
-              loadingText={"Load more..."}
+              loadingText={'Load more...'}
               variant="ghost"
               size="xs"
             >

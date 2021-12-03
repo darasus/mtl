@@ -1,10 +1,10 @@
-import React from "react";
-import dynamic from "next/dynamic";
-import { CodeLanguage } from ".prisma/client";
-import { Box } from "@chakra-ui/layout";
-import { useColors } from "../hooks/useColors";
+import React from 'react';
+import dynamic from 'next/dynamic';
+import { CodeLanguage } from '.prisma/client';
+import { Box } from '@chakra-ui/layout';
+import { useColors } from '../hooks/useColors';
 
-const Editor = dynamic(import("@monaco-editor/react"), { ssr: false });
+const Editor = dynamic(import('@monaco-editor/react'), { ssr: false });
 
 type Props = React.ComponentProps<typeof Editor> & {
   codeLanguage: CodeLanguage;
@@ -12,8 +12,8 @@ type Props = React.ComponentProps<typeof Editor> & {
 };
 
 export const langMap = {
-  [CodeLanguage.JAVASCRIPT]: "javascript",
-  [CodeLanguage.TYPESCRIPT]: "typescript",
+  [CodeLanguage.JAVASCRIPT]: 'javascript',
+  [CodeLanguage.TYPESCRIPT]: 'typescript',
 } as const;
 
 export const CodeEditor: React.FC<Props> = ({
@@ -24,8 +24,8 @@ export const CodeEditor: React.FC<Props> = ({
   const { borderColor } = useColors();
   const style = isInvalid
     ? {
-        borderColor: "#FC8181",
-        boxShadow: "0 0 0 1px #FC8181",
+        borderColor: '#FC8181',
+        boxShadow: '0 0 0 1px #FC8181',
       }
     : { borderColor };
 
@@ -39,17 +39,17 @@ export const CodeEditor: React.FC<Props> = ({
             enabled: false,
           },
           scrollbar: {
-            vertical: "hidden",
-            horizontal: "hidden",
+            vertical: 'hidden',
+            horizontal: 'hidden',
             verticalHasArrows: false,
             useShadows: false,
             handleMouseWheel: false,
           },
           glyphMargin: false,
           folding: false,
-          lineNumbers: "off",
+          lineNumbers: 'off',
           lineNumbersMinChars: 0,
-          renderLineHighlight: "none",
+          renderLineHighlight: 'none',
           overviewRulerBorder: false,
           overviewRulerLanes: 0,
           readOnly: false,

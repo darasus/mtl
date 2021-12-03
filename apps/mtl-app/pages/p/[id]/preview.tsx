@@ -1,12 +1,12 @@
-import React from "react";
-import { Post } from "../../../components/Post";
-import { usePostQuery } from "../../../hooks/query/usePostQuery";
-import { useRouter } from "next/router";
-import { PreviewLayout } from "../../../layouts/PreviewLayout";
-import { Box, Flex, Text } from "@chakra-ui/react";
-import { Logo } from "../../../components/Logo";
-import { useMe } from "../../../hooks/useMe";
-import { GetServerSideProps } from "next";
+import React from 'react';
+import { Post } from '../../../components/Post';
+import { usePostQuery } from '../../../hooks/query/usePostQuery';
+import { useRouter } from 'next/router';
+import { PreviewLayout } from '../../../layouts/PreviewLayout';
+import { Box, Flex, Text } from '@chakra-ui/react';
+import { Logo } from '../../../components/Logo';
+import { useMe } from '../../../hooks/useMe';
+import { GetServerSideProps } from 'next';
 
 const PreviewPage: React.FC = () => {
   const router = useRouter();
@@ -44,7 +44,7 @@ export default PreviewPage;
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
     props: {
-      cookies: req.headers.cookie ?? "",
+      cookies: req.headers.cookie ?? '',
     },
   };
 };

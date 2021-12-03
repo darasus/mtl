@@ -1,8 +1,8 @@
-import { useInfiniteQuery, useQueryClient } from "react-query";
-import { clientCacheKey } from "../../lib/ClientCacheKey";
-import { FeedType } from "../../types/FeedType";
-import { hours } from "../../utils/duration";
-import { useFetcher } from "../useFetcher";
+import { useInfiniteQuery, useQueryClient } from 'react-query';
+import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { FeedType } from '../../types/FeedType';
+import { hours } from '../../utils/duration';
+import { useFetcher } from '../useFetcher';
 
 export const useFeedQuery = ({ feedType }: { feedType: FeedType }) => {
   const queryClient = useQueryClient();

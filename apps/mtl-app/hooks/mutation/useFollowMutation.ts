@@ -1,12 +1,12 @@
-import { useMutation, useQueryClient } from "react-query";
-import { clientCacheKey } from "../../lib/ClientCacheKey";
-import { withToast } from "../../utils/withToast";
-import { useFetcher } from "../useFetcher";
+import { useMutation, useQueryClient } from 'react-query';
+import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { withToast } from '../../utils/withToast';
+import { useFetcher } from '../useFetcher';
 
 const toastConfig = {
-  loading: "Following user...",
-  success: "User is followed!",
-  error: "User is not followed.",
+  loading: 'Following user...',
+  success: 'User is followed!',
+  error: 'User is not followed.',
 };
 
 export const useFollowMutation = () => {

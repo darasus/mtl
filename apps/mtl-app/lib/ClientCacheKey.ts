@@ -1,16 +1,16 @@
-import { FeedType } from "../types/FeedType";
+import { FeedType } from '../types/FeedType';
 
 export class ClientCacheKey {
-  userBaseKey = ["user"];
-  commentsBaseKey = ["comments"];
-  doIFollowBaseKey = ["do_i_follow_user"];
-  feedBaseKey = ["feed"];
-  followersCountBaseKey = ["followers_count"];
-  postBaseKey = ["post"];
-  screenshotBaseKey = ["post"];
-  tagsBaseKey = ["tags"];
-  userActivityBaseKey = ["user_activity"];
-  userPostsBaseKey = ["user-posts"];
+  userBaseKey = ['user'];
+  commentsBaseKey = ['comments'];
+  doIFollowBaseKey = ['do_i_follow_user'];
+  feedBaseKey = ['feed'];
+  followersCountBaseKey = ['followers_count'];
+  postBaseKey = ['post'];
+  screenshotBaseKey = ['post'];
+  tagsBaseKey = ['tags'];
+  userActivityBaseKey = ['user_activity'];
+  userPostsBaseKey = ['user-posts'];
 
   createUserKey(userId: string) {
     return [...this.userBaseKey, { userId }];

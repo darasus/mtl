@@ -1,7 +1,7 @@
-import { Center, Text } from "@chakra-ui/react";
-import React from "react";
-import { Layout } from "../layouts/Layout";
-import { Head } from "../components/Head";
+import { Center, Text } from '@chakra-ui/react';
+import React from 'react';
+import { Layout } from '../layouts/Layout';
+import { Head } from '../components/Head';
 
 const NotFound: React.FC = () => {
   return (

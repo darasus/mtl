@@ -1,7 +1,7 @@
-import prisma from "../prisma";
-import cache from "../cache";
-import { commentFragment } from "../fragments/commentFragment";
-import { redisCacheKey } from "../RedisCacheKey";
+import prisma from '../prisma';
+import cache from '../cache';
+import { commentFragment } from '../fragments/commentFragment';
+import { redisCacheKey } from '../RedisCacheKey';
 
 export class CommentService {
   async isMyComment({
@@ -53,7 +53,7 @@ export class CommentService {
           ...baseQuery,
           take,
           skip,
-          orderBy: { id: "desc" },
+          orderBy: { id: 'desc' },
           select: commentFragment,
         })
         .then((res) => res.reverse()),

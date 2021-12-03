@@ -1,6 +1,6 @@
-import NextHead from "next/head";
-import { introImageUrl } from "../constants/introImageUrl";
-import { slogan } from "../constants/slogan";
+import NextHead from 'next/head';
+import { introImageUrl } from '../constants/introImageUrl';
+import { slogan } from '../constants/slogan';
 
 interface Props {
   title: string;

@@ -1,5 +1,5 @@
-import { UserProfile, useUser } from "@auth0/nextjs-auth0";
-import React from "react";
+import { UserProfile, useUser } from '@auth0/nextjs-auth0';
+import React from 'react';
 
 export enum Role {
   ADMIN,
@@ -26,9 +26,9 @@ export const useMe = () => {
       session?.user
         ? {
             ...(session?.user || {}),
-            id: session?.user?.sub?.split("|")[1],
+            id: session?.user?.sub?.split('|')[1],
             role:
-              session?.user?.email === "idarase@gmail.com"
+              session?.user?.email === 'idarase@gmail.com'
                 ? Role.ADMIN
                 : Role.USER,
           }

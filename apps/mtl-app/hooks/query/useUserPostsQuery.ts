@@ -1,7 +1,7 @@
-import { useQuery, useQueryClient } from "react-query";
-import { clientCacheKey } from "../../lib/ClientCacheKey";
-import { minutes } from "../../utils/duration";
-import { useFetcher } from "../useFetcher";
+import { useQuery, useQueryClient } from 'react-query';
+import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { minutes } from '../../utils/duration';
+import { useFetcher } from '../useFetcher';
 
 export const useUserPostsQuery = (userId: string) => {
   const queryClient = useQueryClient();

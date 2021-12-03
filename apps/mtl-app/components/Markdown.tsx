@@ -1,5 +1,5 @@
-import React, { ElementType } from "react";
-import ReactMarkdown from "react-markdown";
+import React, { ElementType } from 'react';
+import ReactMarkdown from 'react-markdown';
 import {
   Text,
   Code,
@@ -18,22 +18,22 @@ import {
   Th,
   Td,
   Box,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
 type GetCoreProps = {
   children?: React.ReactNode;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  "data-sourcepos"?: any;
+  'data-sourcepos'?: any;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getCoreProps(props: GetCoreProps): any {
-  return props["data-sourcepos"]
-    ? { "data-sourcepos": props["data-sourcepos"] }
+  return props['data-sourcepos']
+    ? { 'data-sourcepos': props['data-sourcepos'] }
     : {};
 }
 
-const sizes = ["2xl", "xl", "lg", "md", "sm", "xs"];
+const sizes = ['2xl', 'xl', 'lg', 'md', 'sm', 'xs'];
 
 const defaults: Record<string, ElementType> = {
   p: (props) => {
@@ -90,16 +90,16 @@ const defaults: Record<string, ElementType> = {
     const { ordered, children, depth } = props;
     const attrs = getCoreProps(props);
     let Element = UnorderedList;
-    let styleType = "disc";
+    let styleType = 'disc';
     if (ordered) {
       Element = OrderedList;
-      styleType = "decimal";
+      styleType = 'decimal';
     }
-    if (depth === 1) styleType = "circle";
+    if (depth === 1) styleType = 'circle';
     return (
       <Element
         spacing={2}
-        as={ordered ? "ol" : "ul"}
+        as={ordered ? 'ol' : 'ul'}
         styleType={styleType}
         pl={4}
         {...attrs}
@@ -112,16 +112,16 @@ const defaults: Record<string, ElementType> = {
     const { ordered, children, depth } = props;
     const attrs = getCoreProps(props);
     let Element = UnorderedList;
-    let styleType = "disc";
+    let styleType = 'disc';
     if (ordered) {
       Element = OrderedList;
-      styleType = "decimal";
+      styleType = 'decimal';
     }
-    if (depth === 1) styleType = "circle";
+    if (depth === 1) styleType = 'circle';
     return (
       <Element
         spacing={2}
-        as={ordered ? "ol" : "ul"}
+        as={ordered ? 'ol' : 'ul'}
         styleType={styleType}
         pl={4}
         {...attrs}
@@ -143,7 +143,7 @@ const defaults: Record<string, ElementType> = {
     return (
       <ListItem
         {...getCoreProps(props)}
-        listStyleType={checked !== null ? "none" : "inherit"}
+        listStyleType={checked !== null ? 'none' : 'inherit'}
       >
         {checkbox || children}
       </ListItem>

@@ -1,7 +1,7 @@
-import { Center } from "@chakra-ui/react";
-import { GetServerSideProps } from "next";
-import React from "react";
-import { Intro } from "../components/Intro";
+import { Center } from '@chakra-ui/react';
+import { GetServerSideProps } from 'next';
+import React from 'react';
+import { Intro } from '../components/Intro';
 
 const HomePreviewImage: React.FC = () => {
   return (
@@ -16,7 +16,7 @@ export default HomePreviewImage;
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
     props: {
-      cookies: req.headers.cookie ?? "",
+      cookies: req.headers.cookie ?? '',
     },
   };
 };

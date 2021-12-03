@@ -1,17 +1,17 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import invariant from "invariant";
-import { CommentService } from "../../../../lib/prismaServices/CommentService";
-import { processErrorResponse } from "../../../../utils/error";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import invariant from 'invariant';
+import { CommentService } from '../../../../lib/prismaServices/CommentService';
+import { processErrorResponse } from '../../../../utils/error';
 
 export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   invariant(
-    req.method === "GET",
+    req.method === 'GET',
     `The HTTP ${req.method} method is not supported at this route.`
   );
-  invariant(typeof req.query.id === "string", "ID is missing");
+  invariant(typeof req.query.id === 'string', 'ID is missing');
 
   try {
     const postService = new CommentService();

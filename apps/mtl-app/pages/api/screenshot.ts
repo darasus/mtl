@@ -1,20 +1,20 @@
-import axios from "axios";
-import invariant from "invariant";
-import type { NextApiRequest, NextApiResponse } from "next";
-import qs from "query-string";
-import cache from "../../lib/cache";
-import { days } from "../../utils/duration";
-import { redisCacheKey } from "../../lib/RedisCacheKey";
+import axios from 'axios';
+import invariant from 'invariant';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import qs from 'query-string';
+import cache from '../../lib/cache';
+import { days } from '../../utils/duration';
+import { redisCacheKey } from '../../lib/RedisCacheKey';
 
 export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   invariant(
-    req.method === "GET",
+    req.method === 'GET',
     `The HTTP ${req.method} method is not supported at this route.`
   );
-  invariant(typeof req.query.url === "string", "url param is not provided");
+  invariant(typeof req.query.url === 'string', 'url param is not provided');
 
   const query = qs.stringify({
     url: req.query.url,
@@ -32,7 +32,7 @@ export default async function handle(
 
   const response = await axios.request<ArrayBuffer>({
     url: `${process.env.SCREENSHOT_API_BASE_URL}/api/screenshot?${query}`,
-    responseType: "arraybuffer",
+    responseType: 'arraybuffer',
   });
 
   await cache.setBuffer(cacheKey, response.data, days(365));

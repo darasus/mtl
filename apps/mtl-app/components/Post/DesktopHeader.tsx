@@ -1,14 +1,14 @@
-import { Box, Flex, Text, useBreakpoint, Tooltip } from "@chakra-ui/react";
-import { Post as PostType } from "../../types/Post";
-import { ThumbUpIcon, ChatIcon, TagIcon } from "@heroicons/react/outline";
-import { StatusOnlineIcon, StatusOfflineIcon } from "@heroicons/react/solid";
-import React from "react";
-import { PostUserPreview } from "../PostUserPreview";
-import { RouterLink } from "../RouterLinkt";
-import { useColors } from "../../hooks/useColors";
-import { CodeLanguageIcon } from "./CodeLanguageIcon";
-import { useMe } from "../../hooks/useMe";
-import { CodeLanguage } from ".prisma/client";
+import { Box, Flex, Text, useBreakpoint, Tooltip } from '@chakra-ui/react';
+import { Post as PostType } from '../../types/Post';
+import { ThumbUpIcon, ChatIcon, TagIcon } from '@heroicons/react/outline';
+import { StatusOnlineIcon, StatusOfflineIcon } from '@heroicons/react/solid';
+import React from 'react';
+import { PostUserPreview } from '../PostUserPreview';
+import { RouterLink } from '../RouterLinkt';
+import { useColors } from '../../hooks/useColors';
+import { CodeLanguageIcon } from './CodeLanguageIcon';
+import { useMe } from '../../hooks/useMe';
+import { CodeLanguage } from '.prisma/client';
 
 interface Props {
   post: PostType;
@@ -25,7 +25,7 @@ export const DesktopHeader: React.FC<Props> = React.memo(
     const me = useMe();
     const { secondaryTextColor } = useColors();
     const breakpoint = useBreakpoint();
-    const isMetaInfoVisible = breakpoint !== "base" && showMetaInfo;
+    const isMetaInfoVisible = breakpoint !== 'base' && showMetaInfo;
     const isMyPost = me?.user?.id === post?.authorId;
 
     return (
@@ -92,7 +92,7 @@ export const DesktopHeader: React.FC<Props> = React.memo(
                     <Box>
                       <Text fontSize="sm" whiteSpace="nowrap">{`${post.tags
                         .map((tag) => tag.tag.name)
-                        .join(",")}`}</Text>
+                        .join(',')}`}</Text>
                     </Box>
                   </Flex>
                 </Flex>

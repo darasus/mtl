@@ -1,12 +1,12 @@
-import { useMutation, useQueryClient } from "react-query";
-import { clientCacheKey } from "../../lib/ClientCacheKey";
-import { withToast } from "../../utils/withToast";
-import { useFetcher } from "../useFetcher";
+import { useMutation, useQueryClient } from 'react-query';
+import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { withToast } from '../../utils/withToast';
+import { useFetcher } from '../useFetcher';
 
 const toastConfig = {
-  loading: "Unliking...",
-  success: "Unliked!",
-  error: "Did not unlike.",
+  loading: 'Unliking...',
+  success: 'Unliked!',
+  error: 'Did not unlike.',
 };
 
 export const usePostUnlikeMutation = () => {

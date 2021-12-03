@@ -1,19 +1,19 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   useCombobox,
   useMultipleSelection,
   UseMultipleSelectionProps,
-} from "downshift";
-import { matchSorter } from "match-sorter";
-import Highlighter from "react-highlight-words";
-import useDeepCompareEffect from "react-use/lib/useDeepCompareEffect";
-import { Text, Stack, Box, List, ListItem, HStack } from "@chakra-ui/layout";
-import { Button } from "@chakra-ui/button";
-import { Input } from "@chakra-ui/input";
-import { Tag, TagCloseButton, TagLabel } from "@chakra-ui/tag";
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/outline";
-import { useColors } from "../../hooks/useColors";
-import { noop } from "../../utils/noop";
+} from 'downshift';
+import { matchSorter } from 'match-sorter';
+import Highlighter from 'react-highlight-words';
+import useDeepCompareEffect from 'react-use/lib/useDeepCompareEffect';
+import { Text, Stack, Box, List, ListItem, HStack } from '@chakra-ui/layout';
+import { Button } from '@chakra-ui/button';
+import { Input } from '@chakra-ui/input';
+import { Tag, TagCloseButton, TagLabel } from '@chakra-ui/tag';
+import { CheckIcon, ChevronDownIcon } from '@heroicons/react/outline';
+import { useColors } from '../../hooks/useColors';
+import { noop } from '../../utils/noop';
 
 export interface Item {
   label: string;
@@ -28,11 +28,11 @@ export interface CUIAutoCompleteProps<T extends Item>
   optionFilterFunc?: (items: T[], inputValue: string) => T[];
   emptyState?: (inputValue: string) => React.ReactNode;
   disableCreateItem?: boolean;
-  "data-testid"?: string;
+  'data-testid'?: string;
 }
 
 function defaultOptionFilterFunc<T>(items: T[], inputValue: string) {
-  return matchSorter(items, inputValue, { keys: ["value", "label"] });
+  return matchSorter(items, inputValue, { keys: ['value', 'label'] });
 }
 
 function createItemRenderer(value: string) {
@@ -60,7 +60,7 @@ export const AutoComplete = <T extends Item>(
 
   /* States */
   const [isCreating, setIsCreating] = React.useState(false);
-  const [inputValue, setInputValue] = React.useState("");
+  const [inputValue, setInputValue] = React.useState('');
   const [inputItems, setInputItems] = React.useState<T[]>(items);
 
   /* Refs */
@@ -92,7 +92,7 @@ export const AutoComplete = <T extends Item>(
     selectedItem: undefined,
     items: inputItems,
     onInputValueChange: ({ inputValue, selectedItem }) => {
-      const filteredItems = optionFilterFunc(items, inputValue || "");
+      const filteredItems = optionFilterFunc(items, inputValue || '');
 
       if (isCreating && filteredItems.length > 0) {
         setIsCreating(false);
@@ -132,7 +132,7 @@ export const AutoComplete = <T extends Item>(
     onStateChange: ({ inputValue, type, selectedItem }) => {
       switch (type) {
         case useCombobox.stateChangeTypes.InputChange:
-          setInputValue(inputValue || "");
+          setInputValue(inputValue || '');
           break;
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
@@ -144,7 +144,7 @@ export const AutoComplete = <T extends Item>(
                 onCreateItem(selectedItem);
                 setIsCreating(false);
                 setInputItems(items);
-                setInputValue("");
+                setInputValue('');
               } else {
                 addSelectedItem(selectedItem);
               }
@@ -218,7 +218,7 @@ export const AutoComplete = <T extends Item>(
               ref: disclosureRef,
             })
           )}
-          data-testid={downshiftProps["data-testid"]}
+          data-testid={downshiftProps['data-testid']}
         />
         <Button
           {...getToggleButtonProps()}
@@ -229,7 +229,7 @@ export const AutoComplete = <T extends Item>(
         </Button>
       </Stack>
 
-      <Box display={isOpen ? "block" : "none"} position="relative">
+      <Box display={isOpen ? 'block' : 'none'} position="relative">
         <List
           {...getMenuProps()}
           pb={4}
@@ -251,7 +251,7 @@ export const AutoComplete = <T extends Item>(
               <ListItem
                 px={2}
                 py={1}
-                bg={highlightedIndex === index ? "gray.900" : "inherit"}
+                bg={highlightedIndex === index ? 'gray.900' : 'inherit'}
                 key={`${item.value}${index}`}
                 {...getItemProps({ item, index })}
               >
@@ -261,7 +261,7 @@ export const AutoComplete = <T extends Item>(
                   <Box display="inline-flex" alignItems="center">
                     <Highlighter
                       autoEscape
-                      searchWords={[inputValue || ""]}
+                      searchWords={[inputValue || '']}
                       textToHighlight={defaultItemRenderer(item)}
                     />
                     {selectedItemValues.includes(item.value) && (

@@ -1,168 +1,168 @@
-import { PrismTheme } from "prism-react-renderer";
+import { PrismTheme } from 'prism-react-renderer';
 
-export const syntaxStylesDark: PrismTheme["styles"] = [
+export const syntaxStylesDark: PrismTheme['styles'] = [
   {
-    types: ["prolog"],
+    types: ['prolog'],
     style: {
-      color: "rgb(0, 0, 128)",
+      color: 'rgb(0, 0, 128)',
     },
   },
   {
-    types: ["comment"],
+    types: ['comment'],
     style: {
-      color: "rgb(106, 153, 85)",
+      color: 'rgb(106, 153, 85)',
     },
   },
   {
-    types: ["builtin", "changed", "keyword", "interpolation-punctuation"],
+    types: ['builtin', 'changed', 'keyword', 'interpolation-punctuation'],
     style: {
-      color: "rgb(86, 156, 214)",
+      color: 'rgb(86, 156, 214)',
     },
   },
   {
-    types: ["number", "inserted"],
+    types: ['number', 'inserted'],
     style: {
-      color: "rgb(181, 206, 168)",
+      color: 'rgb(181, 206, 168)',
     },
   },
   {
-    types: ["constant"],
+    types: ['constant'],
     style: {
-      color: "rgb(100, 102, 149)",
+      color: 'rgb(100, 102, 149)',
     },
   },
   {
-    types: ["attr-name", "variable"],
+    types: ['attr-name', 'variable'],
     style: {
-      color: "rgb(156, 220, 254)",
+      color: 'rgb(156, 220, 254)',
     },
   },
   {
-    types: ["deleted", "string", "attr-value", "template-punctuation"],
+    types: ['deleted', 'string', 'attr-value', 'template-punctuation'],
     style: {
-      color: "rgb(206, 145, 120)",
+      color: 'rgb(206, 145, 120)',
     },
   },
   {
-    types: ["selector"],
+    types: ['selector'],
     style: {
-      color: "rgb(215, 186, 125)",
+      color: 'rgb(215, 186, 125)',
     },
   },
   {
     // Fix tag color
-    types: ["tag"],
+    types: ['tag'],
     style: {
-      color: "rgb(78, 201, 176)",
+      color: 'rgb(78, 201, 176)',
     },
   },
   {
     // Fix tag color for HTML
-    types: ["tag"],
-    languages: ["markup"],
+    types: ['tag'],
+    languages: ['markup'],
     style: {
-      color: "rgb(86, 156, 214)",
+      color: 'rgb(86, 156, 214)',
     },
   },
   {
-    types: ["punctuation", "operator"],
+    types: ['punctuation', 'operator'],
     style: {
-      color: "rgb(212, 212, 212)",
+      color: 'rgb(212, 212, 212)',
     },
   },
   {
     // Fix punctuation color for HTML
-    types: ["punctuation"],
-    languages: ["markup"],
+    types: ['punctuation'],
+    languages: ['markup'],
     style: {
-      color: "#808080",
+      color: '#808080',
     },
   },
   {
-    types: ["function"],
+    types: ['function'],
     style: {
-      color: "rgb(220, 220, 170)",
+      color: 'rgb(220, 220, 170)',
     },
   },
   {
-    types: ["class-name"],
+    types: ['class-name'],
     style: {
-      color: "rgb(78, 201, 176)",
+      color: 'rgb(78, 201, 176)',
     },
   },
   {
-    types: ["char"],
+    types: ['char'],
     style: {
-      color: "rgb(209, 105, 105)",
+      color: 'rgb(209, 105, 105)',
     },
   },
 ];
 
-export const syntaxStylesLight: PrismTheme["styles"] = [
+export const syntaxStylesLight: PrismTheme['styles'] = [
   {
-    types: ["comment", "prolog", "doctype", "cdata"],
+    types: ['comment', 'prolog', 'doctype', 'cdata'],
     style: {
-      color: "#999988",
-      fontStyle: "italic",
+      color: '#999988',
+      fontStyle: 'italic',
     },
   },
   {
-    types: ["namespace"],
+    types: ['namespace'],
     style: {
       opacity: 0.7,
     },
   },
   {
-    types: ["string", "attr-value"],
+    types: ['string', 'attr-value'],
     style: {
-      color: "#e3116c",
+      color: '#e3116c',
     },
   },
   {
-    types: ["punctuation", "operator"],
+    types: ['punctuation', 'operator'],
     style: {
-      color: "#393A34",
+      color: '#393A34',
     },
   },
   {
     types: [
-      "entity",
-      "url",
-      "symbol",
-      "number",
-      "boolean",
-      "variable",
-      "constant",
-      "property",
-      "regex",
-      "inserted",
+      'entity',
+      'url',
+      'symbol',
+      'number',
+      'boolean',
+      'variable',
+      'constant',
+      'property',
+      'regex',
+      'inserted',
     ],
     style: {
-      color: "#36acaa",
+      color: '#36acaa',
     },
   },
   {
-    types: ["atrule", "keyword", "attr-name", "selector"],
+    types: ['atrule', 'keyword', 'attr-name', 'selector'],
     style: {
-      color: "#00a4db",
+      color: '#00a4db',
     },
   },
   {
-    types: ["function", "deleted", "tag"],
+    types: ['function', 'deleted', 'tag'],
     style: {
-      color: "#d73a49",
+      color: '#d73a49',
     },
   },
   {
-    types: ["function-variable"],
+    types: ['function-variable'],
     style: {
-      color: "#6f42c1",
+      color: '#6f42c1',
     },
   },
   {
-    types: ["tag", "selector", "keyword"],
+    types: ['tag', 'selector', 'keyword'],
     style: {
-      color: "#00009f",
+      color: '#00009f',
     },
   },
 ];

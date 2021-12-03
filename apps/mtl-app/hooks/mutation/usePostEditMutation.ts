@@ -1,8 +1,8 @@
-import { CodeLanguage } from ".prisma/client";
-import { useMutation, useQueryClient } from "react-query";
-import { clientCacheKey } from "../../lib/ClientCacheKey";
-import { withToast } from "../../utils/withToast";
-import { useFetcher } from "../useFetcher";
+import { CodeLanguage } from '.prisma/client';
+import { useMutation, useQueryClient } from 'react-query';
+import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { withToast } from '../../utils/withToast';
+import { useFetcher } from '../useFetcher';
 
 interface Variables {
   title: string;
@@ -13,9 +13,9 @@ interface Variables {
 }
 
 const toastConfig = {
-  success: "Post is updated.",
-  loading: "Post is updating...",
-  error: "Post is not updated.",
+  success: 'Post is updated.',
+  loading: 'Post is updating...',
+  error: 'Post is not updated.',
 };
 
 export const usePostEditMutation = (postId: string) => {

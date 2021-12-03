@@ -1,7 +1,7 @@
-import { Flex, Box, useBreakpointValue } from "@chakra-ui/react";
-import React, { ReactNode } from "react";
-import { Footer } from "../components/Footer";
-import { Header } from "../components/Header";
+import { Flex, Box, useBreakpointValue } from '@chakra-ui/react';
+import React, { ReactNode } from 'react';
+import { Footer } from '../components/Footer';
+import { Header } from '../components/Header';
 
 type Props = {
   children: ReactNode;
@@ -9,8 +9,8 @@ type Props = {
 
 export const FullscreenLayout: React.FC<Props> = (props) => {
   const mainPadding = useBreakpointValue({
-    base: "4",
-    mr: "0",
+    base: '4',
+    mr: '0',
   });
 
   return (

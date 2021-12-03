@@ -1,7 +1,7 @@
-import { useInfiniteQuery } from "react-query";
-import { clientCacheKey } from "../../lib/ClientCacheKey";
-import { days } from "../../utils/duration";
-import { useFetcher } from "../useFetcher";
+import { useInfiniteQuery } from 'react-query';
+import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { days } from '../../utils/duration';
+import { useFetcher } from '../useFetcher';
 
 export const useUserActivityQuery = (userId: string) => {
   const fetcher = useFetcher();

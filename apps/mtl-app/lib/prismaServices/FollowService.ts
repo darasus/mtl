@@ -1,7 +1,7 @@
-import { days } from "../../utils/duration";
-import cache from "../cache";
-import prisma from "../prisma";
-import { redisCacheKey } from "../RedisCacheKey";
+import { days } from '../../utils/duration';
+import cache from '../cache';
+import prisma from '../prisma';
+import { redisCacheKey } from '../RedisCacheKey';
 
 export class FollowService {
   async getNumberOfFollowers(userId: string) {

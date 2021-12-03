@@ -1,10 +1,10 @@
-import formidable from "formidable";
-import fs from "fs";
-import FormData from "form-data";
-import invariant from "invariant";
-import { NextApiRequest, NextApiResponse } from "next";
-import { Fetcher } from "../../lib/Fetcher";
-import { ServerHttpConnector } from "../../lib/ServerHttpConnector";
+import formidable from 'formidable';
+import fs from 'fs';
+import FormData from 'form-data';
+import invariant from 'invariant';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { Fetcher } from '../../lib/Fetcher';
+import { ServerHttpConnector } from '../../lib/ServerHttpConnector';
 
 export const config = {
   api: {
@@ -20,7 +20,7 @@ const getResponse = (req: NextApiRequest) => {
       // @ts-ignore
       const image = fs.createReadStream(files.file.filepath);
       const data = new FormData();
-      data.append("file", image);
+      data.append('file', image);
       const fetcher = new Fetcher(new ServerHttpConnector({ req }));
 
       try {
@@ -41,7 +41,7 @@ export default async function handle(
   res: NextApiResponse
 ) {
   invariant(
-    req.method === "POST",
+    req.method === 'POST',
     `The HTTP ${req.method} method is not supported at this route.`
   );
 

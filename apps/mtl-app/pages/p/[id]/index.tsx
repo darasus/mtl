@@ -1,19 +1,19 @@
-import React from "react";
-import { GetServerSideProps } from "next";
-import { Post } from "../../../components/Post";
-import { usePostQuery } from "../../../hooks/query/usePostQuery";
-import { useRouter } from "next/router";
-import { Layout } from "../../../layouts/Layout";
-import { QueryClient } from "react-query";
-import { dehydrate } from "react-query/hydration";
-import { Flex, Spinner } from "@chakra-ui/react";
-import { Head } from "../../../components/Head";
-import { createIsFirstServerCall } from "../../../utils/createIsFirstServerCall";
-import { Fetcher } from "../../../lib/Fetcher";
-import { ServerHttpConnector } from "../../../lib/ServerHttpConnector";
-import { useMe } from "../../../hooks/useMe";
-import { clientCacheKey } from "../../../lib/ClientCacheKey";
-import { getSession } from "@auth0/nextjs-auth0";
+import React from 'react';
+import { GetServerSideProps } from 'next';
+import { Post } from '../../../components/Post';
+import { usePostQuery } from '../../../hooks/query/usePostQuery';
+import { useRouter } from 'next/router';
+import { Layout } from '../../../layouts/Layout';
+import { QueryClient } from 'react-query';
+import { dehydrate } from 'react-query/hydration';
+import { Flex, Spinner } from '@chakra-ui/react';
+import { Head } from '../../../components/Head';
+import { createIsFirstServerCall } from '../../../utils/createIsFirstServerCall';
+import { Fetcher } from '../../../lib/Fetcher';
+import { ServerHttpConnector } from '../../../lib/ServerHttpConnector';
+import { useMe } from '../../../hooks/useMe';
+import { clientCacheKey } from '../../../lib/ClientCacheKey';
+import { getSession } from '@auth0/nextjs-auth0';
 
 const PostPage: React.FC = () => {
   const router = useRouter();
@@ -64,7 +64,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!createIsFirstServerCall(ctx)) {
     return {
       props: {
-        cookies: ctx.req.headers.cookie ?? "",
+        cookies: ctx.req.headers.cookie ?? '',
       },
     };
   }
@@ -101,7 +101,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {
-      cookies: ctx.req.headers.cookie ?? "",
+      cookies: ctx.req.headers.cookie ?? '',
       dehydratedState: dehydrate(queryClient),
       user: session?.user || null,
     },

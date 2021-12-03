@@ -1,7 +1,7 @@
-import { Flex, Text, Box } from "@chakra-ui/react";
-import Image from "next/image";
-import React from "react";
-import { useMe } from "../hooks/useMe";
+import { Flex, Text, Box } from '@chakra-ui/react';
+import Image from 'next/image';
+import React from 'react';
+import { useMe } from '../hooks/useMe';
 
 export const UserPreview = React.forwardRef<HTMLDivElement>(
   function UserPreview({ ...props }, ref) {

@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from "react-query";
-import { clientCacheKey } from "../../lib/ClientCacheKey";
-import { useFetcher } from "../useFetcher";
-import { useMe } from "../useMe";
+import { useMutation, useQueryClient } from 'react-query';
+import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { useFetcher } from '../useFetcher';
+import { useMe } from '../useMe';
 
 export const useMarkActivityAsReadMutation = (activityId: string) => {
   const queryClient = useQueryClient();

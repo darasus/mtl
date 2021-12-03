@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import "colors";
+import { PrismaClient } from '@prisma/client';
+import 'colors';
 
 // PrismaClient is attached to the `global` object in development to prevent
 // exhausting your database connection limit.
@@ -9,7 +9,7 @@ import "colors";
 
 let prisma: PrismaClient;
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === 'production') {
   prisma = new PrismaClient();
 } else {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

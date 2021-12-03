@@ -1,11 +1,11 @@
-import Prisma from ".prisma/client";
-import { Flex, Text, Box } from "@chakra-ui/react";
-import Image from "next/image";
-import React from "react";
-import { RouterLink } from "./RouterLinkt";
+import Prisma from '.prisma/client';
+import { Flex, Text, Box } from '@chakra-ui/react';
+import Image from 'next/image';
+import React from 'react';
+import { RouterLink } from './RouterLinkt';
 
 interface Props {
-  user: Omit<Prisma.User, "password">;
+  user: Omit<Prisma.User, 'password'>;
 }
 
 export const PostUserPreview: React.FC<Props> = ({ user }) => {

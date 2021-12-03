@@ -1,12 +1,12 @@
-import { useMutation, useQueryClient } from "react-query";
-import { clientCacheKey } from "../../lib/ClientCacheKey";
-import { withToast } from "../../utils/withToast";
-import { useFetcher } from "../useFetcher";
+import { useMutation, useQueryClient } from 'react-query';
+import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { withToast } from '../../utils/withToast';
+import { useFetcher } from '../useFetcher';
 
 const toastConfig = {
-  loading: "Publishing library...",
-  success: "Library is published!",
-  error: "Library is not published.",
+  loading: 'Publishing library...',
+  success: 'Library is published!',
+  error: 'Library is not published.',
 };
 
 export const usePostPublishMutation = (postId: string) => {

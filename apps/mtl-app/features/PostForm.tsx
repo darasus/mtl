@@ -1,5 +1,5 @@
-import React from "react";
-import * as yup from "yup";
+import React from 'react';
+import * as yup from 'yup';
 import {
   Textarea,
   Input,
@@ -9,15 +9,15 @@ import {
   Text,
   Select,
   useBreakpoint,
-} from "@chakra-ui/react";
-import { Controller, useFormContext, useWatch } from "react-hook-form";
-import { CodeLanguage } from ".prisma/client";
-import { useColors } from "../hooks/useColors";
-import { CodeEditor } from "../components/CodeEditor";
-import { useTagsQuery } from "../hooks/query/useTagsQuery";
-import { GridItem, Grid } from "@chakra-ui/layout";
-import { AutoComplete } from "../components/Autocomplete";
-import { Heading } from "../components/Heading";
+} from '@chakra-ui/react';
+import { Controller, useFormContext, useWatch } from 'react-hook-form';
+import { CodeLanguage } from '.prisma/client';
+import { useColors } from '../hooks/useColors';
+import { CodeEditor } from '../components/CodeEditor';
+import { useTagsQuery } from '../hooks/query/useTagsQuery';
+import { GridItem, Grid } from '@chakra-ui/layout';
+import { AutoComplete } from '../components/Autocomplete';
+import { Heading } from '../components/Heading';
 
 interface Props {
   handlePublish?: React.FormEventHandler;
@@ -37,23 +37,23 @@ export interface PostForm {
 }
 
 export const postSchema = yup.object().shape({
-  title: yup.string().required("Please fill in your title here"),
+  title: yup.string().required('Please fill in your title here'),
   description: yup.string(),
-  content: yup.string().min(3).required("Please write your library here"),
+  content: yup.string().min(3).required('Please write your library here'),
   codeLanguage: yup
     .string()
     .test(
-      "has-code-language",
-      "Please select language",
-      (value) => !!value && value !== "none"
+      'has-code-language',
+      'Please select language',
+      (value) => !!value && value !== 'none'
     )
-    .typeError("Please select tag")
-    .required("Please select tag"),
+    .typeError('Please select tag')
+    .required('Please select tag'),
   tagId: yup
     .string()
-    .test("has-tag", "Please select tag", (value) => typeof value === "string")
-    .typeError("Please select tag")
-    .required("Please select tag"),
+    .test('has-tag', 'Please select tag', (value) => typeof value === 'string')
+    .typeError('Please select tag')
+    .required('Please select tag'),
 });
 
 export const FormItem: React.FC<{ title: string; errorMessage?: string }> = ({
@@ -94,9 +94,9 @@ export const PostForm: React.FC<Props> = ({
     formState: { errors },
   } = useFormContext<PostForm>();
   const tags = useTagsQuery();
-  const codeLanguage = useWatch({ control, name: "codeLanguage" });
+  const codeLanguage = useWatch({ control, name: 'codeLanguage' });
   const breakpoint = useBreakpoint();
-  const isSmall = breakpoint === "base" || breakpoint === "sm";
+  const isSmall = breakpoint === 'base' || breakpoint === 'sm';
 
   const actions = (
     <Flex>
@@ -156,7 +156,7 @@ export const PostForm: React.FC<Props> = ({
           <form>
             <FormItem title="Title" errorMessage={errors.title?.message}>
               <Input
-                {...register("title")}
+                {...register('title')}
                 isInvalid={!!errors.title?.message}
                 data-testid="title"
               />
@@ -166,7 +166,7 @@ export const PostForm: React.FC<Props> = ({
               errorMessage={errors.description?.message}
             >
               <Textarea
-                {...register("description")}
+                {...register('description')}
                 isInvalid={!!errors.description?.message}
                 data-testid="description"
               />
@@ -176,11 +176,11 @@ export const PostForm: React.FC<Props> = ({
               errorMessage={errors.codeLanguage?.message}
             >
               <Select
-                {...register("codeLanguage")}
+                {...register('codeLanguage')}
                 isInvalid={!!errors.codeLanguage?.message}
                 data-testid="codeLanguage"
               >
-                <option key={"none"} value="none">
+                <option key={'none'} value="none">
                   -
                 </option>
                 <option value={CodeLanguage.JAVASCRIPT}>JavaScript</option>

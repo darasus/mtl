@@ -1,4 +1,4 @@
-import { ManagementClient } from "auth0";
+import { ManagementClient } from 'auth0';
 
 export const auth0 = new ManagementClient({
   domain: process.env.AUTH0_ISSUER_BASE_URL as string,

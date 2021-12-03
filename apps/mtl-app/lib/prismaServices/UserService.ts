@@ -1,14 +1,14 @@
-import prisma from "../prisma";
-import cache from "../cache";
-import { Post } from "../../types/Post";
-import { commentFragment } from "../fragments/commentFragment";
-import { likeFragment } from "../fragments/likeFragment";
-import { tagsFragment } from "../fragments/tagsFragment";
-import { preparePost } from "../utils/preparePost";
-import { redisCacheKey } from "../RedisCacheKey";
-import { days } from "../../utils/duration";
-import { activityFragment } from "../fragments/activityFragment";
-import { userFragment } from "../fragments/userFragment";
+import prisma from '../prisma';
+import cache from '../cache';
+import { Post } from '../../types/Post';
+import { commentFragment } from '../fragments/commentFragment';
+import { likeFragment } from '../fragments/likeFragment';
+import { tagsFragment } from '../fragments/tagsFragment';
+import { preparePost } from '../utils/preparePost';
+import { redisCacheKey } from '../RedisCacheKey';
+import { days } from '../../utils/duration';
+import { activityFragment } from '../fragments/activityFragment';
+import { userFragment } from '../fragments/userFragment';
 
 export class UserService {
   async getUserByEmail(email: string) {
@@ -47,7 +47,7 @@ export class UserService {
       },
       orderBy: [
         {
-          id: "desc",
+          id: 'desc',
         },
       ],
       include: {
@@ -110,7 +110,7 @@ export class UserService {
       },
       orderBy: [
         {
-          id: "desc",
+          id: 'desc',
         },
       ],
       ...(cursor

@@ -1,17 +1,17 @@
-import { useMutation, useQueryClient } from "react-query";
-import { clientCacheKey } from "../../lib/ClientCacheKey";
-import { NonCursorApiPages } from "../../types/ApiPage";
-import { Comment } from "../../types/Post";
-import { withToast } from "../../utils/withToast";
-import { useFetcher } from "../useFetcher";
-import { useMe } from "../useMe";
+import { useMutation, useQueryClient } from 'react-query';
+import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { NonCursorApiPages } from '../../types/ApiPage';
+import { Comment } from '../../types/Post';
+import { withToast } from '../../utils/withToast';
+import { useFetcher } from '../useFetcher';
+import { useMe } from '../useMe';
 
 type Variables = { postId: string; content: string; take: number };
 
 const toastConfig = {
-  loading: "Posting comment...",
-  success: "Comment posted!",
-  error: "Comment is not posted.",
+  loading: 'Posting comment...',
+  success: 'Comment posted!',
+  error: 'Comment is not posted.',
 };
 
 type Data = NonCursorApiPages<Comment> | undefined;
@@ -29,7 +29,7 @@ export const useAddCommentMutation = () => {
       prev: Data;
     }
   >(
-    "jello",
+    'jello',
     ({ postId, content }: Variables) =>
       withToast(fetcher.addComment(postId, content), toastConfig),
     {

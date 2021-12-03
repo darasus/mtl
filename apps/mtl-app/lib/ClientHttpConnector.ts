@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance } from 'axios';
 
 export class ClientHttpConnector {
   request: AxiosInstance;
@@ -8,23 +8,23 @@ export class ClientHttpConnector {
   }
 
   get(url: string) {
-    return this.request(url, { method: "GET" });
+    return this.request(url, { method: 'GET' });
   }
   post(url: string, body: Record<string, unknown>) {
-    return this.request(url, { method: "POST", data: body });
+    return this.request(url, { method: 'POST', data: body });
   }
   put(url: string, body: Record<string, unknown>) {
-    return this.request(url, { method: "PUT", data: body });
+    return this.request(url, { method: 'PUT', data: body });
   }
   delete(url: string) {
-    return this.request(url, { method: "DELETE" });
+    return this.request(url, { method: 'DELETE' });
   }
 
   createRequest = () => {
     const client = axios.create({
       baseURL: `${process.env.NEXT_PUBLIC_VERCEL_URL}`,
       headers: {
-        Pragma: "no-cache",
+        Pragma: 'no-cache',
       },
     });
 
@@ -34,7 +34,7 @@ export class ClientHttpConnector {
       },
       function (error) {
         if (error?.response?.status === 401) {
-          window.location.href = "/api/auth/login";
+          window.location.href = '/api/auth/login';
         }
         return Promise.reject(error);
       }

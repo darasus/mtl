@@ -1,5 +1,5 @@
-import { Text } from "@chakra-ui/layout";
-import toast from "react-hot-toast";
+import { Text } from '@chakra-ui/layout';
+import toast from 'react-hot-toast';
 
 export function withToast<T>(
   fetcher: Promise<T>,

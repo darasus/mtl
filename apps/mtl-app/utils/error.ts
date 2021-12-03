@@ -3,7 +3,7 @@ interface ErrorWithMessage {
 }
 
 function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
-  return typeof error === "object" && error !== null && "message" in error;
+  return typeof error === 'object' && error !== null && 'message' in error;
 }
 
 function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {

@@ -1,6 +1,6 @@
-import { handleProfile } from "@auth0/nextjs-auth0";
-import { NextApiRequest, NextApiResponse } from "next";
-import { processErrorResponse } from "../../../utils/error";
+import { handleProfile } from '@auth0/nextjs-auth0';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { processErrorResponse } from '../../../utils/error';
 
 export default async function refetch(
   req: NextApiRequest,

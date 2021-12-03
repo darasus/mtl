@@ -1,4 +1,4 @@
-import prisma from "../prisma";
+import prisma from '../prisma';
 
 export class LikeService {
   async likePost(postId: string, userId: string) {

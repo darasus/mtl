@@ -1,6 +1,6 @@
-import prisma from "../prisma";
-import { activityFragment } from "../fragments/activityFragment";
-import { pusher } from "../pusher";
+import prisma from '../prisma';
+import { activityFragment } from '../fragments/activityFragment';
+import { pusher } from '../pusher';
 
 export class ActivityService {
   // like
@@ -30,7 +30,7 @@ export class ActivityService {
       },
     });
 
-    await pusher.trigger(`activity-user-${ownerId}`, "activity-added", {
+    await pusher.trigger(`activity-user-${ownerId}`, 'activity-added', {
       data: activity,
     });
 
@@ -69,7 +69,7 @@ export class ActivityService {
       },
     });
 
-    await pusher.trigger(`activity-user-${ownerId}`, "activity-removed", {
+    await pusher.trigger(`activity-user-${ownerId}`, 'activity-removed', {
       data: null,
     });
   }
@@ -101,7 +101,7 @@ export class ActivityService {
       },
     });
 
-    await pusher.trigger(`activity-user-${ownerId}`, "activity-added", {
+    await pusher.trigger(`activity-user-${ownerId}`, 'activity-added', {
       data: activity,
     });
 
@@ -129,7 +129,7 @@ export class ActivityService {
       },
     });
 
-    await pusher.trigger(`activity-user-${ownerId}`, "activity-removed", {
+    await pusher.trigger(`activity-user-${ownerId}`, 'activity-removed', {
       data: null,
     });
   }
@@ -187,7 +187,7 @@ export class ActivityService {
       },
     });
 
-    await pusher.trigger(`activity-user-${ownerId}`, "activity-added", {
+    await pusher.trigger(`activity-user-${ownerId}`, 'activity-added', {
       data: null,
     });
 
@@ -218,7 +218,7 @@ export class ActivityService {
 
     await pusher.trigger(
       `activity-user-${followFollowingId}`,
-      "activity-removed",
+      'activity-removed',
       {
         data: null,
       }

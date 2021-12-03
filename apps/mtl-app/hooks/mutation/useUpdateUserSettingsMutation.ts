@@ -1,11 +1,11 @@
-import { useMutation } from "react-query";
-import { withToast } from "../../utils/withToast";
-import { useRefetchUserProfile } from "../query/useRefetchUserProfile";
-import { useFetcher } from "../useFetcher";
-import { useMe } from "../useMe";
-import { useUploadImageMutation } from "./useUploadImageMutation";
-import React from "react";
-import toast from "react-hot-toast";
+import { useMutation } from 'react-query';
+import { withToast } from '../../utils/withToast';
+import { useRefetchUserProfile } from '../query/useRefetchUserProfile';
+import { useFetcher } from '../useFetcher';
+import { useMe } from '../useMe';
+import { useUploadImageMutation } from './useUploadImageMutation';
+import React from 'react';
+import toast from 'react-hot-toast';
 
 interface Form {
   nickname?: string;
@@ -27,13 +27,13 @@ export const useUpdateUserSettingsMutation = () => {
       if (form.file) {
         const formData = new FormData();
 
-        formData.append("file", form.file);
+        formData.append('file', form.file);
 
         const imageResponse = await uploadImageMutation.mutateAsync({
           data: formData,
         });
 
-        if (typeof imageResponse.imageUrl === "string") {
+        if (typeof imageResponse.imageUrl === 'string') {
           image = imageResponse.imageUrl;
         }
       }
@@ -47,7 +47,7 @@ export const useUpdateUserSettingsMutation = () => {
           password: form.password,
         })
         .catch((err) => {
-          if (typeof err?.response?.data?.error === "string") {
+          if (typeof err?.response?.data?.error === 'string') {
             toast.error(err?.response?.data?.error, { duration: 5000 });
           }
           throw new Error(err);
@@ -59,9 +59,9 @@ export const useUpdateUserSettingsMutation = () => {
 
   return useMutation((form: Form) => {
     return withToast(trigger(form), {
-      loading: "Updating settings...",
-      error: "Settings are not updated!",
-      success: "Settings are updated.",
+      loading: 'Updating settings...',
+      error: 'Settings are not updated!',
+      success: 'Settings are updated.',
     });
   });
 };

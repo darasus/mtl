@@ -1,6 +1,6 @@
-import React from "react";
-import { GetServerSideProps } from "next";
-import { Post } from "../../components/Post";
+import React from 'react';
+import { GetServerSideProps } from 'next';
+import { Post } from '../../components/Post';
 import {
   Box,
   Button,
@@ -9,22 +9,22 @@ import {
   GridItem,
   Spinner,
   Text,
-} from "@chakra-ui/react";
-import Image from "next/image";
-import { useUserQuery } from "../../hooks/query/useUserQuery";
-import { useRouter } from "next/router";
-import { useUserPostsQuery } from "../../hooks/query/useUserPostsQuery";
-import { useFollowMutation } from "../../hooks/mutation/useFollowMutation";
-import { useFollowersCountQuery } from "../../hooks/query/useFollowersCountQuery";
-import { useUnfollowMutation } from "../../hooks/mutation/useUnfollowMutation";
-import { useDoIFollowUserQuery } from "../../hooks/query/useDoIFollowUserQuery";
-import { UserGroupIcon } from "@heroicons/react/outline";
-import { Layout } from "../../layouts/Layout";
-import { useColors } from "../../hooks/useColors";
-import { Head } from "../../components/Head";
-import { Heading } from "../../components/Heading";
-import { useMe } from "../../hooks/useMe";
-import { getSession } from "@auth0/nextjs-auth0";
+} from '@chakra-ui/react';
+import Image from 'next/image';
+import { useUserQuery } from '../../hooks/query/useUserQuery';
+import { useRouter } from 'next/router';
+import { useUserPostsQuery } from '../../hooks/query/useUserPostsQuery';
+import { useFollowMutation } from '../../hooks/mutation/useFollowMutation';
+import { useFollowersCountQuery } from '../../hooks/query/useFollowersCountQuery';
+import { useUnfollowMutation } from '../../hooks/mutation/useUnfollowMutation';
+import { useDoIFollowUserQuery } from '../../hooks/query/useDoIFollowUserQuery';
+import { UserGroupIcon } from '@heroicons/react/outline';
+import { Layout } from '../../layouts/Layout';
+import { useColors } from '../../hooks/useColors';
+import { Head } from '../../components/Head';
+import { Heading } from '../../components/Heading';
+import { useMe } from '../../hooks/useMe';
+import { getSession } from '@auth0/nextjs-auth0';
 
 const UserPage: React.FC = () => {
   const { secondaryTextColor } = useColors();
@@ -161,7 +161,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
   return {
     props: {
-      cookies: req.headers.cookie ?? "",
+      cookies: req.headers.cookie ?? '',
       user: session?.user || null,
     },
   };

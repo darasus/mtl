@@ -1,10 +1,10 @@
-import { CodeLanguage } from ".prisma/client";
-import { Button, IconButton } from "@chakra-ui/button";
-import { Text } from "@chakra-ui/layout";
-import { useBreakpointValue } from "@chakra-ui/media-query";
-import { LightningBoltIcon } from "@heroicons/react/outline";
-import { useOpenInRemoveCodeEditor } from "../../hooks/useOpenInRemoveCodeEditor";
-import { Post } from "../../types/Post";
+import { CodeLanguage } from '.prisma/client';
+import { Button, IconButton } from '@chakra-ui/button';
+import { Text } from '@chakra-ui/layout';
+import { useBreakpointValue } from '@chakra-ui/media-query';
+import { LightningBoltIcon } from '@heroicons/react/outline';
+import { useOpenInRemoveCodeEditor } from '../../hooks/useOpenInRemoveCodeEditor';
+import { Post } from '../../types/Post';
 
 export const OpenInRemoteCodeEditorButton = ({ post }: { post: Post }) => {
   const onClick = useOpenInRemoveCodeEditor({
@@ -17,7 +17,7 @@ export const OpenInRemoteCodeEditorButton = ({ post }: { post: Post }) => {
 
   const commonProps = {
     onClick,
-    "aria-label": "Open in remote code editor",
+    'aria-label': 'Open in remote code editor',
   } as const;
 
   const mobileButton = (

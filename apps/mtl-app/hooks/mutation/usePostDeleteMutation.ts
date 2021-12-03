@@ -1,12 +1,12 @@
-import { useMutation, useQueryClient } from "react-query";
-import { clientCacheKey } from "../../lib/ClientCacheKey";
-import { withToast } from "../../utils/withToast";
-import { useFetcher } from "../useFetcher";
+import { useMutation, useQueryClient } from 'react-query';
+import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { withToast } from '../../utils/withToast';
+import { useFetcher } from '../useFetcher';
 
 const toastConfig = {
-  loading: "Deleting library...",
-  success: "Library is deleted!",
-  error: "Library is not deleted.",
+  loading: 'Deleting library...',
+  success: 'Library is deleted!',
+  error: 'Library is not deleted.',
 };
 
 export const usePostDeleteMutation = (postId: string) => {

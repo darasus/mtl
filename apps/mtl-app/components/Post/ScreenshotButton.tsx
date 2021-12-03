@@ -1,10 +1,10 @@
-import { Button, Text, useBreakpointValue, IconButton } from "@chakra-ui/react";
-import { PhotographIcon } from "@heroicons/react/outline";
-import { paramCase } from "change-case";
-import React from "react";
-import download from "js-file-download";
-import { useScreenshotQuery } from "../../hooks/query/useScreenshotQuery";
-import { Post } from "../../types/Post";
+import { Button, Text, useBreakpointValue, IconButton } from '@chakra-ui/react';
+import { PhotographIcon } from '@heroicons/react/outline';
+import { paramCase } from 'change-case';
+import React from 'react';
+import download from 'js-file-download';
+import { useScreenshotQuery } from '../../hooks/query/useScreenshotQuery';
+import { Post } from '../../types/Post';
 
 interface Props {
   post: Post;
@@ -21,15 +21,15 @@ export const ScreenshotButton: React.FC<Props> = ({ post }) => {
     download(
       screenshot.data as Blob,
       `${paramCase(post.title)}.png`,
-      "image/png"
+      'image/png'
     );
   }, [refetch, post]);
 
   const commonProps = {
-    "aria-label": "Make screenshot button",
-    as: "a",
+    'aria-label': 'Make screenshot button',
+    as: 'a',
     onClick: handleClick,
-    cursor: "pointer",
+    cursor: 'pointer',
     isLoading: isFetching,
   } as const;
 
@@ -48,7 +48,7 @@ export const ScreenshotButton: React.FC<Props> = ({ post }) => {
       leftIcon={<PhotographIcon width="15" height="15" />}
       variant="ghost"
       size="xs"
-      loadingText={"Screenshot"}
+      loadingText={'Screenshot'}
     >
       <Text>Screenshot</Text>
     </Button>

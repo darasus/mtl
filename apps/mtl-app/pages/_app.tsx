@@ -1,25 +1,25 @@
-import { AppProps } from "next/app";
-import { PusherProvider } from "@harelpls/use-pusher";
-import Head from "next/head";
-import React from "react";
-import { QueryCache, QueryClient, QueryClientProvider } from "react-query";
-import { Hydrate } from "react-query/hydration";
-import { ReactQueryDevtools } from "react-query/devtools";
+import { AppProps } from 'next/app';
+import { PusherProvider } from '@harelpls/use-pusher';
+import Head from 'next/head';
+import React from 'react';
+import { QueryCache, QueryClient, QueryClientProvider } from 'react-query';
+import { Hydrate } from 'react-query/hydration';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import {
   ChakraProvider,
   cookieStorageManager,
   localStorageManager,
-} from "@chakra-ui/react";
-import { theme } from "../theme";
-import { Toaster, toast } from "react-hot-toast";
-import * as Fathom from "fathom-client";
-import { useRouter } from "next/router";
-import { UserProvider } from "@auth0/nextjs-auth0";
+} from '@chakra-ui/react';
+import { theme } from '../theme';
+import { Toaster, toast } from 'react-hot-toast';
+import * as Fathom from 'fathom-client';
+import { useRouter } from 'next/router';
+import { UserProvider } from '@auth0/nextjs-auth0';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
   const colorModeManager =
-    typeof pageProps.cookies === "string"
+    typeof pageProps.cookies === 'string'
       ? cookieStorageManager(pageProps.cookies)
       : localStorageManager;
   const queryClientRef = React.useRef<QueryClient>();
@@ -38,17 +38,17 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   }
 
   React.useEffect(() => {
-    Fathom.load("STOSBNAU", {
-      includedDomains: ["www.mytinylibrary.com"],
+    Fathom.load('STOSBNAU', {
+      includedDomains: ['www.mytinylibrary.com'],
     });
 
     function onRouteChangeComplete() {
       Fathom.trackPageview();
     }
-    router.events.on("routeChangeComplete", onRouteChangeComplete);
+    router.events.on('routeChangeComplete', onRouteChangeComplete);
 
     return () => {
-      router.events.off("routeChangeComplete", onRouteChangeComplete);
+      router.events.off('routeChangeComplete', onRouteChangeComplete);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -68,15 +68,15 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           <Toaster
             toastOptions={{
               style: {
-                borderRadius: "100px",
+                borderRadius: '100px',
                 borderColor:
-                  colorModeManager.get() === "dark"
-                    ? "rgba(0,0,0,0.2)"
-                    : "rgba(255,255,255,0.2)",
-                borderWidth: "1px",
-                ...(colorModeManager.get() === "dark"
-                  ? { background: "white", color: "#black" }
-                  : { background: "black", color: "#fff" }),
+                  colorModeManager.get() === 'dark'
+                    ? 'rgba(0,0,0,0.2)'
+                    : 'rgba(255,255,255,0.2)',
+                borderWidth: '1px',
+                ...(colorModeManager.get() === 'dark'
+                  ? { background: 'white', color: '#black' }
+                  : { background: 'black', color: '#fff' }),
               },
             }}
           />

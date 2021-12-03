@@ -1,9 +1,9 @@
-import { Button, Text, IconButton, useBreakpointValue } from "@chakra-ui/react";
-import React from "react";
-import { usePostLikeMutation } from "../../hooks/mutation/usePostLikeMutation";
-import { Post } from "../../types/Post";
-import { ThumbDownIcon, ThumbUpIcon } from "@heroicons/react/outline";
-import { usePostUnlikeMutation } from "../../hooks/mutation/usePostUnlikeMutation";
+import { Button, Text, IconButton, useBreakpointValue } from '@chakra-ui/react';
+import React from 'react';
+import { usePostLikeMutation } from '../../hooks/mutation/usePostLikeMutation';
+import { Post } from '../../types/Post';
+import { ThumbDownIcon, ThumbUpIcon } from '@heroicons/react/outline';
+import { usePostUnlikeMutation } from '../../hooks/mutation/usePostUnlikeMutation';
 
 interface Props {
   post: Post;
@@ -22,13 +22,13 @@ export const LikeButton: React.FC<Props> = ({ post, isPostLoading }) => {
     () => unlikePost({ postId: post.id }),
     [post.id, unlikePost]
   );
-  const text = `${post.isLikedByMe ? "Unlike" : "Like"}`;
+  const text = `${post.isLikedByMe ? 'Unlike' : 'Like'}`;
 
   const commonProps = {
     onClick: post.isLikedByMe ? handleUnlikeClick : handleLikeClick,
     disabled: likeIsLoading || unlikeIsLoading || isPostLoading,
     isLoading: likeIsLoading || unlikeIsLoading,
-    "aria-label": "Like button",
+    'aria-label': 'Like button',
   } as const;
 
   const mobileButton = (
@@ -52,7 +52,7 @@ export const LikeButton: React.FC<Props> = ({ post, isPostLoading }) => {
       leftIcon={<ThumbUpIcon width="15" height="15" />}
       size="xs"
       variant="ghost"
-      loadingText={post.isLikedByMe ? "Liking" : "Unliking"}
+      loadingText={post.isLikedByMe ? 'Liking' : 'Unliking'}
     >
       <Text>{text}</Text>
     </Button>

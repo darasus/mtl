@@ -1,7 +1,7 @@
-import React from "react";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { UserPreview } from "./UserPreview";
+import React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { UserPreview } from './UserPreview';
 import {
   Button,
   Flex,
@@ -14,16 +14,16 @@ import {
   useBreakpoint,
   Spinner,
   Text,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 import {
   PlusSmIcon,
   UserIcon,
   LogoutIcon,
   CogIcon,
-} from "@heroicons/react/outline";
-import { Logo } from "./Logo";
-import { useMe } from "../hooks/useMe";
-import { ActivityBadge } from "../components/ActivityBadge/ActivityBadge";
+} from '@heroicons/react/outline';
+import { Logo } from './Logo';
+import { useMe } from '../hooks/useMe';
+import { ActivityBadge } from '../components/ActivityBadge/ActivityBadge';
 
 export const Header: React.FC = () => {
   const router = useRouter();
@@ -48,7 +48,7 @@ export const Header: React.FC = () => {
         {me?.isLoading && <Spinner />}
         {me?.user ? (
           <>
-            {breakpoint !== "base" && (
+            {breakpoint !== 'base' && (
               <Box mr={4}>
                 <Link href="/p/create" passHref>
                   <Button
@@ -79,14 +79,14 @@ export const Header: React.FC = () => {
                   </MenuItem>
                   <MenuItem
                     icon={<PlusSmIcon width="20" height="20" />}
-                    onClick={() => router.push("/p/create")}
+                    onClick={() => router.push('/p/create')}
                   >
                     New post
                   </MenuItem>
                   <MenuItem
                     color="red.500"
                     icon={<LogoutIcon width="20" height="20" />}
-                    onClick={() => router.push("/api/auth/logout")}
+                    onClick={() => router.push('/api/auth/logout')}
                   >
                     Logout
                   </MenuItem>
@@ -97,12 +97,12 @@ export const Header: React.FC = () => {
             </Flex>
           </>
         ) : (
-          router.pathname !== "/" &&
+          router.pathname !== '/' &&
           !me?.isLoading && (
             <Flex>
               <Button
                 variant="outline"
-                onClick={() => router.push("/api/auth/login")}
+                onClick={() => router.push('/api/auth/login')}
                 borderColor="brand"
                 color="brand"
               >

@@ -1,12 +1,12 @@
-import { useMutation, useQueryClient } from "react-query";
-import { clientCacheKey } from "../../lib/ClientCacheKey";
-import { withToast } from "../../utils/withToast";
-import { useFetcher } from "../useFetcher";
+import { useMutation, useQueryClient } from 'react-query';
+import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { withToast } from '../../utils/withToast';
+import { useFetcher } from '../useFetcher';
 
 const toastConfig = {
-  loading: "Unpublishing library...",
-  success: "Library is unpublished!",
-  error: "Library is not unpublished.",
+  loading: 'Unpublishing library...',
+  success: 'Library is unpublished!',
+  error: 'Library is not unpublished.',
 };
 
 export const usePostUnpublishMutation = (postId: string) => {

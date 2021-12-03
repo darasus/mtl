@@ -1,15 +1,15 @@
-import React from "react";
-import { useRouter } from "next/router";
-import { GetServerSideProps } from "next";
-import { usePostQuery } from "../../../hooks/query/usePostQuery";
-import { FormProvider, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { PostForm, postSchema } from "../../../features/PostForm";
-import invariant from "invariant";
-import { usePostEditMutation } from "../../../hooks/mutation/usePostEditMutation";
-import { FullscreenLayout } from "../../../layouts/FullscreenLayout";
-import { Head } from "../../../components/Head";
-import { CodeLanguage } from ".prisma/client";
+import React from 'react';
+import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next';
+import { usePostQuery } from '../../../hooks/query/usePostQuery';
+import { FormProvider, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { PostForm, postSchema } from '../../../features/PostForm';
+import invariant from 'invariant';
+import { usePostEditMutation } from '../../../hooks/mutation/usePostEditMutation';
+import { FullscreenLayout } from '../../../layouts/FullscreenLayout';
+import { Head } from '../../../components/Head';
+import { CodeLanguage } from '.prisma/client';
 
 const EditPostPage: React.FC = () => {
   const router = useRouter();
@@ -36,7 +36,7 @@ const EditPostPage: React.FC = () => {
 
   const handleUpdate = handleSubmit(
     async ({ tagId, codeLanguage, content, description, title }) => {
-      invariant(!!tagId && typeof tagId === "string", "tagId is required");
+      invariant(!!tagId && typeof tagId === 'string', 'tagId is required');
       await postEditMutation.mutateAsync({
         tagId,
         codeLanguage,
@@ -68,7 +68,7 @@ export default EditPostPage;
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
-      cookies: ctx.req.headers.cookie ?? "",
+      cookies: ctx.req.headers.cookie ?? '',
     },
   };
 };

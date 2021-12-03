@@ -1,5 +1,5 @@
-import { useMutation } from "react-query";
-import { useFetcher } from "../useFetcher";
+import { useMutation } from 'react-query';
+import { useFetcher } from '../useFetcher';
 
 interface Variables {
   data: FormData;

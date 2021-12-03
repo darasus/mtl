@@ -1,6 +1,6 @@
-import { redis } from "./redis";
-import { performance } from "perf_hooks";
-import "colors";
+import { redis } from './redis';
+import { performance } from 'perf_hooks';
+import 'colors';
 
 const fetch = async <T>(key: string, fetcher: () => T, expires: number) => {
   const existing = await get<T>(key);
@@ -43,7 +43,7 @@ const set = async <T>(key: string, fetcher: () => T, expires: number) => {
     `for ${key} took ${t2 - t1} milliseconds.`
   );
   const t3 = performance.now();
-  await redis.set(key, JSON.stringify(value), "EX", expires / 1000);
+  await redis.set(key, JSON.stringify(value), 'EX', expires / 1000);
   const t4 = performance.now();
   console.log(
     `[Redis][Set]`.yellow,
@@ -57,7 +57,7 @@ const setBuffer = async (key: string, value: ArrayBuffer, expires: number) => {
   await redis.set(
     key,
     Buffer.from(new Uint8Array(value)),
-    "EX",
+    'EX',
     expires / 1000
   );
   const t2 = performance.now();

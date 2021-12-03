@@ -1,15 +1,15 @@
-import React from "react";
-import { useRouter } from "next/router";
-import { FormProvider, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { FullscreenLayout } from "../../layouts/FullscreenLayout";
-import { GetServerSideProps } from "next";
-import { useCreatePostMutation } from "../../hooks/mutation/useCreatePostMutation";
-import { PostForm, postSchema } from "../../features/PostForm";
-import invariant from "invariant";
-import { CodeLanguage } from ".prisma/client";
-import { Head } from "../../components/Head";
-import { getSession } from "@auth0/nextjs-auth0";
+import React from 'react';
+import { useRouter } from 'next/router';
+import { FormProvider, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FullscreenLayout } from '../../layouts/FullscreenLayout';
+import { GetServerSideProps } from 'next';
+import { useCreatePostMutation } from '../../hooks/mutation/useCreatePostMutation';
+import { PostForm, postSchema } from '../../features/PostForm';
+import invariant from 'invariant';
+import { CodeLanguage } from '.prisma/client';
+import { Head } from '../../components/Head';
+import { getSession } from '@auth0/nextjs-auth0';
 
 const CreatePostPage: React.FC = () => {
   const router = useRouter();
@@ -23,7 +23,7 @@ const CreatePostPage: React.FC = () => {
 
   const handlePublish = form.handleSubmit(
     async ({ tagId, codeLanguage, content, description, title }) => {
-      invariant(typeof tagId === "string", "tagId is required");
+      invariant(typeof tagId === 'string', 'tagId is required');
       const post = await createPostMutation.mutateAsync({
         tagId,
         codeLanguage,
@@ -38,7 +38,7 @@ const CreatePostPage: React.FC = () => {
 
   const handleSave = form.handleSubmit(
     async ({ tagId, codeLanguage, content, description, title }) => {
-      invariant(typeof tagId === "string", "tagId is required");
+      invariant(typeof tagId === 'string', 'tagId is required');
       const post = await createPostMutation.mutateAsync({
         tagId,
         codeLanguage,
@@ -74,7 +74,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getSession(req, res);
   return {
     props: {
-      cookies: req.headers.cookie ?? "",
+      cookies: req.headers.cookie ?? '',
       user: session?.user || null,
     },
   };

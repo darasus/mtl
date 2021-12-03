@@ -1,14 +1,14 @@
-import prisma from "../prisma";
-import { Post } from "../../types/Post";
-import { CodeLanguage } from ".prisma/client";
-import { likeFragment } from "../fragments/likeFragment";
-import { commentFragment } from "../fragments/commentFragment";
-import { preparePost } from "../utils/preparePost";
-import cache from "../cache";
-import { tagsFragment } from "../fragments/tagsFragment";
-import { days } from "../../utils/duration";
-import { redisCacheKey } from "../RedisCacheKey";
-import { userFragment } from "../fragments/userFragment";
+import prisma from '../prisma';
+import { Post } from '../../types/Post';
+import { CodeLanguage } from '.prisma/client';
+import { likeFragment } from '../fragments/likeFragment';
+import { commentFragment } from '../fragments/commentFragment';
+import { preparePost } from '../utils/preparePost';
+import cache from '../cache';
+import { tagsFragment } from '../fragments/tagsFragment';
+import { days } from '../../utils/duration';
+import { redisCacheKey } from '../RedisCacheKey';
+import { userFragment } from '../fragments/userFragment';
 
 export class PostService {
   async updatePost(

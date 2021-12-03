@@ -1,5 +1,5 @@
-import { Heading as ChakraHeading, Flex, Box } from "@chakra-ui/layout";
-import React from "react";
+import { Heading as ChakraHeading, Flex, Box } from '@chakra-ui/layout';
+import React from 'react';
 
 interface Props {
   title: string;

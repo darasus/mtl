@@ -1,8 +1,8 @@
-import { Box, Flex, IconButton } from "@chakra-ui/react";
-import { TrashIcon } from "@heroicons/react/outline";
-import React from "react";
-import { useColors } from "../../hooks/useColors";
-import { useDeleteCommentMutation } from "../../hooks/mutation/useDeleteCommentMutation";
+import { Box, Flex, IconButton } from '@chakra-ui/react';
+import { TrashIcon } from '@heroicons/react/outline';
+import React from 'react';
+import { useColors } from '../../hooks/useColors';
+import { useDeleteCommentMutation } from '../../hooks/mutation/useDeleteCommentMutation';
 
 interface Props {
   commentId: string;

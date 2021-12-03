@@ -1,14 +1,14 @@
-import { Button, IconButton, IconButtonProps } from "@chakra-ui/button";
-import { Menu, MenuButton, MenuList } from "@chakra-ui/menu";
-import { BellIcon } from "@heroicons/react/outline";
-import { useUserActivityQuery } from "../../hooks/query/useUserActivityQuery";
-import { useMe } from "../../hooks/useMe";
-import React from "react";
-import { useChannel, useEvent } from "@harelpls/use-pusher";
-import { Flex, Text } from "@chakra-ui/layout";
-import { Notification } from "./Notification";
-import { useLocalStorage } from "react-use";
-import { useMarkAllActivityAsReadMutation } from "../../hooks/mutation/useMarkAllActivityAsReadMutation";
+import { Button, IconButton, IconButtonProps } from '@chakra-ui/button';
+import { Menu, MenuButton, MenuList } from '@chakra-ui/menu';
+import { BellIcon } from '@heroicons/react/outline';
+import { useUserActivityQuery } from '../../hooks/query/useUserActivityQuery';
+import { useMe } from '../../hooks/useMe';
+import React from 'react';
+import { useChannel, useEvent } from '@harelpls/use-pusher';
+import { Flex, Text } from '@chakra-ui/layout';
+import { Notification } from './Notification';
+import { useLocalStorage } from 'react-use';
+import { useMarkAllActivityAsReadMutation } from '../../hooks/mutation/useMarkAllActivityAsReadMutation';
 
 export const ActivityBadge = () => {
   const me = useMe();
@@ -17,7 +17,7 @@ export const ActivityBadge = () => {
     useUserActivityQuery(me?.user?.id as string);
   const [showUnread, setShowUnread] = React.useState(false);
   const [lastReadDate, setLastReadDate] =
-    useLocalStorage<Date>("last_unread_date");
+    useLocalStorage<Date>('last_unread_date');
   const channel = useChannel(`activity-user-${me?.user?.id}`);
 
   const handleMarkAllAsRead = React.useCallback(() => {
@@ -43,11 +43,11 @@ export const ActivityBadge = () => {
     }
   }, [data, lastReadDate, setLastReadDate, fisrtItem]);
 
-  useEvent(channel, "activity-added", () => {
+  useEvent(channel, 'activity-added', () => {
     refetch();
   });
 
-  useEvent(channel, "activity-removed", () => {
+  useEvent(channel, 'activity-removed', () => {
     refetch();
   });
 
@@ -62,7 +62,7 @@ export const ActivityBadge = () => {
           {...props}
           size="xs"
           aria-label="activity button"
-          variant={showUnread ? "red" : "solid"}
+          variant={showUnread ? 'red' : 'solid'}
         />
       );
     });

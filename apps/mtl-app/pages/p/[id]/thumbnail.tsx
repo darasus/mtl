@@ -1,15 +1,15 @@
-import React from "react";
-import { usePostQuery } from "../../../hooks/query/usePostQuery";
-import { useRouter } from "next/router";
-import { Box, Flex, Text } from "@chakra-ui/react";
-import { Logo } from "../../../components/Logo";
-import { ThumbnailLayout } from "../../../layouts/ThumbnailLayout";
-import { Syntax } from "../../../components/Syntax";
-import { useColors } from "../../../hooks/useColors";
-import { CodeLanguageIcon } from "../../../components/Post/CodeLanguageIcon";
-import Image from "next/image";
-import { CodeLanguage } from ".prisma/client";
-import { GetServerSideProps } from "next";
+import React from 'react';
+import { usePostQuery } from '../../../hooks/query/usePostQuery';
+import { useRouter } from 'next/router';
+import { Box, Flex, Text } from '@chakra-ui/react';
+import { Logo } from '../../../components/Logo';
+import { ThumbnailLayout } from '../../../layouts/ThumbnailLayout';
+import { Syntax } from '../../../components/Syntax';
+import { useColors } from '../../../hooks/useColors';
+import { CodeLanguageIcon } from '../../../components/Post/CodeLanguageIcon';
+import Image from 'next/image';
+import { CodeLanguage } from '.prisma/client';
+import { GetServerSideProps } from 'next';
 
 const ThumbnailPage: React.FC = () => {
   const router = useRouter();
@@ -73,7 +73,7 @@ const ThumbnailPage: React.FC = () => {
                 </Box>
               </Box>
               <Syntax
-                value={post.content || ""}
+                value={post.content || ''}
                 codeLanguage={post.codeLanguage || CodeLanguage.JAVASCRIPT}
                 slice={15}
               />
@@ -100,7 +100,7 @@ export default ThumbnailPage;
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
     props: {
-      cookies: req.headers.cookie ?? "",
+      cookies: req.headers.cookie ?? '',
     },
   };
 };

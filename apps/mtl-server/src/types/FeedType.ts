@@ -1,4 +1,4 @@
 export enum FeedType {
-  Latest = "latest",
-  Following = "Following",
+  Latest = 'latest',
+  Following = 'Following',
 }

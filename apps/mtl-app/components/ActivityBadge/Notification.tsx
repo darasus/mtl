@@ -1,22 +1,22 @@
-import { Activity } from ".prisma/client";
-import { Box, Flex, Text } from "@chakra-ui/layout";
-import { MenuItem } from "@chakra-ui/menu";
+import { Activity } from '.prisma/client';
+import { Box, Flex, Text } from '@chakra-ui/layout';
+import { MenuItem } from '@chakra-ui/menu';
 import {
   ChatAltIcon,
   ThumbUpIcon,
   UserAddIcon,
-} from "@heroicons/react/outline";
-import { useRouter } from "next/router";
-import React from "react";
-import { useMarkActivityAsReadMutation } from "../../hooks/mutation/useMarkActivityAsReadMutation";
+} from '@heroicons/react/outline';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { useMarkActivityAsReadMutation } from '../../hooks/mutation/useMarkActivityAsReadMutation';
 
 export const Notification = ({ activity }: { activity: Activity & any }) => {
   const router = useRouter();
   const markAsReadMutation = useMarkActivityAsReadMutation(activity.id);
-  const isLikeNotification = typeof activity.likeId === "number";
-  const isCommentNotification = typeof activity.commentId === "number";
+  const isLikeNotification = typeof activity.likeId === 'number';
+  const isCommentNotification = typeof activity.commentId === 'number';
   const isFollowNotification =
-    typeof activity?.follow?.follower?.id === "number";
+    typeof activity?.follow?.follower?.id === 'number';
 
   const composeActivityMessage = React.useCallback(
     (activity: Activity & any) => {

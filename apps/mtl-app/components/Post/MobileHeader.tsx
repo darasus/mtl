@@ -1,23 +1,23 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
-import { Post as PostType } from "../../types/Post";
+import { Box, Flex, Text } from '@chakra-ui/react';
+import { Post as PostType } from '../../types/Post';
 import {
   ThumbUpIcon,
   ChatIcon,
   TagIcon,
   CodeIcon,
-} from "@heroicons/react/outline";
-import React from "react";
-import { RouterLink } from "../RouterLinkt";
-import { useColors } from "../../hooks/useColors";
-import { CodeLanguage } from ".prisma/client";
+} from '@heroicons/react/outline';
+import React from 'react';
+import { RouterLink } from '../RouterLinkt';
+import { useColors } from '../../hooks/useColors';
+import { CodeLanguage } from '.prisma/client';
 
 interface Props {
   post: PostType;
 }
 
 const codeExtensionMap = {
-  [CodeLanguage.JAVASCRIPT]: "js",
-  [CodeLanguage.TYPESCRIPT]: "ts",
+  [CodeLanguage.JAVASCRIPT]: 'js',
+  [CodeLanguage.TYPESCRIPT]: 'ts',
 };
 
 export const MobileHeader: React.FC<Props> = ({ post }) => {
@@ -71,7 +71,7 @@ export const MobileHeader: React.FC<Props> = ({ post }) => {
               <Box>
                 <Text fontSize="sm" whiteSpace="nowrap">{`${post.tags
                   .map((tag) => tag.tag.name)
-                  .join(",")}`}</Text>
+                  .join(',')}`}</Text>
               </Box>
             </Flex>
           </Flex>

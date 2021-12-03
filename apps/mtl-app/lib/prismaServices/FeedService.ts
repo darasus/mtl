@@ -1,10 +1,10 @@
-import prisma from "../prisma";
-import { Post } from "../../types/Post";
-import { likeFragment } from "../fragments/likeFragment";
-import { commentFragment } from "../fragments/commentFragment";
-import { tagsFragment } from "../fragments/tagsFragment";
-import { userFragment } from "../fragments/userFragment";
-import { preparePost } from "../utils/preparePost";
+import prisma from '../prisma';
+import { Post } from '../../types/Post';
+import { likeFragment } from '../fragments/likeFragment';
+import { commentFragment } from '../fragments/commentFragment';
+import { tagsFragment } from '../fragments/tagsFragment';
+import { userFragment } from '../fragments/userFragment';
+import { preparePost } from '../utils/preparePost';
 
 export type FetchFeedResponse = {
   items: Post[];
@@ -65,7 +65,7 @@ export class FeedService {
       },
       orderBy: [
         {
-          id: "desc",
+          id: 'desc',
         },
       ],
       ...(cursor
@@ -87,7 +87,7 @@ export class FeedService {
         comments: {
           orderBy: [
             {
-              id: "desc",
+              id: 'desc',
             },
           ],
           select: commentFragment,
@@ -143,7 +143,7 @@ export class FeedService {
       },
       orderBy: [
         {
-          id: "desc",
+          id: 'desc',
         },
       ],
       ...(cursor
@@ -165,7 +165,7 @@ export class FeedService {
         comments: {
           orderBy: [
             {
-              id: "desc",
+              id: 'desc',
             },
           ],
           select: commentFragment,

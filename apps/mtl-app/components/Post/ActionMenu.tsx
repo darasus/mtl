@@ -5,21 +5,21 @@ import {
   MenuItem,
   MenuList,
   useBreakpointValue,
-} from "@chakra-ui/react";
-import React from "react";
+} from '@chakra-ui/react';
+import React from 'react';
 import {
   PencilAltIcon,
   CloudDownloadIcon,
   CloudUploadIcon,
   TrashIcon,
   DotsVerticalIcon,
-} from "@heroicons/react/outline";
-import { useRouter } from "next/router";
-import { Post } from "../../types/Post";
-import { usePostUnpublishMutation } from "../../hooks/mutation/usePostUnpublishMutation";
-import { usePostPublishMutation } from "../../hooks/mutation/usePostPublishMutation";
-import { usePostDeleteMutation } from "../../hooks/mutation/usePostDeleteMutation";
-import { Role, useMe } from "../../hooks/useMe";
+} from '@heroicons/react/outline';
+import { useRouter } from 'next/router';
+import { Post } from '../../types/Post';
+import { usePostUnpublishMutation } from '../../hooks/mutation/usePostUnpublishMutation';
+import { usePostPublishMutation } from '../../hooks/mutation/usePostPublishMutation';
+import { usePostDeleteMutation } from '../../hooks/mutation/usePostDeleteMutation';
+import { Role, useMe } from '../../hooks/useMe';
 
 interface Props {
   isMyPost: boolean;
@@ -40,8 +40,8 @@ export const ActionMenu: React.FC<Props> = ({ isMyPost, post }) => {
 
   const handleDeletePost = React.useCallback(async () => {
     deletePost().then(() => {
-      if (router.pathname === "/p/[id]") {
-        router.push("/");
+      if (router.pathname === '/p/[id]') {
+        router.push('/');
       }
     });
   }, [deletePost, router]);
@@ -58,7 +58,7 @@ export const ActionMenu: React.FC<Props> = ({ isMyPost, post }) => {
 
   const commonProps = {
     as: IconButton,
-    "aria-label": "Options",
+    'aria-label': 'Options',
     icon: <DotsVerticalIcon width="15" height="15" />,
   } as const;
 

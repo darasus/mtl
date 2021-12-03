@@ -1,6 +1,6 @@
-import { Flex, Link, Text } from "@chakra-ui/layout";
-import React from "react";
-import { useColors } from "../hooks/useColors";
+import { Flex, Link, Text } from '@chakra-ui/layout';
+import React from 'react';
+import { useColors } from '../hooks/useColors';
 
 export const Footer = () => {
   const { secondaryTextColor } = useColors();

@@ -1,19 +1,19 @@
-import { Button } from "@chakra-ui/button";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
-import { Box, Flex, Grid, GridItem, Text } from "@chakra-ui/layout";
-import React from "react";
-import { useForm, useWatch } from "react-hook-form";
-import { Head } from "../components/Head";
-import { Heading } from "../components/Heading";
-import { useUpdateUserSettingsMutation } from "../hooks/mutation/useUpdateUserSettingsMutation";
-import { useMe } from "../hooks/useMe";
-import { Layout } from "../layouts/Layout";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { FormItem } from "../features/PostForm";
-import { yup } from "../lib/yup";
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { Image } from "@chakra-ui/react";
-import { GetServerSideProps } from "next";
+import { Button } from '@chakra-ui/button';
+import { Input, InputGroup, InputRightElement } from '@chakra-ui/input';
+import { Box, Flex, Grid, GridItem, Text } from '@chakra-ui/layout';
+import React from 'react';
+import { useForm, useWatch } from 'react-hook-form';
+import { Head } from '../components/Head';
+import { Heading } from '../components/Heading';
+import { useUpdateUserSettingsMutation } from '../hooks/mutation/useUpdateUserSettingsMutation';
+import { useMe } from '../hooks/useMe';
+import { Layout } from '../layouts/Layout';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FormItem } from '../features/PostForm';
+import { yup } from '../lib/yup';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { Image } from '@chakra-ui/react';
+import { GetServerSideProps } from 'next';
 
 type SettingsForm = {
   name: string;
@@ -25,16 +25,16 @@ type SettingsForm = {
 };
 
 export const userSettingsValidationSchema = yup.object().shape({
-  name: yup.string().required("Please fill in your name"),
-  nickname: yup.string().required("Please fill in your nickname"),
-  email: yup.string().required("Please fill in your email"),
+  name: yup.string().required('Please fill in your name'),
+  nickname: yup.string().required('Please fill in your nickname'),
+  email: yup.string().required('Please fill in your email'),
   newPassword: yup.string(),
   repeatNewPassword: yup
     .string()
-    .oneOf([yup.ref("newPassword"), null], "Passwords don't match")
-    .when("newPassword", {
-      is: (val: string) => !!val && typeof val === "string",
-      then: yup.string().required("Please fill in password"),
+    .oneOf([yup.ref('newPassword'), null], "Passwords don't match")
+    .when('newPassword', {
+      is: (val: string) => !!val && typeof val === 'string',
+      then: yup.string().required('Please fill in password'),
     }),
 });
 
@@ -44,7 +44,7 @@ const SettingsPage = () => {
   const handleClick = () => setShow(!show);
   const me = useMe();
   const form = useForm<SettingsForm>({
-    mode: "all",
+    mode: 'all',
     resolver: yupResolver(userSettingsValidationSchema),
   });
   const {
@@ -56,7 +56,7 @@ const SettingsPage = () => {
     null
   );
 
-  const file = useWatch({ control, name: "file" });
+  const file = useWatch({ control, name: 'file' });
 
   React.useEffect(() => {
     if (file?.[0]) {
@@ -69,9 +69,9 @@ const SettingsPage = () => {
 
   React.useEffect(() => {
     reset({
-      name: me?.user?.name || "",
-      nickname: me?.user?.nickname || "",
-      email: me?.user?.email || "",
+      name: me?.user?.name || '',
+      nickname: me?.user?.nickname || '',
+      email: me?.user?.email || '',
     });
   }, [reset, me]);
 
@@ -92,7 +92,7 @@ const SettingsPage = () => {
 
   return (
     <>
-      <Head title={"Settings"} urlPath={"/settings"} />
+      <Head title={'Settings'} urlPath={'/settings'} />
       <Layout>
         <Heading title="Settings" />
         <form onSubmit={submit}>
@@ -104,7 +104,7 @@ const SettingsPage = () => {
             </GridItem>
             <GridItem colSpan={6}>
               <FormItem title="Name" errorMessage={errors.name?.message}>
-                <Input {...form.register("name")} />
+                <Input {...form.register('name')} />
               </FormItem>
             </GridItem>
             <GridItem colSpan={6}>
@@ -112,12 +112,12 @@ const SettingsPage = () => {
                 title="Nickname"
                 errorMessage={errors.nickname?.message}
               >
-                <Input {...form.register("nickname")} />
+                <Input {...form.register('nickname')} />
               </FormItem>
             </GridItem>
             <GridItem colSpan={6}>
               <FormItem title="Email" errorMessage={errors.email?.message}>
-                <Input {...form.register("email")} isDisabled />
+                <Input {...form.register('email')} isDisabled />
               </FormItem>
             </GridItem>
             <GridItem colSpan={12}>
@@ -133,12 +133,12 @@ const SettingsPage = () => {
                 <InputGroup size="md">
                   <Input
                     pr="4.5rem"
-                    type={show ? "text" : "password"}
-                    {...form.register("newPassword")}
+                    type={show ? 'text' : 'password'}
+                    {...form.register('newPassword')}
                   />
                   <InputRightElement width="4.5rem">
                     <Button h="1.75rem" size="sm" onClick={handleClick}>
-                      {show ? "Hide" : "Show"}
+                      {show ? 'Hide' : 'Show'}
                     </Button>
                   </InputRightElement>
                 </InputGroup>
@@ -152,12 +152,12 @@ const SettingsPage = () => {
                 <InputGroup size="md">
                   <Input
                     pr="4.5rem"
-                    type={show ? "text" : "password"}
-                    {...form.register("repeatNewPassword")}
+                    type={show ? 'text' : 'password'}
+                    {...form.register('repeatNewPassword')}
                   />
                   <InputRightElement width="4.5rem">
                     <Button h="1.75rem" size="sm" onClick={handleClick}>
-                      {show ? "Hide" : "Show"}
+                      {show ? 'Hide' : 'Show'}
                     </Button>
                   </InputRightElement>
                 </InputGroup>
@@ -171,10 +171,10 @@ const SettingsPage = () => {
             <GridItem colSpan={6}>
               <Flex alignItems="center">
                 <Input
-                  {...form.register("file")}
+                  {...form.register('file')}
                   type="file"
                   accept="image/*"
-                  style={{ display: "none" }}
+                  style={{ display: 'none' }}
                 />
                 {createObjectURL?.href && (
                   <Box borderRadius="full" overflow="hidden" mr={4}>
@@ -212,7 +212,7 @@ export default withPageAuthRequired(SettingsPage);
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
     props: {
-      cookies: req.headers.cookie ?? "",
+      cookies: req.headers.cookie ?? '',
     },
   };
 };

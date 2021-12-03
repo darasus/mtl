@@ -1,6 +1,6 @@
-import bcrypt from "bcrypt";
-import { PrismaClient } from ".prisma/client";
-import mailgun from "mailgun-js";
+import bcrypt from 'bcrypt';
+import { PrismaClient } from '.prisma/client';
+import mailgun from 'mailgun-js';
 
 export class AuthService {
   prisma: PrismaClient | null;
@@ -31,9 +31,9 @@ export class AuthService {
     });
 
     await this.transporter?.messages().send({
-      from: "no-reply@mytinylibrary.com",
+      from: 'no-reply@mytinylibrary.com',
       to: email,
-      subject: "Password reset requested",
+      subject: 'Password reset requested',
       html: `<p>Your new password is: ${newPassword}</p>`,
     });
   }
@@ -42,8 +42,8 @@ export class AuthService {
 function generatePassword() {
   const length = 16;
   const charset =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let retVal = "";
+    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let retVal = '';
   for (let i = 0, n = charset.length; i < length; ++i) {
     retVal += charset.charAt(Math.floor(Math.random() * n));
   }

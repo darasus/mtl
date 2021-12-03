@@ -1,9 +1,9 @@
-import { Button, IconButton } from "@chakra-ui/button";
-import { Text } from "@chakra-ui/layout";
-import { useBreakpointValue } from "@chakra-ui/media-query";
-import { ShareIcon } from "@heroicons/react/outline";
-import React from "react";
-import { Post } from "../../types/Post";
+import { Button, IconButton } from '@chakra-ui/button';
+import { Text } from '@chakra-ui/layout';
+import { useBreakpointValue } from '@chakra-ui/media-query';
+import { ShareIcon } from '@heroicons/react/outline';
+import React from 'react';
+import { Post } from '../../types/Post';
 
 export const TweetButton = ({ post }: { post: Post }) => {
   const handleTweetClick = React.useCallback(() => {
@@ -15,7 +15,7 @@ export const TweetButton = ({ post }: { post: Post }) => {
   }, [post]);
 
   const commonProps = {
-    "aria-label": "Tweet button",
+    'aria-label': 'Tweet button',
     onClick: handleTweetClick,
   } as const;
 

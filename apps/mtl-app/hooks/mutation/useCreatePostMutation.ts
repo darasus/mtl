@@ -1,8 +1,8 @@
-import { CodeLanguage } from ".prisma/client";
-import { useMutation, useQueryClient } from "react-query";
-import { clientCacheKey } from "../../lib/ClientCacheKey";
-import { withToast } from "../../utils/withToast";
-import { useFetcher } from "../useFetcher";
+import { CodeLanguage } from '.prisma/client';
+import { useMutation, useQueryClient } from 'react-query';
+import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { withToast } from '../../utils/withToast';
+import { useFetcher } from '../useFetcher';
 
 interface Variables {
   title: string;
@@ -14,9 +14,9 @@ interface Variables {
 }
 
 const toastConfig = {
-  loading: "Creating library...",
-  success: "Library created!",
-  error: "Library is not created.",
+  loading: 'Creating library...',
+  success: 'Library created!',
+  error: 'Library is not created.',
 };
 
 export const useCreatePostMutation = () => {

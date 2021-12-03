@@ -1,7 +1,7 @@
-import prisma from "../prisma";
-import cache from "../cache";
-import { days } from "../../utils/duration";
-import { redisCacheKey } from "../RedisCacheKey";
+import prisma from '../prisma';
+import cache from '../cache';
+import { days } from '../../utils/duration';
+import { redisCacheKey } from '../RedisCacheKey';
 
 export class TagService {
   async getAllTags() {

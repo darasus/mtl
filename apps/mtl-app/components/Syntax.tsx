@@ -1,10 +1,10 @@
-import React from "react";
-import Highlight, { defaultProps } from "prism-react-renderer";
-import { useColorMode } from "@chakra-ui/react";
-import darkTheme from "prism-react-renderer/themes/vsDark";
-import lightTheme from "prism-react-renderer/themes/vsLight";
-import { CodeLanguage } from ".prisma/client";
-import { langMap } from "./CodeEditor";
+import React from 'react';
+import Highlight, { defaultProps } from 'prism-react-renderer';
+import { useColorMode } from '@chakra-ui/react';
+import darkTheme from 'prism-react-renderer/themes/vsDark';
+import lightTheme from 'prism-react-renderer/themes/vsLight';
+import { CodeLanguage } from '.prisma/client';
+import { langMap } from './CodeEditor';
 
 interface Props {
   value: string;
@@ -15,7 +15,7 @@ interface Props {
 export const Syntax: React.FC<Props> = ({ value, codeLanguage, slice }) => {
   const { colorMode } = useColorMode();
   const theme = {
-    ...(colorMode === "dark" ? darkTheme : lightTheme),
+    ...(colorMode === 'dark' ? darkTheme : lightTheme),
   };
   const language = langMap[codeLanguage];
 
@@ -29,12 +29,12 @@ export const Syntax: React.FC<Props> = ({ value, codeLanguage, slice }) => {
             className={className}
             style={{
               ...style,
-              padding: "10px 20px",
+              padding: '10px 20px',
               marginTop: 0,
               marginBottom: 0,
-              overflow: "scroll",
-              fontFamily: "Fira Code, monospace",
-              backgroundColor: "transparent",
+              overflow: 'scroll',
+              fontFamily: 'Fira Code, monospace',
+              backgroundColor: 'transparent',
             }}
           >
             {newTokens.map((line, i) => {

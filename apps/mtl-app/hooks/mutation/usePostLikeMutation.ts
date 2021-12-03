@@ -1,12 +1,12 @@
-import { useMutation, useQueryClient } from "react-query";
-import { useFetcher } from "../useFetcher";
-import { clientCacheKey } from "../../lib/ClientCacheKey";
-import { withToast } from "../../utils/withToast";
+import { useMutation, useQueryClient } from 'react-query';
+import { useFetcher } from '../useFetcher';
+import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { withToast } from '../../utils/withToast';
 
 const toastConfig = {
-  loading: "Liking...",
-  success: "Liked!",
-  error: "Did not like.",
+  loading: 'Liking...',
+  success: 'Liked!',
+  error: 'Did not like.',
 };
 
 export const usePostLikeMutation = () => {
