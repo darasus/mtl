@@ -5,7 +5,10 @@
   "scripts": {
     "nx": "nx",
     "start": "nx serve",
+    "dev:server": "start mtl-server",
+    "start:server": "node dist/apps/mtl-server/main.js",
     "build": "nx build",
+    "build:server": "yarn build mtl-server --prod",
     "test": "nx test",
     "lint": "nx workspace-lint && nx lint",
     "e2e": "nx e2e",
@@ -28,7 +31,10 @@
     "prisma-update": "yarn prisma-generate && env-cmd yarn prisma-migrate",
     "prisma-generate": "PRISMA_CLIENT_ENGINE_TYPE='dataproxy' prisma generate --schema=apps/mtl-app/prisma/schema.prisma",
     "prisma-migrate": "DATABASE_URL=\"$MIGRATE_DATABASE_URL\" prisma migrate deploy --schema=apps/mtl-app/prisma/schema.prisma",
-    "postinstall": "yarn prisma-generate"
+    "postinstall": "yarn prisma-generate",
+    "docker:build": "docker build -t mtl-server -f apps/mtl-server/Dockerfile.mtl-server .",
+    "docker:run": "docker run -p 3002:3001 --env-file ./.env mtl-server",
+    "deploy:server": "flyctl deploy --config ./apps/mtl-server/fly.toml --dockerfile ./apps/mtl-server/Dockerfile.mtl-server"
   },
   "prisma": {
     "schema": "apps/mtl-app/prisma/schema.prisma",
