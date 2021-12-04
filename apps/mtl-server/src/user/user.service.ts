@@ -27,6 +27,14 @@ export class UserService {
     return this.user({ where: { email } });
   }
 
+  getUserFollowerCount(userId: string) {
+    return this.prisma.follow.count({
+      where: {
+        followingId: userId,
+      },
+    });
+  }
+
   async getUserPosts(userId: string, isMe: boolean) {
     const posts = await this.prisma.post.findMany({
       where: {
