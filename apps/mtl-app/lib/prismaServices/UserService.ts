@@ -50,6 +50,7 @@ export class UserService {
           id: 'desc',
         },
       ],
+      // take: 10,
       include: {
         author: {
           select: userFragment,

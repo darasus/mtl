@@ -14,6 +14,7 @@ import { FeedType } from '../types/FeedType';
 import { UserService } from './prismaServices/UserService';
 import { ActivityService } from './prismaServices/ActivityService';
 import ServerFormData from 'form-data';
+import { getAccessToken } from '@auth0/nextjs-auth0';
 
 export class Fetcher {
   httpConnector: ServerHttpConnector | ClientHttpConnector;
@@ -33,7 +34,9 @@ export class Fetcher {
     this.httpConnector.request('/api/me').then((res) => res.data);
 
   getUser = (userId: string): Promise<User> =>
-    this.httpConnector.request(`/api/user/${userId}`).then((res) => res.data);
+    this.httpConnector
+      .request(`${process.env.NEXT_PUBLIC_API_BASE}/api/user/${userId}`)
+      .then((res) => res.data);
 
   getUserPosts = (userId: string): Promise<Post[]> =>
     this.httpConnector
