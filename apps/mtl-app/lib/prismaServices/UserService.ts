@@ -50,7 +50,8 @@ export class UserService {
           id: 'desc',
         },
       ],
-      // take: 10,
+      // FIX: add pagination
+      take: 100,
       include: {
         author: {
           select: userFragment,

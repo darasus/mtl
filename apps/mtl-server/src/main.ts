@@ -12,6 +12,9 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter({ logger: process.env.NODE_ENV === 'development' })
   );
+  app.enableCors({
+    origin: '*',
+  });
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.PORT || 8080;
