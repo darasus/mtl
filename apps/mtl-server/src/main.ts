@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
@@ -12,9 +12,12 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter({ logger: process.env.NODE_ENV === 'development' })
   );
-  app.enableCors({
-    origin: '*',
-  });
+  app.enableCors();
+  app.useGlobalPipes(
+    new ValidationPipe({
+      disableErrorMessages: true,
+    })
+  );
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.PORT || 8080;

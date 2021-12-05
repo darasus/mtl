@@ -3,8 +3,8 @@ import axios, { AxiosInstance } from 'axios';
 export class ClientHttpConnector {
   request: AxiosInstance;
 
-  constructor() {
-    this.request = this.createRequest();
+  constructor({ accessToken }: { accessToken: string }) {
+    this.request = this.createRequest({ accessToken });
   }
 
   get(url: string) {
@@ -20,11 +20,12 @@ export class ClientHttpConnector {
     return this.request(url, { method: 'DELETE' });
   }
 
-  createRequest = () => {
+  createRequest = ({ accessToken }: { accessToken: string }) => {
     const client = axios.create({
       baseURL: `${process.env.NEXT_PUBLIC_VERCEL_URL}`,
       headers: {
         Pragma: 'no-cache',
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
@@ -33,9 +34,9 @@ export class ClientHttpConnector {
         return response;
       },
       function (error) {
-        if (error?.response?.status === 401) {
-          window.location.href = '/api/auth/login';
-        }
+        // if (error?.response?.status === 401) {
+        //   window.location.href = '/api/auth/login';
+        // }
         return Promise.reject(error);
       }
     );

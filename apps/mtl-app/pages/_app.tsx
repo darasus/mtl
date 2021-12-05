@@ -1,4 +1,4 @@
-import { AppProps } from 'next/app';
+import App, { AppProps } from 'next/app';
 import { PusherProvider } from '@harelpls/use-pusher';
 import Head from 'next/head';
 import React from 'react';
@@ -14,9 +14,22 @@ import { theme } from '../theme';
 import { Toaster, toast } from 'react-hot-toast';
 import * as Fathom from 'fathom-client';
 import { useRouter } from 'next/router';
-import { UserProvider } from '@auth0/nextjs-auth0';
+import { getSession, UserProvider } from '@auth0/nextjs-auth0';
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const AccessTokenContext = React.createContext<string | null>(null);
+
+export const useAccessToken = () => {
+  const accessToken = React.useContext(AccessTokenContext);
+
+  return accessToken;
+};
+
+const MyApp = ({
+  Component,
+  pageProps,
+  accessToken,
+}: AppProps & { accessToken: string }) => {
+  console.log(accessToken);
   const router = useRouter();
   const colorModeManager =
     typeof pageProps.cookies === 'string'
@@ -91,7 +104,9 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
               clientKey={process.env.NEXT_PUBLIC_PUSHER_APP_KEY}
               cluster="eu"
             >
-              <Component {...pageProps} />
+              <AccessTokenContext.Provider value={accessToken}>
+                <Component {...pageProps} />
+              </AccessTokenContext.Provider>
             </PusherProvider>
           </UserProvider>
         </ChakraProvider>
@@ -99,6 +114,15 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <ReactQueryDevtools />
     </QueryClientProvider>
   );
+};
+
+MyApp.getInitialProps = async (appContext) => {
+  const appProps = await App.getInitialProps(appContext);
+  const session = await getSession(appContext.ctx.req, appContext.ctx.res);
+
+  console.log({ session });
+
+  return { ...appProps, accessToken: session?.accessToken };
 };
 
 export default MyApp;

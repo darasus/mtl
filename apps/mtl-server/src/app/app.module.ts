@@ -6,9 +6,10 @@ import { UserService } from '../user/user.service';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [CacheModule.register()],
+  imports: [CacheModule.register(), AuthModule],
   controllers: [AppController, UserController],
   providers: [
     AppService,
