@@ -23,7 +23,6 @@ export class JwtStrategy extends PassportStrategy(BaseStrategy) {
   }
 
   validate(payload: any): any {
-    console.error({ payload });
     const minimumScope = ['openid', 'profile', 'email'];
 
     if (

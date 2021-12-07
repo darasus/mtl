@@ -22,7 +22,7 @@ export class ClientHttpConnector {
 
   createRequest = ({ accessToken }: { accessToken: string }) => {
     const client = axios.create({
-      baseURL: `${process.env.NEXT_PUBLIC_VERCEL_URL}`,
+      baseURL: `${process.env.NEXT_PUBLIC_API_BASE}`,
       headers: {
         Pragma: 'no-cache',
         Authorization: `Bearer ${accessToken}`,

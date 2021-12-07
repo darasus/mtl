@@ -1,20 +1,11 @@
 import { CodeLanguage } from '.prisma/client';
-import { CommentService } from './prismaServices/CommentService';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 import qs from 'query-string';
-import { FeedService } from './prismaServices/FeedService';
-import { FollowService } from './prismaServices/FollowService';
-import { PostService } from './prismaServices/PostService';
-import { TagService } from './prismaServices/TagService';
-import { LikeService } from './prismaServices/LikeService';
 import { ServerHttpConnector } from './ServerHttpConnector';
 import { ClientHttpConnector } from './ClientHttpConnector';
 import { FeedType } from '../types/FeedType';
-import { UserService } from './prismaServices/UserService';
-import { ActivityService } from './prismaServices/ActivityService';
 import ServerFormData from 'form-data';
-import { getAccessToken } from '@auth0/nextjs-auth0';
 
 export class Fetcher {
   httpConnector: ServerHttpConnector | ClientHttpConnector;
@@ -34,9 +25,7 @@ export class Fetcher {
     this.httpConnector.request('/api/me').then((res) => res.data);
 
   getUser = (userId: string): Promise<User> =>
-    this.httpConnector
-      .request(`${process.env.NEXT_PUBLIC_API_BASE}/api/user/${userId}`)
-      .then((res) => res.data);
+    this.httpConnector.request(`/api/user/${userId}`).then((res) => res.data);
 
   getUserPosts = (userId: string): Promise<Post[]> =>
     this.httpConnector
@@ -66,14 +55,14 @@ export class Fetcher {
 
   // like
 
-  likePost = (postId: string): ReturnType<LikeService['likePost']> =>
+  likePost = (postId: string) =>
     this.httpConnector
       .request(`/api/post/${postId}/like`, {
         method: 'POST',
       })
       .then((res) => res.data);
 
-  unlikePost = (postId: string): ReturnType<LikeService['unlikePost']> =>
+  unlikePost = (postId: string) =>
     this.httpConnector
       .request(`/api/post/${postId}/unlike`, {
         method: 'POST',
@@ -90,15 +79,12 @@ export class Fetcher {
     postId: string;
     take?: number;
     skip?: number;
-  }): ReturnType<CommentService['getCommentsByPostId']> =>
+  }) =>
     this.httpConnector
       .request(`/api/post/${postId}/comments?${qs.stringify({ take, skip })}`)
       .then((res) => res.data);
 
-  addComment = (
-    postId: string,
-    content: string
-  ): ReturnType<CommentService['addComment']> =>
+  addComment = (postId: string, content: string) =>
     this.httpConnector
       .request(`/api/post/${postId}/addComment`, {
         method: 'POST',
@@ -108,9 +94,7 @@ export class Fetcher {
       })
       .then((res) => res.data);
 
-  deleteComment = (
-    commentId: string
-  ): ReturnType<CommentService['deleteComment']> =>
+  deleteComment = (commentId: string) =>
     this.httpConnector
       .request(`/api/comment/${commentId}`, {
         method: 'DELETE',
@@ -119,26 +103,24 @@ export class Fetcher {
 
   // follow
 
-  doIFollowUser = (userId: string): ReturnType<FollowService['doIFollow']> =>
+  doIFollowUser = (userId: string) =>
     this.httpConnector
       .request(`/api/user/${userId}/follow`)
       .then((res) => res.data);
 
-  getFollowersCount = (
-    userId: string
-  ): ReturnType<FollowService['getNumberOfFollowers']> =>
+  getFollowersCount = (userId: string) =>
     this.httpConnector
       .request(`/api/user/${userId}/follow/count`)
       .then((res) => res.data);
 
-  followUser = (userId: string): ReturnType<FollowService['followUser']> =>
+  followUser = (userId: string) =>
     this.httpConnector
       .request(`/api/user/${userId}/follow`, {
         method: 'POST',
       })
       .then((res) => res.data);
 
-  unfollowUser = (userId: string): ReturnType<FollowService['unfollowUser']> =>
+  unfollowUser = (userId: string) =>
     this.httpConnector
       .request(`/api/user/${userId}/unfollow`, {
         method: 'POST',
@@ -147,15 +129,14 @@ export class Fetcher {
 
   // feed
 
-  getFeed = ({
-    cursor,
-    feedType,
-  }: {
-    cursor?: string;
-    feedType: FeedType;
-  }): ReturnType<FeedService['fetchLatestFeed']> =>
+  getFeed = ({ cursor, feedType }: { cursor?: string; feedType: FeedType }) =>
     this.httpConnector
-      .request(`/api/feed?${qs.stringify({ cursor, feedType })}`)
+      .request(
+        `/api/feed?${qs.stringify({
+          cursor,
+          feedType,
+        })}`
+      )
       .then((res) => res.data);
 
   // post
@@ -185,7 +166,7 @@ export class Fetcher {
     content: string;
     codeLanguage: CodeLanguage;
     tagId: string;
-  }): ReturnType<PostService['createPost']> =>
+  }) =>
     this.httpConnector
       .request(`/api/post/create`, {
         method: 'POST',
@@ -193,7 +174,7 @@ export class Fetcher {
       })
       .then((res) => res.data);
 
-  deletePost = (postId: string): ReturnType<PostService['deletePost']> =>
+  deletePost = (postId: string) =>
     this.httpConnector
       .request(`/api/post/${postId}/delete`, {
         method: 'DELETE',
@@ -209,7 +190,7 @@ export class Fetcher {
       codeLanguage: CodeLanguage;
       tagId: string;
     }
-  ): ReturnType<PostService['updatePost']> =>
+  ) =>
     this.httpConnector
       .request(`/api/post/${postId}/update`, {
         method: 'PUT',
@@ -217,14 +198,14 @@ export class Fetcher {
       })
       .then((res) => res.data);
 
-  publishPost = (postId: string): ReturnType<PostService['publishPost']> =>
+  publishPost = (postId: string) =>
     this.httpConnector
       .request(`/api/post/${postId}/publish`, {
         method: 'PUT',
       })
       .then((res) => res.data);
 
-  unpublishPost = (postId: string): ReturnType<PostService['unpublishPost']> =>
+  unpublishPost = (postId: string) =>
     this.httpConnector
       .request(`/api/post/${postId}/unpublish`, {
         method: 'PUT',
@@ -233,7 +214,7 @@ export class Fetcher {
 
   // tags
 
-  getAllTags = (): ReturnType<TagService['getAllTags']> => {
+  getAllTags = () => {
     return this.httpConnector.request(`/api/tags`).then((res) => res.data);
   };
 
@@ -245,23 +226,23 @@ export class Fetcher {
   }: {
     userId: string;
     cursor: string;
-  }): ReturnType<UserService['getUserActivity']> => {
+  }) => {
     return this.httpConnector
-      .request(`/api/user/${userId}/activity?${qs.stringify({ cursor })}`)
+      .request(
+        `${
+          process.env.NEXT_PUBLIC_API_BASE
+        }/api/user/${userId}/activity?${qs.stringify({ cursor })}`
+      )
       .then((res) => res.data);
   };
 
-  markActivityAsRead = (
-    activityId: string
-  ): ReturnType<ActivityService['markActivityAsRead']> => {
+  markActivityAsRead = (activityId: string) => {
     return this.httpConnector
       .request(`/api/activity/${activityId}/markAsRead`, { method: 'POST' })
       .then((res) => res.data);
   };
 
-  markAllActivityAsRead = (): ReturnType<
-    ActivityService['markAllActivityAsRead']
-  > => {
+  markAllActivityAsRead = () => {
     return this.httpConnector
       .request(`/api/activity/markAllAsRead`, { method: 'POST' })
       .then((res) => res.data);

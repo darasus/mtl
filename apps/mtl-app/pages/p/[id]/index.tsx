@@ -73,36 +73,36 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const fetcher = new Fetcher(httpConnector);
   const postId = ctx.query.id as string;
 
-  try {
-    const post = await fetcher.getPost(postId);
+  // try {
+  //   const post = await fetcher.getPost(postId);
 
-    await Promise.all([
-      queryClient.prefetchQuery(clientCacheKey.createPostKey(postId), () =>
-        Promise.resolve(post)
-      ),
-      queryClient.prefetchQuery(
-        clientCacheKey.createPostCommentsKey(post.id),
-        () =>
-          Promise.resolve({
-            items: post.comments,
-            total: post.commentsCount,
-            count: post.comments.length,
-          })
-      ),
-    ]);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
-    if (e?.response?.status === 404) {
-      return {
-        notFound: true,
-      };
-    }
-  }
+  //   await Promise.all([
+  //     queryClient.prefetchQuery(clientCacheKey.createPostKey(postId), () =>
+  //       Promise.resolve(post)
+  //     ),
+  //     queryClient.prefetchQuery(
+  //       clientCacheKey.createPostCommentsKey(post.id),
+  //       () =>
+  //         Promise.resolve({
+  //           items: post.comments,
+  //           total: post.commentsCount,
+  //           count: post.comments.length,
+  //         })
+  //     ),
+  //   ]);
+  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // } catch (e: any) {
+  //   if (e?.response?.status === 404) {
+  //     return {
+  //       notFound: true,
+  //     };
+  //   }
+  // }
 
   return {
     props: {
       cookies: ctx.req.headers.cookie ?? '',
-      dehydratedState: dehydrate(queryClient),
+      // dehydratedState: dehydrate(queryClient),
       user: session?.user || null,
     },
   };

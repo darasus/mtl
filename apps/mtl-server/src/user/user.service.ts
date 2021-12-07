@@ -19,15 +19,15 @@ export class UserService {
     });
   }
 
-  getUserById(id: string) {
-    return this.user({ where: { id } });
+  getUserById({ userId }: { userId: string }) {
+    return this.user({ where: { id: userId } });
   }
 
   getUserByEmail(email: string) {
     return this.user({ where: { email } });
   }
 
-  getUserFollowerCount(userId: string) {
+  getUserFollowerCount({ userId }: { userId: string }) {
     return this.prisma.follow.count({
       where: {
         followingId: userId,
@@ -35,7 +35,7 @@ export class UserService {
     });
   }
 
-  async getUserPosts(userId: string, isMe: boolean) {
+  async getUserPosts({ userId, isMe }: { userId: string; isMe: boolean }) {
     const posts = await this.prisma.post.findMany({
       where: {
         authorId: userId,
@@ -46,6 +46,8 @@ export class UserService {
           id: 'desc',
         },
       ],
+      // FIX: paginate
+      take: 100,
       include: {
         author: {
           select: userFragment,

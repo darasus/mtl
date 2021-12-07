@@ -29,7 +29,6 @@ const MyApp = ({
   pageProps,
   accessToken,
 }: AppProps & { accessToken: string }) => {
-  console.log(accessToken);
   const router = useRouter();
   const colorModeManager =
     typeof pageProps.cookies === 'string'
@@ -119,8 +118,6 @@ const MyApp = ({
 MyApp.getInitialProps = async (appContext) => {
   const appProps = await App.getInitialProps(appContext);
   const session = await getSession(appContext.ctx.req, appContext.ctx.res);
-
-  console.log({ session });
 
   return { ...appProps, accessToken: session?.accessToken };
 };
