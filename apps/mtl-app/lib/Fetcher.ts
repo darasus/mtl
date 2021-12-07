@@ -17,7 +17,9 @@ export class Fetcher {
   // auth
 
   refetchAuthUserProfile = (): Promise<void> =>
-    this.httpConnector.request.get('/api/auth/refetch');
+    this.httpConnector.request.get(
+      `${window.location.origin}/api/auth/refetch`
+    );
 
   // user
 
@@ -50,8 +52,7 @@ export class Fetcher {
     password?: string;
     image?: string;
     email?: string;
-  }) =>
-    this.httpConnector.post(`/api/user/${userId}/update-settings`, { ...data });
+  }) => this.httpConnector.post(`/api/user/${userId}/update`, { ...data });
 
   // like
 
@@ -252,7 +253,10 @@ export class Fetcher {
 
   uploadImage = (data: FormData): Promise<{ imageUrl: string | null }> =>
     this.httpConnector
-      .request(`/api/upload-image`, { method: 'POST', data })
+      .request(`${window.location.origin}/api/upload-image`, {
+        method: 'POST',
+        data,
+      })
       .then((res) => res.data);
 
   uploadImageToCloudFlare = (

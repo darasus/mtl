@@ -11,6 +11,6 @@ export class ScreenshotController {
       responseType: 'arraybuffer',
     });
 
-    return res.status(200).send(Buffer.from(new Uint8Array(response.data)));
+    res.status(200).send(Buffer.from(new Uint8Array(response.data)));
   }
 }

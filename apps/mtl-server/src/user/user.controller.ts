@@ -23,15 +23,10 @@ import { UserService } from './user.service';
 import { processErrorResponse } from '../utils/error';
 
 export class UpdateUserDto {
-  @IsNotEmpty()
   nickname: string;
-  @IsNotEmpty()
   email: string;
-  @IsNotEmpty()
   name: string;
-  @IsNotEmpty()
   password: string;
-  @IsNotEmpty()
   image: string;
 }
 
