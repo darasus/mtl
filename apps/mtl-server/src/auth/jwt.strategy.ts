@@ -12,12 +12,12 @@ export class JwtStrategy extends PassportStrategy(BaseStrategy) {
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 5,
-        jwksUri: 'https://my-tiny-library.eu.auth0.com/.well-known/jwks.json',
+        jwksUri: `${configService.get('auth.domain')}/.well-known/jwks.json`,
       }),
 
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      audience: 'https://api.mytinylibrary.com',
-      issuer: 'https://my-tiny-library.eu.auth0.com/',
+      audience: configService.get('auth.audience'),
+      issuer: `${configService.get('auth.domain')}/`,
       algorithms: ['RS256'],
     });
   }

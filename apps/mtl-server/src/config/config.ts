@@ -2,8 +2,11 @@ import { registerAs } from '@nestjs/config';
 
 export const authConfig = registerAs('auth', () => ({
   domain: process.env.AUTH0_DOMAIN,
-  clientId: 'e7rAt5eDRujN6jdRkwhcO6hp2HlgxY4k',
-  clientSecret:
-    'BrftAC9OIQcYhwRokxiNynU-bXcewRmKCTO7eAcVO_5waUM8Qni-XUDAmllV_Z5k',
-  audience: 'https://my-tiny-library.eu.auth0.com/api/v2/',
+  audience: process.env.AUTH0_AUDIENCE,
+  clientId: process.env.AUTH0_CLIENT_ID,
+  clientSecret: process.env.AUTH0_CLIENT_SECRET,
+}));
+
+export const appConfig = registerAs('app', () => ({
+  screenshotBaseUrl: process.env.SCREENSHOT_API_BASE_URL,
 }));

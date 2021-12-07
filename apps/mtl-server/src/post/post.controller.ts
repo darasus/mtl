@@ -199,7 +199,7 @@ export class PostController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('post/:postId/unlike')
+  @Post('post/:postId/unlike')
   async unlikePost(
     @Req() req: Request,
     @Res() res: Response,

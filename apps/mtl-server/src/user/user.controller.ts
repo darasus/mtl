@@ -10,7 +10,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { IsNotEmpty } from 'class-validator';
 import { ActivityService } from '../activity/activity.service';
 import { FollowService } from '../follow/follow.service';
 import { OptionalUserGuard } from '../guards/OptionalUserGuard';
@@ -21,6 +20,7 @@ import axios from 'axios';
 
 import { UserService } from './user.service';
 import { processErrorResponse } from '../utils/error';
+import { ConfigService } from '@nestjs/config';
 
 export class UpdateUserDto {
   nickname: string;
@@ -36,7 +36,8 @@ export class UserController {
     private readonly userService: UserService,
     private readonly followService: FollowService,
     private readonly activityService: ActivityService,
-    private readonly prismaService: PrismaService
+    private readonly prismaService: PrismaService,
+    private readonly configService: ConfigService
   ) {}
 
   @Get('user/:userId')
@@ -184,18 +185,21 @@ export class UserController {
       });
     }
 
-    const token = await axios(`${process.env.AUTH0_API_BASE_URL}/oauth/token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: {
-        grant_type: 'client_credentials',
-        client_id: process.env.AUTH0_CLIENT_ID,
-        client_secret: process.env.AUTH0_CLIENT_SECRET,
-        audience: `${process.env.AUTH0_API_BASE_URL}/api/v2/`,
-      },
-    })
+    const token = await axios(
+      `${this.configService.get('auth.domain')}/oauth/token`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: {
+          grant_type: 'client_credentials',
+          client_id: this.configService.get('auth.clientId'),
+          client_secret: this.configService.get('auth.clientSecret'),
+          audience: `${this.configService.get('auth.domain')}/api/v2/`,
+        },
+      }
+    )
       .then((res) => {
         return res.data;
       })
@@ -204,7 +208,7 @@ export class UserController {
       });
 
     await axios(
-      `${process.env.AUTH0_API_BASE_URL}/api/v2/users/${req?.user?.sub}`,
+      `${this.configService.get('auth.domain')}/api/v2/users/${req?.user?.sub}`,
       {
         method: 'PATCH',
         headers: {

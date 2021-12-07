@@ -19,6 +19,7 @@ import { LikeService } from '../like/like.service';
 import { ScreenshotController } from '../screenshot/screenshot.controller';
 import { TagController } from '../tag/tag.controller';
 import { TagService } from '../tag/tag.service';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [CacheModule.register(), AuthModule],
@@ -42,6 +43,7 @@ import { TagService } from '../tag/tag.service';
     CommentService,
     LikeService,
     TagService,
+    ConfigService,
     {
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,
