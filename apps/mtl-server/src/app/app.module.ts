@@ -20,6 +20,7 @@ import { ScreenshotController } from '../screenshot/screenshot.controller';
 import { TagController } from '../tag/tag.controller';
 import { TagService } from '../tag/tag.service';
 import { ConfigService } from '@nestjs/config';
+import { ActivityController } from '../activity/activity.controller';
 
 @Module({
   imports: [CacheModule.register(), AuthModule],
@@ -31,6 +32,7 @@ import { ConfigService } from '@nestjs/config';
     PostController,
     ScreenshotController,
     TagController,
+    ActivityController,
   ],
   providers: [
     AppService,
@@ -44,6 +46,7 @@ import { ConfigService } from '@nestjs/config';
     LikeService,
     TagService,
     ConfigService,
+    ActivityService,
     {
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,

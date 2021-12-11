@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from '../types/Response';
@@ -8,7 +8,8 @@ import { Request } from '../types/Request';
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
 
-  @Get('activity/:activityId/markAsRead')
+  @UseGuards(AuthGuard('jwt'))
+  @Post('activity/:activityId/markAsRead')
   async markActivityAsRead(
     @Res() res: Response,
     @Param('activityId') activityId: string
@@ -17,7 +18,7 @@ export class ActivityController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('activity/markAllAsRead')
+  @Post('activity/markAllAsRead')
   async markAllActivityAsRead(@Req() req: Request, @Res() res: Response) {
     const myId = req?.user?.sub?.split('|')?.[1];
 
