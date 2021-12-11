@@ -27,7 +27,6 @@ export const MTLProvider: React.FC<Props> = ({
   children,
   accessToken,
 }) => {
-  console.log({ cookies });
   const colorModeManager =
     typeof cookies === 'string'
       ? cookieStorageManager(cookies)
@@ -61,8 +60,6 @@ export const MTLProvider: React.FC<Props> = ({
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getSession(req, res);
-
-  console.log({ session });
 
   return {
     props: {

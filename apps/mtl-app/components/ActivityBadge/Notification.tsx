@@ -13,10 +13,10 @@ import { useMarkActivityAsReadMutation } from '../../hooks/mutation/useMarkActiv
 export const Notification = ({ activity }: { activity: Activity & any }) => {
   const router = useRouter();
   const markAsReadMutation = useMarkActivityAsReadMutation(activity.id);
-  const isLikeNotification = typeof activity.likeId === 'number';
-  const isCommentNotification = typeof activity.commentId === 'number';
+  const isLikeNotification = typeof activity.likeId === 'string';
+  const isCommentNotification = typeof activity.commentId === 'string';
   const isFollowNotification =
-    typeof activity?.follow?.follower?.id === 'number';
+    typeof activity?.follow?.follower?.id === 'string';
 
   const composeActivityMessage = React.useCallback(
     (activity: Activity & any) => {
