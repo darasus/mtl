@@ -177,7 +177,7 @@ export class Fetcher {
 
   deletePost = (postId: string) =>
     this.httpConnector
-      .request(`/api/post/${postId}/delete`, {
+      .request(`/api/post/${postId}`, {
         method: 'DELETE',
       })
       .then((res) => res.data);
