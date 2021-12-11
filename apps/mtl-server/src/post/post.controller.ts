@@ -228,7 +228,7 @@ export class PostController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('post/:postId/publish')
+  @Post('post/:postId/publish')
   async publishPost(
     @Req() req: Request,
     @Res() res: Response,
@@ -238,7 +238,7 @@ export class PostController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('post/:postId/unpublish')
+  @Post('post/:postId/unpublish')
   async unpublishPost(
     @Req() req: Request,
     @Res() res: Response,
