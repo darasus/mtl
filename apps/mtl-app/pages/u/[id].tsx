@@ -1,5 +1,4 @@
 import React from 'react';
-import { GetServerSideProps } from 'next';
 import { Post } from '../../components/Post';
 import {
   Box,
@@ -154,15 +153,6 @@ const UserPage: React.FC = () => {
   );
 };
 
+export { getServerSideProps } from '../../components/MTLProvider';
+
 export default UserPage;
-
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const session = await getSession(req, res);
-
-  return {
-    props: {
-      cookies: req.headers.cookie ?? '',
-      user: session?.user || null,
-    },
-  };
-};

@@ -63,12 +63,6 @@ const EditPostPage: React.FC = () => {
   );
 };
 
-export default EditPostPage;
+export { getServerSideProps } from '../../../components/MTLProvider';
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  return {
-    props: {
-      cookies: ctx.req.headers.cookie ?? '',
-    },
-  };
-};
+export default EditPostPage;

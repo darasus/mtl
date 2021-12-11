@@ -5,24 +5,11 @@ import React from 'react';
 import { QueryCache, QueryClient, QueryClientProvider } from 'react-query';
 import { Hydrate } from 'react-query/hydration';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import {
-  ChakraProvider,
-  cookieStorageManager,
-  localStorageManager,
-} from '@chakra-ui/react';
-import { theme } from '../theme';
-import { Toaster, toast } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import * as Fathom from 'fathom-client';
 import { useRouter } from 'next/router';
-import { getSession, UserProvider } from '@auth0/nextjs-auth0';
-
-const AccessTokenContext = React.createContext<string | null>(null);
-
-export const useAccessToken = () => {
-  const accessToken = React.useContext(AccessTokenContext);
-
-  return accessToken;
-};
+import { UserProvider } from '@auth0/nextjs-auth0';
+import { MTLProvider } from '../components/MTLProvider';
 
 const MyApp = ({
   Component,
@@ -30,10 +17,6 @@ const MyApp = ({
   accessToken,
 }: AppProps & { accessToken: string }) => {
   const router = useRouter();
-  const colorModeManager =
-    typeof pageProps.cookies === 'string'
-      ? cookieStorageManager(pageProps.cookies)
-      : localStorageManager;
   const queryClientRef = React.useRef<QueryClient>();
 
   if (!queryClientRef.current) {
@@ -65,33 +48,13 @@ const MyApp = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const colorMode = router.query?.colorMode;
-
   return (
     <QueryClientProvider client={queryClientRef.current}>
       <Hydrate state={pageProps.dehydratedState}>
-        <ChakraProvider
-          theme={{
-            ...theme,
-            ...(colorMode ? { config: { initialColorMode: colorMode } } : {}),
-          }}
-          colorModeManager={colorMode ? undefined : colorModeManager}
+        <MTLProvider
+          cookies={pageProps.cookie}
+          accessToken={pageProps.accessToken}
         >
-          <Toaster
-            toastOptions={{
-              style: {
-                borderRadius: '100px',
-                borderColor:
-                  colorModeManager.get() === 'dark'
-                    ? 'rgba(0,0,0,0.2)'
-                    : 'rgba(255,255,255,0.2)',
-                borderWidth: '1px',
-                ...(colorModeManager.get() === 'dark'
-                  ? { background: 'white', color: '#black' }
-                  : { background: 'black', color: '#fff' }),
-              },
-            }}
-          />
           <Head>
             <meta
               name="viewport"
@@ -103,23 +66,14 @@ const MyApp = ({
               clientKey={process.env.NEXT_PUBLIC_PUSHER_APP_KEY}
               cluster="eu"
             >
-              <AccessTokenContext.Provider value={accessToken}>
-                <Component {...pageProps} />
-              </AccessTokenContext.Provider>
+              <Component {...pageProps} />
             </PusherProvider>
           </UserProvider>
-        </ChakraProvider>
+        </MTLProvider>
       </Hydrate>
       <ReactQueryDevtools />
     </QueryClientProvider>
   );
-};
-
-MyApp.getInitialProps = async (appContext) => {
-  const appProps = await App.getInitialProps(appContext);
-  const session = await getSession(appContext.ctx.req, appContext.ctx.res);
-
-  return { ...appProps, accessToken: session?.accessToken };
 };
 
 export default MyApp;

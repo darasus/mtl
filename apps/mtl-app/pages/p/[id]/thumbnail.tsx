@@ -95,12 +95,6 @@ const ThumbnailPage: React.FC = () => {
   );
 };
 
-export default ThumbnailPage;
+export { getServerSideProps } from '../../../components/MTLProvider';
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      cookies: req.headers.cookie ?? '',
-    },
-  };
-};
+export default ThumbnailPage;

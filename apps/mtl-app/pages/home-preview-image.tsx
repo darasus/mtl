@@ -11,12 +11,6 @@ const HomePreviewImage: React.FC = () => {
   );
 };
 
-export default HomePreviewImage;
+export { getServerSideProps } from '../components/MTLProvider';
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      cookies: req.headers.cookie ?? '',
-    },
-  };
-};
+export default HomePreviewImage;

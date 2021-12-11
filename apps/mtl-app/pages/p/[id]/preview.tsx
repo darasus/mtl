@@ -39,12 +39,6 @@ const PreviewPage: React.FC = () => {
   );
 };
 
-export default PreviewPage;
+export { getServerSideProps } from '../../../components/MTLProvider';
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      cookies: req.headers.cookie ?? '',
-    },
-  };
-};
+export default PreviewPage;

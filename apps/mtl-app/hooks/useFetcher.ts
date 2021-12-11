@@ -1,7 +1,7 @@
 import React from 'react';
+import { useAccessToken } from '../components/MTLProvider';
 import { ClientHttpConnector } from '../lib/ClientHttpConnector';
 import { Fetcher } from '../lib/Fetcher';
-import { useAccessToken } from '../pages/_app';
 
 export const useFetcher = () => {
   const accessToken = useAccessToken();

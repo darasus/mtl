@@ -207,12 +207,6 @@ const SettingsPage = () => {
   );
 };
 
-export default withPageAuthRequired(SettingsPage);
+export { getServerSideProps } from '../components/MTLProvider';
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: {
-      cookies: req.headers.cookie ?? '',
-    },
-  };
-};
+export default withPageAuthRequired(SettingsPage);

@@ -68,14 +68,6 @@ const CreatePostPage: React.FC = () => {
   );
 };
 
-export default CreatePostPage;
+export { getServerSideProps } from '../../components/MTLProvider';
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const session = await getSession(req, res);
-  return {
-    props: {
-      cookies: req.headers.cookie ?? '',
-      user: session?.user || null,
-    },
-  };
-};
+export default CreatePostPage;
