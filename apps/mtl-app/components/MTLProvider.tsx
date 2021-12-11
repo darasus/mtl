@@ -63,7 +63,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
   return {
     props: {
-      accessToken: session?.accessToken,
+      accessToken: session?.accessToken || undefined,
       cookies: req?.headers?.cookie ?? '',
       user: session?.user || undefined,
     },
