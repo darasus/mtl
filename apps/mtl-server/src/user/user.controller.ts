@@ -185,19 +185,6 @@ export class UserController {
       });
     }
 
-    console.log(`${this.configService.get('auth.domain')}/oauth/token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: {
-        grant_type: 'client_credentials',
-        client_id: this.configService.get('auth.clientId'),
-        client_secret: this.configService.get('auth.clientSecret'),
-        audience: this.configService.get('auth.audience'),
-      },
-    });
-
     const token = await axios(
       `${this.configService.get('auth.domain')}/oauth/token`,
       {
@@ -209,16 +196,31 @@ export class UserController {
           grant_type: 'client_credentials',
           client_id: this.configService.get('auth.clientId'),
           client_secret: this.configService.get('auth.clientSecret'),
-          audience: `${this.configService.get('auth.audience')}/`,
+          // audience: this.configService.get('auth.audience'),
+          audience: 'https://mtl-app.eu.auth0.com/api/v2/',
         },
       }
     )
-      .then((res) => {
-        return res.data;
-      })
-      .catch((err) => {
-        return res.status(400).send(processErrorResponse(err));
-      });
+      .then((res) => res.data)
+      .catch((err) => res.status(400).send(processErrorResponse(err)));
+
+    console.log(
+      `${this.configService.get('auth.domain')}/api/v2/users/${req?.user?.sub}`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        data: {
+          picture: body.image,
+          name: body.name,
+          nickname: body.nickname,
+          password: body.password,
+          email: body.email,
+        },
+      }
+    );
 
     await axios(
       `${this.configService.get('auth.domain')}/api/v2/users/${req?.user?.sub}`,
@@ -237,12 +239,8 @@ export class UserController {
         },
       }
     )
-      .then((res) => {
-        return res.data;
-      })
-      .catch((err) => {
-        return res.status(400).send(processErrorResponse(err));
-      });
+      .then((res) => res.data)
+      .catch((err) => res.status(400).send(processErrorResponse(err)));
 
     await this.userService.updateUserSettings({
       userId: userId,
