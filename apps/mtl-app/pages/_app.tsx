@@ -49,30 +49,30 @@ const MyApp = ({
   }, []);
 
   return (
-    <QueryClientProvider client={queryClientRef.current}>
-      <Hydrate state={pageProps.dehydratedState}>
-        <MTLProvider
-          cookies={pageProps.cookie}
-          accessToken={pageProps.accessToken}
-        >
-          <Head>
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1, maximum-scale=1"
-            />
-          </Head>
-          <UserProvider {...pageProps}>
+    <MTLProvider
+      cookies={pageProps.cookies}
+      accessToken={pageProps.accessToken}
+    >
+      <UserProvider {...pageProps}>
+        <QueryClientProvider client={queryClientRef.current}>
+          <Hydrate state={pageProps.dehydratedState}>
+            <Head>
+              <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1, maximum-scale=1"
+              />
+            </Head>
             <PusherProvider
               clientKey={process.env.NEXT_PUBLIC_PUSHER_APP_KEY}
               cluster="eu"
             >
               <Component {...pageProps} />
             </PusherProvider>
-          </UserProvider>
-        </MTLProvider>
-      </Hydrate>
-      <ReactQueryDevtools />
-    </QueryClientProvider>
+          </Hydrate>
+          <ReactQueryDevtools />
+        </QueryClientProvider>
+      </UserProvider>
+    </MTLProvider>
   );
 };
 
