@@ -60,6 +60,8 @@ export const MTLProvider: React.FC<Props> = ({
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getSession(req, res);
 
+  console.log('HELLO');
+
   return {
     props: {
       accessToken: session?.accessToken || null,
