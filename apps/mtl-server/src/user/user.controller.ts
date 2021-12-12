@@ -185,6 +185,19 @@ export class UserController {
       });
     }
 
+    console.log(`${this.configService.get('auth.domain')}/oauth/token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: {
+        grant_type: 'client_credentials',
+        client_id: this.configService.get('auth.clientId'),
+        client_secret: this.configService.get('auth.clientSecret'),
+        audience: this.configService.get('auth.audience'),
+      },
+    });
+
     const token = await axios(
       `${this.configService.get('auth.domain')}/oauth/token`,
       {
@@ -196,7 +209,7 @@ export class UserController {
           grant_type: 'client_credentials',
           client_id: this.configService.get('auth.clientId'),
           client_secret: this.configService.get('auth.clientSecret'),
-          audience: `${this.configService.get('auth.domain')}/api/v2/`,
+          audience: `${this.configService.get('auth.audience')}/`,
         },
       }
     )
