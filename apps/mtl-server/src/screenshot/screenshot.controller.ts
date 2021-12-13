@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Controller, Get, Query, Res } from '@nestjs/common';
 import { Response } from '../types/Response';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
@@ -9,7 +9,7 @@ export class ScreenshotController {
   constructor(private readonly configService: ConfigService) {}
 
   @Get('screenshot')
-  async screenshot(@Res() res: Response, @Param('url') url: string) {
+  async screenshot(@Res() res: Response, @Query('url') url: string) {
     try {
       const response = await axios.request<ArrayBuffer>({
         url: `${this.configService.get(
