@@ -179,7 +179,7 @@ export class UserController {
       },
     });
 
-    if (existingUser && existingUser?.nickname === body.nickname) {
+    if (existingUser && existingUser?.nickname !== body.nickname) {
       return res.status(400).send({
         error: 'User with this nickname already exists.',
       });
