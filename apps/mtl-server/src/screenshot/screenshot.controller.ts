@@ -3,6 +3,7 @@ import { Response } from '../types/Response';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
 import { processErrorResponse } from '../utils/error';
+import * as qs from 'query-string';
 
 @Controller()
 export class ScreenshotController {
@@ -10,11 +11,15 @@ export class ScreenshotController {
 
   @Get('screenshot')
   async screenshot(@Res() res: Response, @Query('url') url: string) {
+    console.log(
+      `${this.configService.get('app.screenshotBaseUrl')}/api/screenshot?${url}`
+    );
+    const query = qs.stringify({ url });
     try {
       const response = await axios.request<ArrayBuffer>({
         url: `${this.configService.get(
           'app.screenshotBaseUrl'
-        )}/api/screenshot?${url}`,
+        )}/api/screenshot?${query}`,
         responseType: 'arraybuffer',
       });
 
