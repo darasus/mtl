@@ -41,7 +41,7 @@ export const Header: React.FC = () => {
           </Link>
           <Box ml={1} mt="2px">
             <Text color="brand" fontWeight="bold">
-              Beta
+              Alpha
             </Text>
           </Box>
         </Flex>
