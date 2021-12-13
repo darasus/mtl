@@ -21,6 +21,7 @@ import { TagController } from '../tag/tag.controller';
 import { TagService } from '../tag/tag.service';
 import { ConfigService } from '@nestjs/config';
 import { ActivityController } from '../activity/activity.controller';
+import { PusherService } from '../pusher/pusher.service';
 
 @Module({
   imports: [CacheModule.register(), AuthModule],
@@ -47,6 +48,7 @@ import { ActivityController } from '../activity/activity.controller';
     TagService,
     ConfigService,
     ActivityService,
+    PusherService,
     {
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,

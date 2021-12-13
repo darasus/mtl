@@ -11,3 +11,11 @@ export const authConfig = registerAs('auth', () => ({
 export const appConfig = registerAs('app', () => ({
   screenshotBaseUrl: process.env.SCREENSHOT_API_BASE_URL,
 }));
+
+export const pusherConfig = registerAs('pusher', () => ({
+  appId: process.env.PUSHER_APP_ID,
+  key: process.env.PUSHER_APP_KEY,
+  secret: process.env.PUSHER_APP_SECRET,
+  cluster: process.env.PUSHER_APP_CLUSTER,
+  useTLS: true,
+}));

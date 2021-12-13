@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { activityFragment } from '../fragments/activityFragment';
+import { PusherService } from '../pusher/pusher.service';
 
 @Injectable()
 export class ActivityService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private pusherService: PusherService
+  ) {}
 
   async addLikeActivity({
     authorId,
@@ -31,9 +35,13 @@ export class ActivityService {
       },
     });
 
-    // await pusher.trigger(`activity-user-${ownerId}`, 'activity-added', {
-    //   data: activity,
-    // });
+    await this.pusherService.pusher.trigger(
+      `activity-user-${ownerId}`,
+      'activity-added',
+      {
+        data: activity,
+      }
+    );
 
     return activity;
   }
@@ -70,9 +78,13 @@ export class ActivityService {
       },
     });
 
-    // await pusher.trigger(`activity-user-${ownerId}`, 'activity-removed', {
-    //   data: null,
-    // });
+    await this.pusherService.pusher.trigger(
+      `activity-user-${ownerId}`,
+      'activity-removed',
+      {
+        data: null,
+      }
+    );
   }
 
   async addCommentActivity({
@@ -100,9 +112,13 @@ export class ActivityService {
       },
     });
 
-    // await pusher.trigger(`activity-user-${ownerId}`, 'activity-added', {
-    //   data: activity,
-    // });
+    await this.pusherService.pusher.trigger(
+      `activity-user-${ownerId}`,
+      'activity-added',
+      {
+        data: activity,
+      }
+    );
 
     return activity;
   }
@@ -128,9 +144,13 @@ export class ActivityService {
       },
     });
 
-    // await pusher.trigger(`activity-user-${ownerId}`, 'activity-removed', {
-    //   data: null,
-    // });
+    await this.pusherService.pusher.trigger(
+      `activity-user-${ownerId}`,
+      'activity-removed',
+      {
+        data: null,
+      }
+    );
   }
 
   async markActivityAsRead({ activityId }: { activityId: string }) {
@@ -186,9 +206,13 @@ export class ActivityService {
       },
     });
 
-    // await pusher.trigger(`activity-user-${ownerId}`, 'activity-added', {
-    //   data: null,
-    // });
+    await this.pusherService.pusher.trigger(
+      `activity-user-${ownerId}`,
+      'activity-added',
+      {
+        data: null,
+      }
+    );
 
     return activity;
   }
@@ -215,12 +239,12 @@ export class ActivityService {
       },
     });
 
-    // await pusher.trigger(
-    //   `activity-user-${followFollowingId}`,
-    //   'activity-removed',
-    //   {
-    //     data: null,
-    //   }
-    // );
+    await this.pusherService.pusher.trigger(
+      `activity-user-${followFollowingId}`,
+      'activity-removed',
+      {
+        data: null,
+      }
+    );
   }
 }
