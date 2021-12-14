@@ -53,7 +53,11 @@ export class CommentController {
       ownerId: userId,
     });
 
-    await this.commentService.deleteComment(commentId, post.id);
+    await this.commentService.deleteComment({
+      commentId,
+      postId: post.id,
+      ownerId: post.authorId,
+    });
 
     res.send();
   }

@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { commentFragment } from '../fragments/commentFragment';
+import { PusherService } from '../pusher/pusher.service';
 
 @Injectable()
 export class CommentService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private pusherService: PusherService
+  ) {}
 
   async isMyComment({
     commentId,
@@ -25,12 +29,27 @@ export class CommentService {
     return comment?.author?.id === userId;
   }
 
-  async deleteComment(commentId: string, postId: string) {
+  async deleteComment({
+    commentId,
+    ownerId,
+  }: {
+    commentId: string;
+    postId: string;
+    ownerId: string;
+  }) {
     await this.prisma.comment.delete({
       where: {
         id: commentId,
       },
     });
+
+    await this.pusherService.pusher.trigger(
+      `activity-user-${ownerId}`,
+      'activity-removed',
+      {
+        data: null,
+      }
+    );
 
     // await cache.del(redisCacheKey.createPostKey(postId));
   }
