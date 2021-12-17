@@ -10,11 +10,8 @@ export class ScreenshotController {
   constructor(private readonly configService: ConfigService) {}
 
   @Get('screenshot')
-  async screenshot(@Res() res: Response, @Query('url') url: string) {
-    console.log(
-      `${this.configService.get('app.screenshotBaseUrl')}/api/screenshot?${url}`
-    );
-    const query = qs.stringify({ url });
+  async screenshot(@Res() res: Response, @Query('id') id: string) {
+    const query = qs.stringify({ id });
     try {
       const response = await axios.request<ArrayBuffer>({
         url: `${this.configService.get(

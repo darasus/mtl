@@ -146,18 +146,21 @@ export class Fetcher {
     this.httpConnector.request(`/api/post/${postId}`).then((res) => res.data);
 
   getScreenshot = ({
-    url,
+    postId,
     width,
     height,
   }: {
-    url: string;
+    postId: string;
     width?: number;
     height?: number;
   }): Promise<Blob> => {
     return this.httpConnector
-      .request(`/api/screenshot?${qs.stringify({ url, width, height })}`, {
-        responseType: 'blob',
-      })
+      .request(
+        `/api/screenshot?${qs.stringify({ id: postId, width, height })}`,
+        {
+          responseType: 'blob',
+        }
+      )
       .then((res) => res.data);
   };
 

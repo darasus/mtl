@@ -11,10 +11,7 @@ interface Props {
 }
 
 export const ScreenshotButton: React.FC<Props> = ({ post }) => {
-  const url = `${globalThis.location?.origin}/p/${
-    post.id
-  }/preview?colorMode=dark&updateDate=${new Date(post.updatedAt).getTime()}`;
-  const { refetch, isFetching } = useScreenshotQuery(url);
+  const { refetch, isFetching } = useScreenshotQuery(post.id);
 
   const handleClick = React.useCallback(async () => {
     const screenshot = await refetch();
