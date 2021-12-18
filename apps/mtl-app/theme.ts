@@ -3,6 +3,7 @@ import { cssVar } from '@chakra-ui/styled-system';
 
 const config: ThemeConfig = {
   useSystemColorMode: true,
+  initialColorMode: 'dark',
 };
 
 const token = {
