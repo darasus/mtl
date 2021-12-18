@@ -23,6 +23,7 @@ FROM timbru31/node-alpine-git:14 as build
 WORKDIR /build
 
 COPY apps/mtl-app/project.json ./apps/mtl-app/project.json
+COPY apps/mtl-app-e2e/project.json ./apps/mtl-app-e2e/project.json
 COPY apps/mtl-server ./apps/mtl-server
 COPY workspace.json ./workspace.json
 COPY nx.json ./nx.json
