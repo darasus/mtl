@@ -11,7 +11,7 @@ export const UserPreview = React.forwardRef<HTMLDivElement>(
 
     return (
       <div {...props}>
-        <Flex ref={ref} alignItems="center">
+        <Flex ref={ref} alignItems="center" cursor="pointer">
           <Box mr={2}>
             {me.user?.picture && (
               <Box

@@ -17,26 +17,35 @@ import { FeedType } from '../types/FeedType';
 import { Heading } from '../components/Heading';
 import { useMe } from '../hooks/useMe';
 import { getSession } from '@auth0/nextjs-auth0';
+import { useRouter } from 'next/router';
 
 const Index: React.FC = () => {
-  const [feedType, setFeedType] = React.useState(FeedType.Latest);
-  const feed = useFeedQuery({ feedType });
+  const router = useRouter();
+  // const [feedType, setFeedType] = React.useState(FeedType.Latest);
+  // const feed = useFeedQuery({ feedType });
   const me = useMe();
   const isMeLoading = me?.isLoading;
+
+  React.useEffect(() => {
+    if (me?.user?.id) {
+      router.push(`/u/${me?.user?.id}`);
+    }
+  }, [me?.user?.id, router]);
+
+  if (me?.user?.id) return null;
 
   return (
     <>
       <Head title="Home" urlPath="" />
       <Layout>
-        <main>
-          {!me && !isMeLoading && (
-            <Box mt={10} mb={20}>
-              <Center>
-                <Intro withSignIn />
-              </Center>
-            </Box>
-          )}
-          <Heading title="Library feed">
+        {!isMeLoading && (
+          <Box mt={10} mb={20}>
+            <Center>
+              <Intro withSignIn />
+            </Center>
+          </Box>
+        )}
+        {/* <Heading title="Library feed">
             <ButtonGroup isAttached variant="solid">
               <Button
                 size="xs"
@@ -85,8 +94,7 @@ const Index: React.FC = () => {
                 Load more...
               </Button>
             </Flex>
-          )}
-        </main>
+          )} */}
       </Layout>
     </>
   );
