@@ -1,0 +1,20 @@
+{
+  "root": "apps/mtl-screenshot-api",
+  "sourceRoot": "apps/mtl-screenshot-api",
+  "projectType": "application",
+  "targets": {
+    "serve": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "go run app.go"
+          }
+        ],
+        "cwd": "apps/mtl-screenshot-api"
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": []
+}
