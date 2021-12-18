@@ -4,9 +4,9 @@ FROM golang:latest as build-env
 ENV GO111MODULE=on
 
 WORKDIR /go/src
-COPY app.go app.go
-COPY go.mod go.mod
-COPY go.sum go.sum
+COPY apps/mtl-screenshot-api/app.go app.go
+COPY apps/mtl-screenshot-api/go.mod go.mod
+COPY apps/mtl-screenshot-api/go.sum go.sum
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -installsuffix cgo -o /app
 
