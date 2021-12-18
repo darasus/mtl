@@ -39,6 +39,8 @@ func fullScreenshot(urlstr string, quality int, res *[]byte) chromedp.Tasks {
 		chromedp.EmulateViewport(1200, 630, chromedp.EmulateScale(2)),
 		chromedp.WaitVisible(`#logo`, chromedp.ByID),
 		chromedp.FullScreenshot(res, quality),
+		// chromedp.WaitVisible(`img[alt="Avatar"]`),
+		// chromedp.WaitVisible(`img#logo`),
 	}
 }
 
