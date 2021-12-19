@@ -1,12 +1,10 @@
 import React from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { UserPreview } from './UserPreview';
 import {
   Button,
   Flex,
   Box,
-  Link as ChakraLink,
   Menu,
   MenuButton,
   MenuItem,
@@ -23,6 +21,7 @@ import {
 } from '@heroicons/react/outline';
 import { useMe } from '../hooks/useMe';
 import { ActivityBadge } from '../components/ActivityBadge/ActivityBadge';
+import { Link } from './Link';
 
 interface Props {
   fullWidth?: boolean;
@@ -51,14 +50,11 @@ export const Header: React.FC<Props> = ({ fullWidth }) => {
     >
       <Flex alignItems="center">
         <Flex flexGrow={1}>
-          <Link href="/" passHref>
-            <ChakraLink display="block" fontFamily="Fira Code">
-              {/* <Logo /> */}
-              my tiny library
-              <Text as="span" color="brand" fontFamily="Fira Code">
-                {` (alpha)`}
-              </Text>
-            </ChakraLink>
+          <Link href="/" passHref fontFamily="Fira Code">
+            my tiny library
+            <Text as="span" color="brand" fontFamily="Fira Code">
+              {` (alpha)`}
+            </Text>
           </Link>
         </Flex>
         {me?.isLoading && <Spinner />}
