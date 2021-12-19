@@ -12,6 +12,7 @@ import {
   useBreakpoint,
   Spinner,
   Text,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import {
   PlusSmIcon,
@@ -31,6 +32,13 @@ export const Header: React.FC<Props> = ({ fullWidth }) => {
   const router = useRouter();
   const me = useMe();
   const breakpoint = useBreakpoint();
+  const logo = useBreakpointValue(
+    {
+      base: 'mtl',
+      md: 'my tiny library',
+    },
+    'base'
+  );
 
   return (
     <Box
@@ -51,7 +59,7 @@ export const Header: React.FC<Props> = ({ fullWidth }) => {
       <Flex alignItems="center">
         <Box>
           <Link href="/" fontFamily="Fira Code">
-            my tiny library
+            {logo}
             <Text as="span" color="brand" fontFamily="Fira Code">
               {` (alpha)`}
             </Text>
