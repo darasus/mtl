@@ -17,6 +17,7 @@ module.exports = withPlugins([withNx], {
       'lh3.googleusercontent.com',
       's.gravatar.com',
       'secure.gravatar.com',
+      'cdn.fakercloud.com',
     ],
   },
   reactStrictMode: true,

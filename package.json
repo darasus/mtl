@@ -39,7 +39,7 @@
   },
   "prisma": {
     "schema": "apps/mtl-app/prisma/schema.prisma",
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "seed": "ts-node --project apps/mtl-app/tsconfig.json --compiler-options {\"module\":\"CommonJS\"} apps/mtl-app/prisma/seed.ts"
   },
   "private": true,
   "dependencies": {

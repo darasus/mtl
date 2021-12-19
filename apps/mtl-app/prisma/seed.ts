@@ -1,45 +1,23 @@
 import { v4 as uuid } from 'uuid';
 import cuid from 'cuid';
-import faker from 'faker';
-import bcrypt from 'bcrypt';
+import * as faker from 'faker';
+import * as bcrypt from 'bcrypt';
 import { CodeLanguage } from '.prisma/client';
 import { PrismaClient } from '@prisma/client';
 import 'colors';
-
-// PrismaClient is attached to the `global` object in development to prevent
-// exhausting your database connection limit.
-//
-// Learn more:
-// https://pris.ly/d/help/next-js-best-practices
 
 let prisma: PrismaClient;
 
 if (process.env.NODE_ENV === 'production') {
   prisma = new PrismaClient();
 } else {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if (!(global as any).prisma) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (global as any).prisma = new PrismaClient({
       // log: ["query", "info", "warn", "error"],
     });
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   prisma = (global as any).prisma;
 }
-
-// prisma.$use(async (params, next) => {
-//   const before = Date.now();
-//   const result = await next(params);
-//   const after = Date.now();
-
-//   console.log(
-//     `[Prisma][Query]`.green,
-//     `${params.model}.${params.action} took ${after - before}ms`
-//   );
-
-//   return result;
-// });
 
 const tagNames = [
   'React',
@@ -238,10 +216,6 @@ async function main() {
   // reset all
   await prisma.tagsOnPosts.deleteMany();
   await prisma.tag.deleteMany();
-  await prisma.tag.createMany({
-    data: tagNames.map((t) => ({ name: t })),
-    skipDuplicates: true,
-  });
   await prisma.activity.deleteMany();
   await prisma.like.deleteMany();
   await prisma.comment.deleteMany();
@@ -249,11 +223,16 @@ async function main() {
   await prisma.follow.deleteMany();
   await prisma.user.deleteMany();
 
+  // create tags
+  await prisma.tag.createMany({
+    data: tagNames.map((t) => ({ name: t })),
+    skipDuplicates: true,
+  });
+
   // create users
   const user1Id = 'e141ecbf-0857-474b-9fc7-4d3f456135c5';
-  const user2Id = uuid();
-  const password = await bcrypt.hash('Marmel899@', 10);
-  const user1 = await prisma.user.create({
+  const password = await bcrypt.hash('Password01!', 10);
+  await prisma.user.create({
     data: {
       id: user1Id,
       email: 'idarase@gmail.com',
@@ -264,52 +243,125 @@ async function main() {
         'https://imagedelivery.net/1Y4KoCbQQUt_e_VWvskl5g/ca74724d-1c39-4cc7-5bb3-237120eeda00/public',
     },
   });
-  const user2 = await prisma.user.create({
-    data: {
-      id: user2Id,
-      email: 'ilya.daraseliya@gmail.com',
-      name: 'Ilya Daraseliya',
-      nickname: 'darasus2',
-      password,
-      image:
-        'https://imagedelivery.net/1Y4KoCbQQUt_e_VWvskl5g/ca74724d-1c39-4cc7-5bb3-237120eeda00/public',
-      followers: {
-        create: {
-          follower: {
-            connect: {
-              id: user1Id,
-            },
-          },
-        },
-      },
-    },
+
+  const usersData = Array.from({ length: 10000 }).map(() => ({
+    id: cuid(),
+    email: `_${faker.random.alphaNumeric(5)}_${faker.internet
+      .email()
+      .toLowerCase()}`,
+    name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+    nickname: `${faker.internet
+      .userName()
+      .toLowerCase()}_${faker.random.alphaNumeric(5)}`,
+    password,
+    image: 'https://mytinylibrary.com/user-image.png',
+  }));
+
+  await prisma.user.createMany({
+    data: usersData,
+  });
+
+  // create follows
+  await prisma.follow.createMany({
+    data: usersData.map((user) => ({
+      followerId: user.id,
+      followingId: user1Id,
+    })),
   });
 
   // create posts
   const tags = await prisma.tag.findMany();
-  Array.from({ length: 1000 }).forEach(async () => {
-    const postId = cuid();
-    await prisma.post.create({
-      data: {
-        codeLanguage: CodeLanguage.JAVASCRIPT,
-        id: postId,
-        title: faker.lorem.sentence(),
-        description: faker.lorem.sentence(),
-        content: faker.lorem.sentence(),
-        published: true,
-        tags: {
-          create: {
-            tagId: faker.random.arrayElement(tags).id,
-          },
-        },
-        author: {
-          connect: {
-            id: user1Id,
-          },
-        },
-      },
-    });
+  const postsData = Array.from({ length: 1000 }).map(() => ({
+    id: cuid(),
+    codeLanguage: CodeLanguage.JAVASCRIPT,
+    title: faker.lorem.sentence(),
+    description: faker.lorem.sentence(),
+    content: faker.lorem.sentence(),
+    published: true,
+    authorId: user1Id,
+  }));
+
+  await prisma.post.createMany({
+    data: postsData,
+  });
+
+  await prisma.tagsOnPosts.createMany({
+    data: postsData.map((post) => ({
+      postId: post.id,
+      tagId: faker.random.arrayElement(tags).id,
+    })),
+  });
+
+  // create likes
+  await prisma.like.createMany({
+    data: usersData.map((user) => ({
+      authorId: user.id,
+      postId: faker.random.arrayElement(postsData).id,
+    })),
+  });
+
+  // create comments
+  await prisma.comment.createMany({
+    data: usersData.map((user) => ({
+      authorId: user.id,
+      postId: faker.random.arrayElement(postsData).id,
+      content: faker.random.words(),
+    })),
+  });
+
+  // create activities
+  const comments = await prisma.comment.findMany();
+  const likes = await prisma.like.findMany();
+  const follows = await prisma.follow.findMany();
+  await prisma.activity.createMany({
+    data: shuffle([
+      ...likes.map((like) => ({
+        postId: like.postId,
+        likeId: like.id,
+        ownerId: user1Id,
+        authorId: like.authorId,
+      })),
+      ...comments.map((comment) => ({
+        commentId: comment.id,
+        ownerId: user1Id,
+        authorId: comment.authorId,
+        postId: comment.postId,
+      })),
+      ...follows.map((follow) => ({
+        ownerId: user1Id,
+        authorId: follow.followerId,
+        followFollowerId: follow.followerId,
+        followFollowingId: follow.followingId,
+      })),
+    ]),
   });
 }
 
-main();
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(() => {
+    prisma.$disconnect();
+  });
+
+function shuffle(array) {
+  let currentIndex = array.length,
+    randomIndex;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+
+  return array;
+}
