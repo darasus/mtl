@@ -68,15 +68,14 @@ export const Header: React.FC<Props> = ({ fullWidth }) => {
           <>
             {breakpoint !== 'base' && (
               <Box mr={4}>
-                <Link href="/p/create">
-                  <Button
-                    size="xs"
-                    variant="cta"
-                    data-testid="create-post-button"
-                  >
-                    Create
-                  </Button>
-                </Link>
+                <Button
+                  size="xs"
+                  variant="cta"
+                  data-testid="create-post-button"
+                  onClick={() => router.push('/p/create')}
+                >
+                  Create
+                </Button>
               </Box>
             )}
             <Flex alignItems="center">

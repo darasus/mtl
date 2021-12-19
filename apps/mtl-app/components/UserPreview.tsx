@@ -12,11 +12,11 @@ export const UserPreview = React.forwardRef<HTMLDivElement>(
     return (
       <div {...props}>
         <Flex ref={ref} alignItems="center" cursor="pointer">
-          <Box mr={2}>
+          <Box>
             {me.user?.picture && (
               <Box
-                width={7}
-                height={7}
+                width={6}
+                height={6}
                 borderRadius={100}
                 overflow="hidden"
                 boxShadow="base"
@@ -31,13 +31,6 @@ export const UserPreview = React.forwardRef<HTMLDivElement>(
               </Box>
             )}
           </Box>
-          <Text
-            fontSize="sm"
-            fontWeight="semibold"
-            data-testid="user-preview-name"
-          >
-            {me.user?.name}
-          </Text>
         </Flex>
       </div>
     );
