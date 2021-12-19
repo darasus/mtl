@@ -121,7 +121,7 @@ export const Header: React.FC<Props> = ({ fullWidth }) => {
                 borderColor="brand"
                 size="xs"
               >
-                Sign in
+                Login
               </Button>
             </Flex>
           )
