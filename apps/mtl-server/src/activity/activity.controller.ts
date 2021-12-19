@@ -1,8 +1,7 @@
 import { Controller, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { AuthGuard } from '@nestjs/passport';
-import { Response } from '../types/Response';
-import { Request } from '../types/Request';
+import { Response, Request } from '@mtl/types';
 
 @Controller()
 export class ActivityController {

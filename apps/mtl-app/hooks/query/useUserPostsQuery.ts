@@ -1,45 +1,27 @@
-import { useQuery, useQueryClient } from 'react-query';
+import {
+  onPostsInfiniteQuerySuccess,
+  getNextPageParam,
+} from '../../lib/utils/queryCacheUtils';
+import { useInfiniteQuery, useQueryClient } from 'react-query';
 import { clientCacheKey } from '../../lib/ClientCacheKey';
-import { minutes } from '../../utils/duration';
+import { hours } from '../../utils/duration';
 import { useFetcher } from '../useFetcher';
+import { ApiResponse } from '@mtl/api-types';
 
 export const useUserPostsQuery = (userId: string) => {
   const queryClient = useQueryClient();
   const fetcher = useFetcher();
 
-  return useQuery(
+  return useInfiniteQuery<ApiResponse['user/:userId/posts']>(
     clientCacheKey.createUserPostsKey(userId),
-    () => fetcher.getUserPosts(userId),
+    ({ pageParam = undefined }) =>
+      fetcher.getUserPosts({ userId, cursor: pageParam }),
     {
       enabled: !!userId,
-      staleTime: minutes(5),
+      staleTime: hours(1),
+      getNextPageParam,
       onSuccess(data) {
-        data.forEach((post) => {
-          const postCache = queryClient.getQueryData(
-            clientCacheKey.createPostKey(post.id)
-          );
-          const postCommentsCache = queryClient.getQueryData(
-            clientCacheKey.createPostCommentsKey(post.id)
-          );
-
-          if (!postCache) {
-            queryClient.setQueryData(
-              clientCacheKey.createPostKey(post.id),
-              post
-            );
-          }
-
-          if (!postCommentsCache) {
-            queryClient.setQueryData(
-              clientCacheKey.createPostCommentsKey(post.id),
-              {
-                items: post.comments,
-                count: post.comments.length,
-                total: post.commentsCount,
-              }
-            );
-          }
-        });
+        onPostsInfiniteQuerySuccess({ data, queryClient });
       },
     }
   );

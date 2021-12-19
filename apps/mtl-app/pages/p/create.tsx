@@ -10,6 +10,7 @@ import invariant from 'invariant';
 import { CodeLanguage } from '.prisma/client';
 import { Head } from '../../components/Head';
 import { getSession } from '@auth0/nextjs-auth0';
+import { Box, Flex } from '@chakra-ui/react';
 
 const CreatePostPage: React.FC = () => {
   const router = useRouter();
@@ -52,7 +53,7 @@ const CreatePostPage: React.FC = () => {
   );
 
   return (
-    <>
+    <Box>
       <Head title="Create tiny library" urlPath="/create" />
       <FullscreenLayout>
         <FormProvider {...form}>
@@ -64,7 +65,7 @@ const CreatePostPage: React.FC = () => {
           />
         </FormProvider>
       </FullscreenLayout>
-    </>
+    </Box>
   );
 };
 

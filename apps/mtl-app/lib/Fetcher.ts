@@ -6,6 +6,7 @@ import { ServerHttpConnector } from './ServerHttpConnector';
 import { ClientHttpConnector } from './ClientHttpConnector';
 import { FeedType } from '../types/FeedType';
 import ServerFormData from 'form-data';
+import { ApiResponse } from '@mtl/api-types';
 
 export class Fetcher {
   httpConnector: ServerHttpConnector | ClientHttpConnector;
@@ -29,9 +30,15 @@ export class Fetcher {
   getUser = (userId: string): Promise<User> =>
     this.httpConnector.request(`/api/user/${userId}`).then((res) => res.data);
 
-  getUserPosts = (userId: string): Promise<Post[]> =>
+  getUserPosts = ({
+    userId,
+    cursor,
+  }: {
+    userId: string;
+    cursor?: string;
+  }): Promise<ApiResponse['user/:userId/posts']> =>
     this.httpConnector
-      .request(`/api/user/${userId}/posts`)
+      .request(`/api/user/${userId}/posts?${qs.stringify({ cursor })}`)
       .then((res) => res.data);
 
   invalidateUser = (userId: string): Promise<{ status: 'success' }> =>
@@ -130,7 +137,13 @@ export class Fetcher {
 
   // feed
 
-  getFeed = ({ cursor, feedType }: { cursor?: string; feedType: FeedType }) =>
+  getFeed = ({
+    cursor,
+    feedType,
+  }: {
+    cursor?: string;
+    feedType: FeedType;
+  }): Promise<ApiResponse['user/:userId/posts']> =>
     this.httpConnector
       .request(
         `/api/feed?${qs.stringify({
@@ -215,6 +228,9 @@ export class Fetcher {
         method: 'PUT',
       })
       .then((res) => res.data);
+
+  getRandomPost = (): Promise<Post> =>
+    this.httpConnector.request(`/api/post/random`, {}).then((res) => res.data);
 
   // tags
 

@@ -9,13 +9,11 @@ import { useFollowMutation } from '../../hooks/mutation/useFollowMutation';
 import { useFollowersCountQuery } from '../../hooks/query/useFollowersCountQuery';
 import { useUnfollowMutation } from '../../hooks/mutation/useUnfollowMutation';
 import { useDoIFollowUserQuery } from '../../hooks/query/useDoIFollowUserQuery';
-import { UserGroupIcon } from '@heroicons/react/outline';
 import { Layout } from '../../layouts/Layout';
 import { useColors } from '../../hooks/useColors';
 import { Head } from '../../components/Head';
 import { Heading } from '../../components/Heading';
 import { useMe } from '../../hooks/useMe';
-import { getSession } from '@auth0/nextjs-auth0';
 
 const UserPage: React.FC = () => {
   const { secondaryTextColor } = useColors();
@@ -125,15 +123,31 @@ const UserPage: React.FC = () => {
               <Spinner />
             </Flex>
           )}
-          {posts.data?.map((post) => (
-            <Box key={post.id} mb={6}>
-              <Post
-                postId={post.id}
-                isMyPost={post.authorId === me?.user?.id}
-                isPostStatusVisible
-              />
-            </Box>
-          ))}
+          {posts.data?.pages.map((page) => {
+            return page.items.map((post) => (
+              <Box key={post.id} mb={6}>
+                <Post
+                  postId={post.id}
+                  isMyPost={post.authorId === me?.user?.id}
+                  isPostStatusVisible
+                />
+              </Box>
+            ));
+          })}
+          {posts.hasNextPage && (
+            <Flex justifyContent="center">
+              <Button
+                color="brand"
+                borderColor="brand"
+                variant="outline"
+                size="sm"
+                isLoading={posts.isFetchingNextPage}
+                onClick={() => posts.fetchNextPage()}
+              >
+                Load more...
+              </Button>
+            </Flex>
+          )}
         </Box>
       </Layout>
     </>

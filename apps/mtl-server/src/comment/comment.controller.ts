@@ -11,8 +11,7 @@ import { CommentService } from './comment.service';
 import { PostService } from '../post/post.service';
 import { ActivityService } from '../activity/activity.service';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from '../types/Request';
-import { Response } from '../types/Response';
+import { Request, Response } from '@mtl/types';
 
 @Controller()
 export class CommentController {

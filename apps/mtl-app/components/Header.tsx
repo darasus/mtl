@@ -21,11 +21,14 @@ import {
   LogoutIcon,
   CogIcon,
 } from '@heroicons/react/outline';
-import { Logo } from './Logo';
 import { useMe } from '../hooks/useMe';
 import { ActivityBadge } from '../components/ActivityBadge/ActivityBadge';
 
-export const Header: React.FC = () => {
+interface Props {
+  fullWidth?: boolean;
+}
+
+export const Header: React.FC<Props> = ({ fullWidth }) => {
   const router = useRouter();
   const me = useMe();
   const breakpoint = useBreakpoint();
@@ -43,7 +46,7 @@ export const Header: React.FC = () => {
       px={5}
       backgroundColor="black"
       zIndex="docked"
-      maxW="960px"
+      maxW={fullWidth ? undefined : '960px'}
       margin="0 auto"
     >
       <Flex alignItems="center">

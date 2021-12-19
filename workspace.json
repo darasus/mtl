@@ -1,9 +1,11 @@
 {
   "version": 2,
   "projects": {
+    "api-types": "libs/api-types",
     "mtl-app": "apps/mtl-app",
     "mtl-app-e2e": "apps/mtl-app-e2e",
+    "mtl-screenshot-api": "apps/mtl-screenshot-api",
     "mtl-server": "apps/mtl-server",
-    "mtl-screenshot-api": "apps/mtl-screenshot-api"
+    "types": "libs/types"
   }
 }

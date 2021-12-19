@@ -18,9 +18,11 @@ import { Heading } from '../components/Heading';
 import { useMe } from '../hooks/useMe';
 import { getSession } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/router';
+import { useRandomPostQuery } from '../hooks/query/useRandomPostQuery';
 
 const Index: React.FC = () => {
   const router = useRouter();
+  // const post = useRandomPostQuery();
   // const [feedType, setFeedType] = React.useState(FeedType.Latest);
   // const feed = useFeedQuery({ feedType });
   const me = useMe();
@@ -38,11 +40,10 @@ const Index: React.FC = () => {
     <>
       <Head title="Home" urlPath="" />
       <Layout>
+        {/* {post.data?.id && <Post postId={post.data.id} isMyPost={false} />} */}
         {!isMeLoading && (
-          <Box mt={10} mb={20}>
-            <Center>
-              <Intro withSignIn />
-            </Center>
+          <Box height="100%">
+            <Intro withSignIn />
           </Box>
         )}
         {/* <Heading title="Library feed">
