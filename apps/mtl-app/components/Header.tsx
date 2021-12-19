@@ -49,20 +49,26 @@ export const Header: React.FC<Props> = ({ fullWidth }) => {
       margin="0 auto"
     >
       <Flex alignItems="center">
-        <Flex flexGrow={1}>
-          <Link href="/" passHref fontFamily="Fira Code">
+        <Box>
+          <Link href="/" fontFamily="Fira Code">
             my tiny library
             <Text as="span" color="brand" fontFamily="Fira Code">
               {` (alpha)`}
             </Text>
           </Link>
-        </Flex>
+        </Box>
+        <Box flexGrow={1} />
+        <Box mr={4}>
+          <Link href="/feed">
+            <Text fontSize="sm">Feed</Text>
+          </Link>
+        </Box>
         {me?.isLoading && <Spinner />}
         {me?.user ? (
           <>
             {breakpoint !== 'base' && (
               <Box mr={4}>
-                <Link href="/p/create" passHref>
+                <Link href="/p/create">
                   <Button
                     size="xs"
                     variant="cta"
