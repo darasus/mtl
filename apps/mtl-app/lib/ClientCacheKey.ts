@@ -6,6 +6,7 @@ export class ClientCacheKey {
   doIFollowBaseKey = ['do_i_follow_user'];
   feedBaseKey = ['feed'];
   followersCountBaseKey = ['followers_count'];
+  followingsCountBaseKey = ['followings_count'];
   postBaseKey = ['post'];
   screenshotBaseKey = ['post'];
   tagsBaseKey = ['tags'];
@@ -30,6 +31,10 @@ export class ClientCacheKey {
 
   createFollowersCountKey(userId: string) {
     return [...this.followersCountBaseKey, { userId }];
+  }
+
+  createFollowingCountKey(userId: string) {
+    return [...this.followingsCountBaseKey, { userId }];
   }
 
   createPostKey(postId: string) {

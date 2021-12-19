@@ -121,6 +121,11 @@ export class Fetcher {
       .request(`/api/user/${userId}/follow/count`)
       .then((res) => res.data);
 
+  getFollowingsCount = (userId: string) =>
+    this.httpConnector
+      .request(`/api/user/${userId}/followings/count`)
+      .then((res) => res.data);
+
   followUser = (userId: string) =>
     this.httpConnector
       .request(`/api/user/${userId}/follow`, {

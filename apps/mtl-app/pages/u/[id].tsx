@@ -14,6 +14,7 @@ import { useColors } from '../../hooks/useColors';
 import { Head } from '../../components/Head';
 import { Heading } from '../../components/Heading';
 import { useMe } from '../../hooks/useMe';
+import { useFollowingCountQuery } from '../../hooks/query/useFollowingCountQuery';
 
 const UserPage: React.FC = () => {
   const { secondaryTextColor } = useColors();
@@ -25,6 +26,7 @@ const UserPage: React.FC = () => {
   const followMutation = useFollowMutation();
   const unfollowMutation = useUnfollowMutation();
   const followersCount = useFollowersCountQuery(userId);
+  const followingCount = useFollowingCountQuery(userId);
   const doIFollowUser = useDoIFollowUserQuery(userId);
   const isMyPage = me?.user?.id === userId;
 
@@ -105,13 +107,18 @@ const UserPage: React.FC = () => {
                     {user.data?.name}
                   </Text>
                 </Box>
-                <Box mb={3}>
-                  <Box>
+                <Flex mb={3}>
+                  <Box mr={2}>
                     <Badge>{`${new Intl.NumberFormat('en-IN').format(
                       followersCount.data || 0
                     )} followers`}</Badge>
                   </Box>
-                </Box>
+                  <Box>
+                    <Badge>{`${new Intl.NumberFormat('en-IN').format(
+                      followingCount.data || 0
+                    )} following`}</Badge>
+                  </Box>
+                </Flex>
                 {followButton}
               </Flex>
             )}

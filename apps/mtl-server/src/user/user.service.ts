@@ -36,6 +36,14 @@ export class UserService {
     });
   }
 
+  getUserFollowingsCount({ userId }: { userId: string }) {
+    return this.prisma.follow.count({
+      where: {
+        followerId: userId,
+      },
+    });
+  }
+
   async getUserPosts({
     userId,
     isMe,

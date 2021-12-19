@@ -80,6 +80,15 @@ export class UserController {
     res.send(await this.userService.getUserFollowerCount({ userId }));
   }
 
+  @Get('user/:userId/followings/count')
+  async getFollowingCount(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param('userId') userId: string
+  ) {
+    res.send(await this.userService.getUserFollowingsCount({ userId }));
+  }
+
   @UseGuards(OptionalUserGuard)
   @Get('user/:userId/follow')
   async doIFollow(
@@ -93,8 +102,8 @@ export class UserController {
 
     res.send(
       await this.followService.doIFollow({
-        followerUserId: userId,
-        followingUserId: myId,
+        followerUserId: myId,
+        followingUserId: userId,
       })
     );
   }
