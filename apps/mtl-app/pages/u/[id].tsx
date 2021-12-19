@@ -40,29 +40,29 @@ const UserPage: React.FC = () => {
     });
   };
 
-  // const followButton = !isMyPage ? (
-  //   doIFollowUser.data?.doIFollow ? (
-  //     <Button
-  //       variant="outline"
-  //       mb={1}
-  //       onClick={handleUnfollow}
-  //       disabled={unfollowMutation.isLoading}
-  //       isLoading={unfollowMutation.isLoading}
-  //     >
-  //       Unfollow
-  //     </Button>
-  //   ) : (
-  //     <Button
-  //       variant="outline"
-  //       mb={1}
-  //       onClick={handleFollow}
-  //       disabled={followMutation.isLoading}
-  //       isLoading={followMutation.isLoading}
-  //     >
-  //       Follow
-  //     </Button>
-  //   )
-  // ) : null;
+  const followButton = !isMyPage ? (
+    doIFollowUser.data?.doIFollow ? (
+      <Button
+        variant="outline"
+        mb={1}
+        onClick={handleUnfollow}
+        disabled={unfollowMutation.isLoading}
+        isLoading={unfollowMutation.isLoading}
+      >
+        Unfollow
+      </Button>
+    ) : (
+      <Button
+        variant="outline"
+        mb={1}
+        onClick={handleFollow}
+        disabled={followMutation.isLoading}
+        isLoading={followMutation.isLoading}
+      >
+        Follow
+      </Button>
+    )
+  ) : null;
 
   return (
     <>
@@ -105,12 +105,12 @@ const UserPage: React.FC = () => {
                     {user.data?.name}
                   </Text>
                 </Box>
-                {/* <Box mb={3}>
+                <Box mb={3}>
                   <Box>
                     <Badge>{`${followersCount.data || 0} followers`}</Badge>
                   </Box>
-                </Box> */}
-                {/* {followButton} */}
+                </Box>
+                {followButton}
               </Flex>
             )}
           </Flex>
