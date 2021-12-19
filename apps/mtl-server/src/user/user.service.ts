@@ -7,6 +7,7 @@ import { commentFragment } from '../fragments/commentFragment';
 import { tagsFragment } from '../fragments/tagsFragment';
 import { preparePost } from '../utils/preparePosts';
 import { activityFragment } from '../fragments/activityFragment';
+import { ApiPage, Post } from '@mtl/types';
 
 @Injectable()
 export class UserService {
@@ -35,7 +36,23 @@ export class UserService {
     });
   }
 
-  async getUserPosts({ userId, isMe }: { userId: string; isMe: boolean }) {
+  async getUserPosts({
+    userId,
+    isMe,
+    cursor,
+    take = 10,
+  }: {
+    userId: string;
+    isMe: boolean;
+    cursor?: string;
+    take?: number;
+  }): Promise<ApiPage<Post>> {
+    const postsCount = await this.prisma.post.count({
+      where: {
+        authorId: userId,
+        ...(isMe ? {} : { published: true }),
+      },
+    });
     const posts = await this.prisma.post.findMany({
       where: {
         authorId: userId,
@@ -46,8 +63,15 @@ export class UserService {
           id: 'desc',
         },
       ],
-      // FIX: paginate
-      take: 100,
+      take,
+      skip: cursor ? 1 : 0,
+      ...(cursor
+        ? {
+            cursor: {
+              id: cursor,
+            },
+          }
+        : {}),
       include: {
         author: {
           select: userFragment,
@@ -62,16 +86,33 @@ export class UserService {
       },
     });
 
-    return posts.map((post) =>
-      preparePost(
-        {
-          ...post,
-          commentsCount: post.comments.length,
-          comments: post.comments.slice(-5),
-        },
-        userId
-      )
-    );
+    if (posts.length === 0) {
+      return {
+        items: [],
+        count: 0,
+        total: 0,
+        cursor: null,
+      };
+    }
+
+    const lastActivityInResults = posts[posts.length - 1];
+    const newCursor = lastActivityInResults.id;
+
+    return {
+      count: posts.length,
+      total: postsCount,
+      cursor: newCursor,
+      items: posts.map((post) =>
+        preparePost(
+          {
+            ...post,
+            commentsCount: post.comments.length,
+            comments: post.comments.slice(-5),
+          },
+          userId
+        )
+      ),
+    };
   }
 
   async getUserActivity({

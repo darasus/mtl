@@ -10,7 +10,8 @@ import { AppModule } from './app/app.module';
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter({ logger: process.env.NODE_ENV === 'development' })
+    // new FastifyAdapter({ logger: process.env.NODE_ENV === 'development' })
+    new FastifyAdapter()
   );
   app.enableCors();
   app.useGlobalPipes(

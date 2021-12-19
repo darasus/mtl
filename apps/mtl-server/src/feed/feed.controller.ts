@@ -3,8 +3,8 @@ import { OptionalUserGuard } from '../guards/OptionalUserGuard';
 import { rejectNil } from '../utils/rejectNil';
 
 import { FeedService } from './feed.service';
-import { Request } from '../types/Request';
-import { Response } from '../types/Response';
+import { Request, Response } from '@mtl/types';
+import { ApiResponse } from '@mtl/api-types';
 
 enum FeedType {
   Latest = 'latest',
@@ -23,7 +23,7 @@ export class FeedController {
     @Query('feedType') feedType: FeedType,
     @Query('cursor') cursor?: string,
     @Query('take') take?: string
-  ) {
+  ): Promise<ApiResponse['feed']> {
     const params = rejectNil({
       userId: req?.user?.sub?.split('|')?.[1],
       cursor,
@@ -31,11 +31,11 @@ export class FeedController {
     });
 
     if (feedType === FeedType.Following) {
-      res.send(await this.feedService.fetchFollowingFeed(params));
+      return this.feedService.fetchFollowingFeed(params);
     }
 
     if (feedType === FeedType.Latest) {
-      res.send(await this.feedService.fetchLatestFeed(params));
+      return this.feedService.fetchLatestFeed(params);
     }
   }
 }

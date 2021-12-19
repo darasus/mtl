@@ -6,7 +6,7 @@ import { likeFragment } from '../fragments/likeFragment';
 import { commentFragment } from '../fragments/commentFragment';
 import { tagsFragment } from '../fragments/tagsFragment';
 import { preparePost } from '../utils/preparePosts';
-import { Post } from '../types/Post';
+import { Post } from '@mtl/types';
 
 @Injectable()
 export class PostService {
@@ -293,5 +293,32 @@ export class PostService {
     });
 
     // await cache.del(redisCacheKey.createPostKey(postId));
+  }
+
+  async getRandomPost(): Promise<Post> {
+    const productsCount = await this.prisma.post.count();
+    const skip = Math.floor(Math.random() * productsCount);
+    const post = await this.prisma.post.findMany({
+      take: 1,
+      skip: skip,
+      include: {
+        author: {
+          select: userFragment,
+        },
+        likes: {
+          select: likeFragment,
+        },
+        comments: {
+          select: commentFragment,
+        },
+        tags: tagsFragment,
+      },
+    });
+
+    return preparePost({
+      ...post[0],
+      commentsCount: post[0].comments.length,
+      comments: post[0].comments.slice(-5),
+    });
   }
 }

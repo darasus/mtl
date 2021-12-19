@@ -14,7 +14,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@mtl/api-t": ["libs/api-t/src/index.ts"],
+      "@mtl/api-types": ["libs/api-types/src/index.ts"],
+      "@mtl/types": ["libs/types/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

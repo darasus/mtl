@@ -1,5 +1,5 @@
 import { Controller, Get, Query, Res } from '@nestjs/common';
-import { Response } from '../types/Response';
+import { Response } from '@mtl/types';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
 import { processErrorResponse } from '../utils/error';

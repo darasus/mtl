@@ -4,12 +4,12 @@ import {
   Delete,
   Get,
   Param,
-  Post,
   Put,
   Query,
   Req,
   Res,
   UseGuards,
+  Post,
 } from '@nestjs/common';
 import { PostService } from '../post/post.service';
 import { IsNotEmpty } from 'class-validator';
@@ -17,10 +17,9 @@ import * as Prisma from '@prisma/client';
 import { CommentService } from '../comment/comment.service';
 import { ActivityService } from '../activity/activity.service';
 import { OptionalUserGuard } from '../guards/OptionalUserGuard';
-import { Request } from '../types/Request';
-import { Response } from '../types/Response';
 import { LikeService } from '../like/like.service';
 import { AuthGuard } from '@nestjs/passport';
+import { Post as PostType, Request, Response } from '@mtl/types';
 
 export class CreatePostDto {
   @IsNotEmpty()
@@ -245,5 +244,10 @@ export class PostController {
     @Param('postId') postId: string
   ) {
     res.send(await this.postService.unpublishPost(postId));
+  }
+
+  @Get('post/random')
+  async getRandomPost(): Promise<PostType> {
+    return this.postService.getRandomPost();
   }
 }

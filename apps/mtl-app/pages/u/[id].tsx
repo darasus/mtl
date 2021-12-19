@@ -1,14 +1,6 @@
 import React from 'react';
 import { Post } from '../../components/Post';
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  GridItem,
-  Spinner,
-  Text,
-} from '@chakra-ui/react';
+import { Badge, Box, Button, Flex, Spinner, Text } from '@chakra-ui/react';
 import Image from 'next/image';
 import { useUserQuery } from '../../hooks/query/useUserQuery';
 import { useRouter } from 'next/router';
@@ -17,13 +9,11 @@ import { useFollowMutation } from '../../hooks/mutation/useFollowMutation';
 import { useFollowersCountQuery } from '../../hooks/query/useFollowersCountQuery';
 import { useUnfollowMutation } from '../../hooks/mutation/useUnfollowMutation';
 import { useDoIFollowUserQuery } from '../../hooks/query/useDoIFollowUserQuery';
-import { UserGroupIcon } from '@heroicons/react/outline';
 import { Layout } from '../../layouts/Layout';
 import { useColors } from '../../hooks/useColors';
 import { Head } from '../../components/Head';
 import { Heading } from '../../components/Heading';
 import { useMe } from '../../hooks/useMe';
-import { getSession } from '@auth0/nextjs-auth0';
 
 const UserPage: React.FC = () => {
   const { secondaryTextColor } = useColors();
@@ -50,6 +40,7 @@ const UserPage: React.FC = () => {
     });
   };
 
+  // const followButton = !isMyPage ? (
   const followButton = !isMyPage ? (
     doIFollowUser.data?.doIFollow ? (
       <Button
@@ -78,76 +69,86 @@ const UserPage: React.FC = () => {
     <>
       <Head title={user.data?.name as string} urlPath={`u/${user.data?.id}`} />
       <Layout>
-        <Grid templateColumns="repeat(12, 1fr)" gap={4}>
-          <GridItem colSpan={[12, 12, 3, 3]}>
-            <Flex marginBottom="size-100" justifyContent="center" mb={3}>
-              {user.isLoading && (
-                <Flex justifyContent="center">
-                  <Spinner />
-                </Flex>
-              )}
-              {user.data && (
-                <Flex flexDirection="column">
-                  <Box
-                    width={150}
-                    height={150}
-                    overflow="hidden"
-                    marginBottom="size-100"
-                    borderRadius="100"
-                    borderWidth="thick"
-                    borderColor="brand"
-                    boxShadow="base"
-                    mb={2}
-                  >
-                    <Image
-                      src={user.data?.image as string}
-                      width="500"
-                      height="500"
-                      alt="Avatar"
-                    />
-                  </Box>
-                  <Text fontWeight="bold" fontSize="2xl" mb={1} isTruncated>
-                    {user.data?.name}
-                  </Text>
-                  {followButton}
-                  <Flex alignItems="center">
-                    <Text mr={1} color={secondaryTextColor}>
-                      <UserGroupIcon
-                        className={secondaryTextColor}
-                        width="20"
-                        height="20"
-                      />
-                    </Text>
-                    <Text
-                      fontWeight="bold"
-                      fontSize="sm"
-                      color={secondaryTextColor}
-                    >{`${followersCount.data || 0} followers`}</Text>
-                  </Flex>
-                </Flex>
-              )}
-            </Flex>
-          </GridItem>
-          <GridItem colSpan={[12, 12, 9, 9]}>
-            <Box>
-              <Heading title="My libraries" />
-              {posts.isLoading && (
-                <Flex justifyContent="center">
-                  <Spinner />
-                </Flex>
-              )}
-              {posts.data?.map((post) => (
-                <Box key={post.id} mb={6}>
-                  <Post
-                    postId={post.id}
-                    isMyPost={post.authorId === me?.user?.id}
-                    isPostStatusVisible
+        <Box>
+          <Flex
+            flexDirection="column"
+            marginBottom="size-100"
+            alignItems="center"
+            mb={3}
+          >
+            {user.isLoading && (
+              <Flex justifyContent="center">
+                <Spinner />
+              </Flex>
+            )}
+            {user.data && (
+              <Flex flexDirection="column" alignItems="center">
+                <Box
+                  width={250}
+                  height={250}
+                  overflow="hidden"
+                  marginBottom="size-100"
+                  borderRadius="full"
+                  borderWidth="thick"
+                  borderColor="brand"
+                  boxShadow="base"
+                  mb={2}
+                >
+                  <Image
+                    src={user.data?.image as string}
+                    width="500"
+                    height="500"
+                    alt="Avatar"
                   />
                 </Box>
-              ))}
-            </Box>
-          </GridItem>
-        </Grid>
+                <Box mb={1}>
+                  <Text fontWeight="bold" fontSize="2xl">
+                    {user.data?.name}
+                  </Text>
+                </Box>
+                <Box mb={3}>
+                  <Box>
+                    <Badge>{`${followersCount.data || 0} followers`}</Badge>
+                  </Box>
+                </Box>
+                {followButton}
+              </Flex>
+            )}
+          </Flex>
+        </Box>
+        <Box>
+          <Heading title="My libraries" />
+          {posts.isLoading && (
+            <Flex justifyContent="center">
+              <Spinner />
+            </Flex>
+          )}
+          {posts.data?.pages.map((page) => {
+            return page.items.map((post) => (
+              <Box key={post.id} mb={6}>
+                <Post
+                  postId={post.id}
+                  isMyPost={post.authorId === me?.user?.id}
+                  isPostStatusVisible
+                />
+              </Box>
+            ));
+          })}
+          {posts.hasNextPage && (
+            <Flex justifyContent="center">
+              <Button
+                color="brand"
+                borderColor="brand"
+                variant="outline"
+                size="sm"
+                isLoading={posts.isFetchingNextPage}
+                onClick={() => posts.fetchNextPage()}
+              >
+                Load more...
+              </Button>
+            </Flex>
+          )}
+        </Box>
       </Layout>
     </>
   );

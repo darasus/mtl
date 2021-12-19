@@ -23,13 +23,18 @@ export const FullscreenLayout: React.FC<Props> = (props) => {
         pr={mainPadding}
       >
         <Flex flexDirection="column" width="100%" flexShrink={0}>
-          <Box paddingY="size-200" mb={6}>
-            <Header />
-          </Box>
-          <Box marginBottom="size-200">{props.children}</Box>
-          <Box my={5}>
-            <Footer />
-          </Box>
+          <Header fullWidth />
+          <Flex
+            marginBottom="size-200"
+            minHeight="100vh"
+            flexDirection="column"
+          >
+            <Box height="130px" />
+            <Box flexGrow="1">{props.children}</Box>
+            <Box my={5}>
+              <Footer />
+            </Box>
+          </Flex>
         </Flex>
       </Flex>
     </>

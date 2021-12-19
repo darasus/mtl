@@ -7,7 +7,7 @@ export const Footer = () => {
 
   return (
     <Flex justifyContent="center">
-      <Text as="span" color={secondaryTextColor} fontSize="sm">
+      <Text as="span" color="gray.800" fontSize="sm">
         {`${new Date().getFullYear()} © All rights reserved. Twitter `}
         <Link
           href="https://twitter.com/mytinylibrary"

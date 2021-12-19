@@ -1,6 +1,6 @@
+import { Post } from '@mtl/types';
 import * as Prisma from '@prisma/client';
 import * as R from 'ramda';
-import { Post } from '../types/Post';
 
 export type InputPost = Prisma.Post & {
   likes: (Prisma.Like & { author: Omit<Prisma.User, 'password'> | null })[];

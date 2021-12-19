@@ -21,29 +21,45 @@ import {
   LogoutIcon,
   CogIcon,
 } from '@heroicons/react/outline';
-import { Logo } from './Logo';
 import { useMe } from '../hooks/useMe';
 import { ActivityBadge } from '../components/ActivityBadge/ActivityBadge';
 
-export const Header: React.FC = () => {
+interface Props {
+  fullWidth?: boolean;
+}
+
+export const Header: React.FC<Props> = ({ fullWidth }) => {
   const router = useRouter();
   const me = useMe();
   const breakpoint = useBreakpoint();
 
   return (
-    <Box py="6" cursor="pointer">
+    <Box
+      py="6"
+      position="fixed"
+      top={5}
+      right={5}
+      left={5}
+      borderColor="gray.900"
+      borderWidth="thin"
+      borderRadius="lg"
+      px={5}
+      backgroundColor="black"
+      zIndex="docked"
+      maxW={fullWidth ? undefined : '960px'}
+      margin="0 auto"
+    >
       <Flex alignItems="center">
         <Flex flexGrow={1}>
           <Link href="/" passHref>
-            <ChakraLink display="block">
-              <Logo />
+            <ChakraLink display="block" fontFamily="Fira Code">
+              {/* <Logo /> */}
+              my tiny library
+              <Text as="span" color="brand" fontFamily="Fira Code">
+                {` (alpha)`}
+              </Text>
             </ChakraLink>
           </Link>
-          <Box ml={1} mt="2px">
-            <Text color="brand" fontWeight="bold">
-              Alpha
-            </Text>
-          </Box>
         </Flex>
         {me?.isLoading && <Spinner />}
         {me?.user ? (
@@ -52,7 +68,7 @@ export const Header: React.FC = () => {
               <Box mr={4}>
                 <Link href="/p/create" passHref>
                   <Button
-                    size="sm"
+                    size="xs"
                     variant="cta"
                     data-testid="create-post-button"
                   >
@@ -97,14 +113,13 @@ export const Header: React.FC = () => {
             </Flex>
           </>
         ) : (
-          router.pathname !== '/' &&
           !me?.isLoading && (
             <Flex>
               <Button
-                variant="outline"
+                variant="cta"
                 onClick={() => router.push('/api/auth/login')}
                 borderColor="brand"
-                color="brand"
+                size="xs"
               >
                 Sign in
               </Button>

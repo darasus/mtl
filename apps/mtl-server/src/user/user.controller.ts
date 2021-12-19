@@ -14,13 +14,13 @@ import { ActivityService } from '../activity/activity.service';
 import { FollowService } from '../follow/follow.service';
 import { OptionalUserGuard } from '../guards/OptionalUserGuard';
 import { PrismaService } from '../prisma/prisma.service';
-import { Request } from '../types/Request';
-import { Response } from '../types/Response';
+import { Request, Response } from '@mtl/types';
 import axios from 'axios';
 
 import { UserService } from './user.service';
 import { processErrorResponse } from '../utils/error';
 import { ConfigService } from '@nestjs/config';
+import { ApiResponse } from '@mtl/api-types';
 
 export class UpdateUserDto {
   nickname: string;
@@ -127,17 +127,16 @@ export class UserController {
   @Get('user/:userId/posts')
   async getUserPosts(
     @Req() req: Request,
-    @Res() res: Response,
     @Param('userId') userId: string
-  ) {
+  ): Promise<ApiResponse['user/:userId/posts']> {
     const myId = req?.user?.sub?.split('|')?.[1];
 
-    res.send(
-      await this.userService.getUserPosts({
-        userId,
-        isMe: !!myId && myId === userId,
-      })
-    );
+    const posts = await this.userService.getUserPosts({
+      userId,
+      isMe: !!myId && myId === userId,
+    });
+
+    return posts;
   }
 
   @UseGuards(AuthGuard('jwt'))
