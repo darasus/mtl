@@ -64,7 +64,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!createIsFirstServerCall(ctx)) {
     return {
       props: {
-        cookies: ctx.req.headers.cookie ?? '',
+        accessToken: session?.accessToken || null,
+        cookies: ctx.req?.headers?.cookie ?? '',
+        user: session?.user || undefined,
       },
     };
   }
@@ -102,7 +104,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
-      accessToken: session?.accessToken,
+      accessToken: session?.accessToken || null,
       cookies: ctx.req?.headers?.cookie ?? '',
       user: session?.user || undefined,
     },

@@ -107,7 +107,9 @@ const UserPage: React.FC = () => {
                 </Box>
                 <Box mb={3}>
                   <Box>
-                    <Badge>{`${followersCount.data || 0} followers`}</Badge>
+                    <Badge>{`${new Intl.NumberFormat('en-IN').format(
+                      followersCount.data || 0
+                    )} followers`}</Badge>
                   </Box>
                 </Box>
                 {followButton}

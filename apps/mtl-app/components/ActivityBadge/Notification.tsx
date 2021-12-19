@@ -56,7 +56,7 @@ export const Notification = ({ activity }: { activity: Activity & any }) => {
 
   const message = composeActivityMessage(activity);
 
-  const onClick = React.useCallback(() => {
+  const onClick = React.useCallback(async () => {
     markAsReadMutation.mutate();
     if (isLikeNotification || isCommentNotification) {
       router.push(`/p/${activity.postId}`);
