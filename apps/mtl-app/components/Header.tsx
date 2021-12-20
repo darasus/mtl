@@ -59,7 +59,10 @@ export const Header: React.FC<Props> = ({ fullWidth }) => {
     >
       <Flex alignItems="center">
         <Box>
-          <Link href="/" fontFamily="Fira Code">
+          <Link
+            href={me.user?.nickname ? `/u/${me.user.nickname}` : '/'}
+            fontFamily="Fira Code"
+          >
             {logo}
             <Text as="span" color="brand" fontFamily="Fira Code">
               {` (alpha)`}
