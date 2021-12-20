@@ -45,12 +45,11 @@ export const Header: React.FC<Props> = ({ fullWidth }) => {
     <Box
       py="6"
       position="fixed"
-      top={5}
-      right={5}
-      left={5}
+      top={4}
+      right={4}
+      left={4}
       borderColor="gray.900"
       borderWidth="thin"
-      borderRadius="lg"
       px={5}
       backgroundColor="black"
       zIndex="docked"
@@ -60,7 +59,7 @@ export const Header: React.FC<Props> = ({ fullWidth }) => {
       <Flex alignItems="center">
         <Box>
           <Link
-            href={me.user?.nickname ? `/u/${me.user.nickname}` : '/'}
+            href={me?.user?.nickname ? `/u/${me?.user?.nickname}` : '/'}
             fontFamily="Fira Code"
           >
             {logo}

@@ -29,7 +29,7 @@ export const Layout: React.FC<Props> = (props) => {
             minHeight="100vh"
             flexDirection="column"
           >
-            <Box height="130px" />
+            <Box height={'75px'} mt={4} mb={4} />
             <Box flexGrow="1">{props.children}</Box>
             <Box my={5}>
               <Footer />
