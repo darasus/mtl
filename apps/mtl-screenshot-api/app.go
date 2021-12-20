@@ -6,41 +6,51 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/chromedp/chromedp"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func screenshotHandler(w http.ResponseWriter, r *http.Request) {
 	var postId = r.URL.Query().Get("id")
-	var url = "https://www.mytinylibrary.com/p/" + postId + "/preview"
-	var fileBytes = Screenshot(url)
+	var url = os.Getenv("BASE_URL") + "/p/" + postId + "/preview"
+	var fileBytes = Screenshot(url, 1200, 627)
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/octet-stream")
 	w.Write(fileBytes)
 	return
 }
 
-func Screenshot(urlstr string) []byte {
+func thumbnailHandler(w http.ResponseWriter, r *http.Request) {
+	var postId = r.URL.Query().Get("id")
+	var url = os.Getenv("BASE_URL") + "/p/" + postId + "/thumbnail"
+	var fileBytes = Screenshot(url, 1200, 627)
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/octet-stream")
+	w.Write(fileBytes)
+	return
+}
+
+func Screenshot(urlstr string, w int64, h int64) []byte {
 	ctx, cancel := chromedp.NewContext(
 		context.Background(),
 		// chromedp.WithDebugf(log.Printf),
 	)
 	defer cancel()
 	var buf []byte
-	if err := chromedp.Run(ctx, fullScreenshot(urlstr, 100, &buf)); err != nil {
+	if err := chromedp.Run(ctx, fullScreenshot(urlstr, w, h, &buf)); err != nil {
 		log.Fatal(err)
 	}
 	return buf
 }
 
-func fullScreenshot(urlstr string, quality int, res *[]byte) chromedp.Tasks {
+func fullScreenshot(urlstr string, w int64, h int64, res *[]byte) chromedp.Tasks {
 	return chromedp.Tasks{
 		chromedp.Navigate(urlstr),
-		chromedp.EmulateViewport(1200, 630, chromedp.EmulateScale(2)),
-		chromedp.WaitVisible(`#logo`, chromedp.ByID),
-		chromedp.FullScreenshot(res, quality),
-		// chromedp.WaitVisible(`img[alt="Avatar"]`),
-		// chromedp.WaitVisible(`img#logo`),
+		chromedp.EmulateViewport(w, h, chromedp.EmulateScale(2)),
+		chromedp.WaitReady(`img[alt="Avatar"]`),
+		chromedp.Sleep(1 * time.Second),
+		chromedp.FullScreenshot(res, 100),
 	}
 }
 
@@ -54,7 +64,8 @@ func main() {
 		port = "3002"
 	}
 
-	http.HandleFunc("/api/screenshot", handler)
+	http.HandleFunc("/api/screenshot", screenshotHandler)
+	http.HandleFunc("/api/thumbnail", thumbnailHandler)
 	http.HandleFunc("/", sayHi)
 	log.Println("listening on", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))

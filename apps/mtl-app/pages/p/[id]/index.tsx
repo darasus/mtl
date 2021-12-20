@@ -19,11 +19,7 @@ const PostPage: React.FC = () => {
   const router = useRouter();
   const post = usePostQuery(router.query.id as string);
   const me = useMe();
-  const imageUrl = `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/screenshot?url=${
-    process.env.NEXT_PUBLIC_VERCEL_URL
-  }/p/${router.query.id}/thumbnail?colorMode=dark&updateDate=${new Date(
-    post.data?.updatedAt as Date
-  ).getTime()}`;
+  const imageUrl = `${process.env.SCREENSHOT_API_BASE_URL}/api/thumbnail?id=${router.query.id}`;
 
   return (
     <>

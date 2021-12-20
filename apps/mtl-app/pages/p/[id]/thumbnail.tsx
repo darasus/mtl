@@ -82,11 +82,16 @@ const ThumbnailPage: React.FC = () => {
         </Box>
         <Box mt={5}>
           <Flex alignItems="center" justifyContent="center">
-            <Box mr={1.5}>
-              <Text>Created with</Text>
-            </Box>
-            <Box style={{ marginBottom: -9 }}>
-              <Logo />
+            <Box>
+              <Text as="span" fontFamily="Fira Code">
+                Created with
+              </Text>
+              <Text as="span" fontFamily="Fira Code">
+                {' '}
+              </Text>
+              <Text as="span" fontFamily="Fira Code" color="brand">
+                my tiny libraty
+              </Text>
             </Box>
           </Flex>
         </Box>
