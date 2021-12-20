@@ -15,19 +15,19 @@ export const useDeleteCommentMutation = () => {
 
   return useMutation(
     ({ commentId }: { commentId: string; postId: string }) =>
-      withToast(fetcher.deleteComment(commentId), toastConfig),
+      withToast(fetcher.deleteComment({ commentId }), toastConfig),
     {
       onMutate: async ({ postId, commentId }) => {
         await queryClient.cancelQueries(
-          clientCacheKey.createPostCommentsKey(postId)
+          clientCacheKey.createPostCommentsKey({ postId })
         );
 
         const prev = queryClient.getQueryData(
-          clientCacheKey.createPostCommentsKey(postId)
+          clientCacheKey.createPostCommentsKey({ postId })
         );
 
         queryClient.setQueryData(
-          clientCacheKey.createPostCommentsKey(postId),
+          clientCacheKey.createPostCommentsKey({ postId }),
           (old: any) => {
             return {
               ...old,
@@ -43,16 +43,16 @@ export const useDeleteCommentMutation = () => {
       onError: (_, { postId }, context: any) => {
         if (context?.prev) {
           queryClient.setQueryData(
-            clientCacheKey.createPostCommentsKey(postId),
+            clientCacheKey.createPostCommentsKey({ postId }),
             context.prev
           );
         }
       },
       onSettled(_, __, { postId }) {
         queryClient.invalidateQueries(
-          clientCacheKey.createPostCommentsKey(postId)
+          clientCacheKey.createPostCommentsKey({ postId })
         );
-        queryClient.invalidateQueries(clientCacheKey.createPostKey(postId));
+        queryClient.invalidateQueries(clientCacheKey.createPostKey({ postId }));
       },
     }
   );

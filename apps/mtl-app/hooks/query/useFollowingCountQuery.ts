@@ -3,12 +3,12 @@ import { clientCacheKey } from '../../lib/ClientCacheKey';
 import { days } from '../../utils/duration';
 import { useFetcher } from '../useFetcher';
 
-export const useFollowingCountQuery = (userId: string) => {
+export const useFollowingCountQuery = ({ nickname }: { nickname: string }) => {
   const fetcher = useFetcher();
 
   return useQuery(
-    clientCacheKey.createFollowingCountKey(userId),
-    () => fetcher.getFollowingsCount(userId),
+    clientCacheKey.createFollowingCountKey({ nickname }),
+    () => fetcher.getFollowingsCount({ nickname }),
     {
       staleTime: days(1),
     }

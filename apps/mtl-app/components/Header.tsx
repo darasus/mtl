@@ -19,6 +19,7 @@ import {
   UserIcon,
   LogoutIcon,
   CogIcon,
+  RssIcon,
 } from '@heroicons/react/outline';
 import { useMe } from '../hooks/useMe';
 import { ActivityBadge } from '../components/ActivityBadge/ActivityBadge';
@@ -66,11 +67,6 @@ export const Header: React.FC<Props> = ({ fullWidth }) => {
           </Link>
         </Box>
         <Box flexGrow={1} />
-        <Box mr={4}>
-          <Link href="/feed">
-            <Text fontSize="sm">Feed</Text>
-          </Link>
-        </Box>
         {me?.isLoading && <Spinner />}
         {me?.user ? (
           <>
@@ -91,8 +87,14 @@ export const Header: React.FC<Props> = ({ fullWidth }) => {
                 <MenuButton as={UserPreview} aria-label="Options" />
                 <MenuList>
                   <MenuItem
+                    icon={<RssIcon width="20" height="20" />}
+                    onClick={() => router.push(`/feed`)}
+                  >
+                    Feed
+                  </MenuItem>
+                  <MenuItem
                     icon={<UserIcon width="20" height="20" />}
-                    onClick={() => router.push(`/u/${me?.user?.id}`)}
+                    onClick={() => router.push(`/u/${me?.user?.nickname}`)}
                   >
                     Profile
                   </MenuItem>

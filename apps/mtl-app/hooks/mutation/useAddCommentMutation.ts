@@ -31,19 +31,19 @@ export const useAddCommentMutation = () => {
   >(
     'jello',
     ({ postId, content }: Variables) =>
-      withToast(fetcher.addComment(postId, content), toastConfig),
+      withToast(fetcher.addComment({ postId, content }), toastConfig),
     {
       onMutate: async ({ postId, content }) => {
         await queryClient.cancelQueries(
-          clientCacheKey.createPostCommentsKey(postId)
+          clientCacheKey.createPostCommentsKey({ postId })
         );
 
         const prev = queryClient.getQueryData<Data>(
-          clientCacheKey.createPostCommentsKey(postId)
+          clientCacheKey.createPostCommentsKey({ postId })
         );
 
         queryClient.setQueryData<Data>(
-          clientCacheKey.createPostCommentsKey(postId),
+          clientCacheKey.createPostCommentsKey({ postId }),
           (old) => {
             return {
               total: 0,
@@ -79,14 +79,14 @@ export const useAddCommentMutation = () => {
       onError: (_, { postId }, context) => {
         if (context?.prev) {
           queryClient.setQueryData(
-            clientCacheKey.createPostCommentsKey(postId),
+            clientCacheKey.createPostCommentsKey({ postId }),
             context.prev
           );
         }
       },
       onSettled(_, __, { postId }) {
         queryClient.invalidateQueries(
-          clientCacheKey.createPostCommentsKey(postId)
+          clientCacheKey.createPostCommentsKey({ postId })
         );
       },
     }

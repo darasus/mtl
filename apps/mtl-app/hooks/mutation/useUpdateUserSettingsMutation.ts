@@ -40,8 +40,8 @@ export const useUpdateUserSettingsMutation = () => {
 
       await fetcher
         .updateUserSettings({
-          userId: me?.user?.id as string,
-          nickname: form.nickname,
+          currentNickname: me?.user?.nickname as string,
+          newNickname: form.nickname,
           name: form.name,
           image,
           password: form.password,
@@ -54,7 +54,12 @@ export const useUpdateUserSettingsMutation = () => {
         });
       await refetchUserProfileMutation.refetch();
     },
-    [fetcher, me?.user?.id, refetchUserProfileMutation, uploadImageMutation]
+    [
+      fetcher,
+      me?.user?.nickname,
+      refetchUserProfileMutation,
+      uploadImageMutation,
+    ]
   );
 
   return useMutation((form: Form) => {

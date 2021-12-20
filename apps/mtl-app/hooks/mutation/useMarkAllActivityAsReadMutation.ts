@@ -20,7 +20,9 @@ export const useMarkAllActivityAsReadMutation = () => {
     {
       async onSuccess() {
         await queryClient.invalidateQueries(
-          clientCacheKey.createUserActivityKey(me?.user?.id as string)
+          clientCacheKey.createUserActivityKey({
+            nickname: me?.user?.nickname as string,
+          })
         );
       },
     }

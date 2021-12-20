@@ -14,7 +14,7 @@ export const ActivityBadge = () => {
   const me = useMe();
   const mutation = useMarkAllActivityAsReadMutation();
   const { data, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useUserActivityQuery(me?.user?.id as string);
+    useUserActivityQuery({ nickname: me?.user?.nickname as string });
   const [showUnread, setShowUnread] = React.useState(false);
   const [lastReadDate, setLastReadDate] =
     useLocalStorage<Date>('last_unread_date');

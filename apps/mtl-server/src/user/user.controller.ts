@@ -14,16 +14,17 @@ import { ActivityService } from '../activity/activity.service';
 import { FollowService } from '../follow/follow.service';
 import { OptionalUserGuard } from '../guards/OptionalUserGuard';
 import { PrismaService } from '../prisma/prisma.service';
-import { Request, Response } from '@mtl/types';
+import { Request, Response, User } from '@mtl/types';
 import axios from 'axios';
 
 import { UserService } from './user.service';
 import { processErrorResponse } from '../utils/error';
 import { ConfigService } from '@nestjs/config';
 import { ApiResponse } from '@mtl/api-types';
+import { getMyIdByReq } from '../utils/getMyIdByReq';
 
 export class UpdateUserDto {
-  nickname: string;
+  newNickname: string;
   email: string;
   name: string;
   password: string;
@@ -40,29 +41,26 @@ export class UserController {
     private readonly configService: ConfigService
   ) {}
 
-  @Get('user/:userId')
-  async getUserById(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Param('userId') userId: string
-  ) {
-    res.send(await this.userService.getUserById({ userId }));
+  @Get('user/:nickname')
+  async getUserById(@Param('nickname') nickname: string): Promise<User> {
+    return this.userService.getUserByNickname({ nickname });
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('user/:userId/activity')
+  @Get('user/:nickname/activity')
   async getUserActivity(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('userId') userId: string,
+    @Param('nickname') nickname: string,
     @Query('take') take: string,
     @Query('cursor') cursor: string
   ) {
-    const myId = req?.user?.sub?.split('|')?.[1];
+    const myId = getMyIdByReq(req);
+    const user = await this.userService.getUserByNickname({ nickname });
 
-    if (myId !== userId) return res.status(403).send({ error: 'Forbidden' });
+    if (myId !== user.id) return res.status(403).send({ error: 'Forbidden' });
 
-    res.send(
+    return res.send(
       await this.userService.getUserActivity({
         userId: myId,
         take: Number(take) || undefined,
@@ -71,59 +69,65 @@ export class UserController {
     );
   }
 
-  @Get('user/:userId/follow/count')
+  @Get('user/:nickname/follow/count')
   async getFollowerCount(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('userId') userId: string
+    @Param('nickname') nickname: string
   ) {
-    res.send(await this.userService.getUserFollowerCount({ userId }));
+    const user = await this.userService.getUserByNickname({ nickname });
+    res.send(await this.userService.getUserFollowerCount({ userId: user.id }));
   }
 
-  @Get('user/:userId/followings/count')
+  @Get('user/:nickname/followings/count')
   async getFollowingCount(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('userId') userId: string
+    @Param('nickname') nickname: string
   ) {
-    res.send(await this.userService.getUserFollowingsCount({ userId }));
+    const user = await this.userService.getUserByNickname({ nickname });
+    res.send(
+      await this.userService.getUserFollowingsCount({ userId: user.id })
+    );
   }
 
   @UseGuards(OptionalUserGuard)
-  @Get('user/:userId/follow')
+  @Get('user/:nickname/follow')
   async doIFollow(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('userId') userId: string
+    @Param('nickname') nickname: string
   ) {
-    const myId = req?.user?.sub?.split('|')?.[1];
+    const myId = getMyIdByReq(req);
+    const user = await this.userService.getUserByNickname({ nickname });
 
     if (!myId) return res.send({ doIFollow: false });
 
     res.send(
       await this.followService.doIFollow({
         followerUserId: myId,
-        followingUserId: userId,
+        followingUserId: user.id,
       })
     );
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Post('user/:userId/follow')
+  @Post('user/:nickname/follow')
   async follow(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('userId') userId: string
+    @Param('nickname') nickname: string
   ) {
-    const myId = req?.user?.sub?.split('|')?.[1];
+    const myId = getMyIdByReq(req);
+    const user = await this.userService.getUserByNickname({ nickname });
 
     const response = await this.followService.followUser({
-      followingUserId: userId,
+      followingUserId: user.id,
       followerUserId: myId,
     });
 
     await this.activityService.addFollowActivity({
-      ownerId: userId,
+      ownerId: user.id,
       authorId: myId,
       followFollowerId: response.followerId,
       followFollowingId: response.followingId,
@@ -133,37 +137,39 @@ export class UserController {
   }
 
   @UseGuards(OptionalUserGuard)
-  @Get('user/:userId/posts')
+  @Get('user/:nickname/posts')
   async getUserPosts(
     @Req() req: Request,
-    @Param('userId') userId: string
-  ): Promise<ApiResponse['user/:userId/posts']> {
-    const myId = req?.user?.sub?.split('|')?.[1];
+    @Param('nickname') nickname: string
+  ): Promise<ApiResponse['user/:nickname/posts']> {
+    const myId = getMyIdByReq(req);
+    const user = await this.userService.getUserByNickname({ nickname });
 
     const posts = await this.userService.getUserPosts({
-      userId,
-      isMe: !!myId && myId === userId,
+      userId: user.id,
+      isMe: !!myId && myId === user.id,
     });
 
     return posts;
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Post('user/:userId/unfollow')
+  @Post('user/:nickname/unfollow')
   async unfollowUser(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('userId') userId: string
+    @Param('nickname') nickname: string
   ) {
-    const myId = req?.user?.sub?.split('|')?.[1];
+    const myId = getMyIdByReq(req);
+    const user = await this.userService.getUserByNickname({ nickname });
 
     await this.activityService.removeFollowActivity({
-      followFollowingId: userId,
+      followFollowingId: user.id,
       followFollowerId: myId,
     });
 
     await this.followService.unfollowUser({
-      followingUserId: userId,
+      followingUserId: user.id,
       followerUserId: myId,
     });
 
@@ -171,23 +177,24 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Post('user/:userId/update')
+  @Post('user/:nickname/update')
   async updateProfile(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('userId') userId: string,
+    @Param('nickname') nickname: string,
     @Body() body: UpdateUserDto
   ) {
+    const user = await this.userService.getUserByNickname({ nickname });
     const existingUser = await this.prismaService.user.findFirst({
       where: {
-        nickname: body.nickname,
+        nickname: body.newNickname,
       },
       select: {
         nickname: true,
       },
     });
 
-    if (existingUser && existingUser?.nickname !== body.nickname) {
+    if (existingUser && existingUser?.nickname !== body.newNickname) {
       return res.status(400).send({
         error: 'User with this nickname already exists.',
       });
@@ -222,7 +229,7 @@ export class UserController {
         data: {
           picture: body.image,
           name: body.name,
-          nickname: body.nickname,
+          nickname: body.newNickname,
           password: body.password,
           email: body.email,
         },
@@ -232,10 +239,10 @@ export class UserController {
       .catch((err) => res.status(400).send(processErrorResponse(err)));
 
     await this.userService.updateUserSettings({
-      userId: userId,
+      userId: user.id,
       image: body.image,
       name: body.name,
-      nickname: body.nickname,
+      nickname: body.newNickname,
       password: body.password,
       email: body.email,
     });

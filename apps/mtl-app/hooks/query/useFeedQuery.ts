@@ -13,8 +13,8 @@ export const useFeedQuery = ({ feedType }: { feedType: FeedType }) => {
   const queryClient = useQueryClient();
   const fetcher = useFetcher();
 
-  return useInfiniteQuery<ApiResponse['user/:userId/posts']>(
-    clientCacheKey.createFeedKey(feedType),
+  return useInfiniteQuery<ApiResponse['user/:nickname/posts']>(
+    clientCacheKey.createFeedKey({ feedType }),
     ({ pageParam = undefined }) =>
       fetcher.getFeed({ feedType, cursor: pageParam }),
     {

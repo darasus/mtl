@@ -15,19 +15,26 @@ export const useUnfollowMutation = () => {
   const fetcher = useFetcher();
   const me = useMe();
 
-  return useMutation<unknown, unknown, { userId: string }>(
-    ({ userId }) => withToast(fetcher.unfollowUser(userId), toastConfig),
+  return useMutation<unknown, unknown, { nickname: string }>(
+    ({ nickname }) =>
+      withToast(fetcher.unfollowUser({ nickname }), toastConfig),
     {
-      onSuccess(_, { userId }) {
-        qc.invalidateQueries(clientCacheKey.createFollowersCountKey(userId));
+      onSuccess(_, { nickname }) {
         qc.invalidateQueries(
-          clientCacheKey.createFollowersCountKey(me.user.id)
+          clientCacheKey.createFollowersCountKey({ nickname })
         );
-        qc.invalidateQueries(clientCacheKey.createFollowingCountKey(userId));
         qc.invalidateQueries(
-          clientCacheKey.createFollowingCountKey(me.user.id)
+          clientCacheKey.createFollowersCountKey({ nickname: me.user.id })
         );
-        qc.invalidateQueries(clientCacheKey.createDoIFollowUserKey(userId));
+        qc.invalidateQueries(
+          clientCacheKey.createFollowingCountKey({ nickname })
+        );
+        qc.invalidateQueries(
+          clientCacheKey.createFollowingCountKey({ nickname: me.user.id })
+        );
+        qc.invalidateQueries(
+          clientCacheKey.createDoIFollowUserKey({ nickname })
+        );
         qc.invalidateQueries(clientCacheKey.feedBaseKey);
       },
     }

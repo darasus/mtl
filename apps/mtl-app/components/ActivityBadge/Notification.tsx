@@ -12,7 +12,9 @@ import { useMarkActivityAsReadMutation } from '../../hooks/mutation/useMarkActiv
 
 export const Notification = ({ activity }: { activity: Activity & any }) => {
   const router = useRouter();
-  const markAsReadMutation = useMarkActivityAsReadMutation(activity.id);
+  const markAsReadMutation = useMarkActivityAsReadMutation({
+    activityId: activity.id,
+  });
   const isLikeNotification = typeof activity.likeId === 'string';
   const isCommentNotification = typeof activity.commentId === 'string';
   const isFollowNotification =
@@ -62,7 +64,7 @@ export const Notification = ({ activity }: { activity: Activity & any }) => {
       router.push(`/p/${activity.postId}`);
     }
     if (isFollowNotification) {
-      router.push(`/u/${activity?.follow?.follower?.id}`);
+      router.push(`/u/${activity?.follow?.follower?.nickname}`);
     }
   }, [
     markAsReadMutation,

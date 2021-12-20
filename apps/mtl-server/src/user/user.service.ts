@@ -24,6 +24,10 @@ export class UserService {
     return this.user({ where: { id: userId } });
   }
 
+  getUserByNickname({ nickname }: { nickname: string }) {
+    return this.user({ where: { nickname } });
+  }
+
   getUserByEmail(email: string) {
     return this.user({ where: { email } });
   }
@@ -150,6 +154,7 @@ export class UserService {
               select: {
                 id: true,
                 name: true,
+                nickname: true,
               },
             },
           },

@@ -13,44 +13,44 @@ export class ClientCacheKey {
   userActivityBaseKey = ['user_activity'];
   userPostsBaseKey = ['user-posts'];
 
-  createUserKey(userId: string) {
-    return [...this.userBaseKey, { userId }];
+  createUserKey({ nickname }: { nickname: string }) {
+    return [...this.userBaseKey, { nickname }];
   }
 
-  createPostCommentsKey(postId: string) {
+  createPostCommentsKey({ postId }: { postId: string }) {
     return [...this.commentsBaseKey, { postId }];
   }
 
-  createDoIFollowUserKey(userId: string) {
-    return [...this.doIFollowBaseKey, { userId }];
+  createDoIFollowUserKey({ nickname }: { nickname: string }) {
+    return [...this.doIFollowBaseKey, { nickname }];
   }
 
-  createFeedKey(feedType: FeedType) {
+  createFeedKey({ feedType }: { feedType: FeedType }) {
     return [...this.feedBaseKey, { feedType }];
   }
 
-  createFollowersCountKey(userId: string) {
-    return [...this.followersCountBaseKey, { userId }];
+  createFollowersCountKey({ nickname }: { nickname: string }) {
+    return [...this.followersCountBaseKey, { nickname }];
   }
 
-  createFollowingCountKey(userId: string) {
-    return [...this.followingsCountBaseKey, { userId }];
+  createFollowingCountKey({ nickname }: { nickname: string }) {
+    return [...this.followingsCountBaseKey, { nickname }];
   }
 
-  createPostKey(postId: string) {
+  createPostKey({ postId }: { postId: string }) {
     return [...this.postBaseKey, { postId }];
   }
 
-  createScreenshotKey(url: string) {
-    return [...this.screenshotBaseKey, { url }];
+  createScreenshotKey({ postId }: { postId: string }) {
+    return [...this.screenshotBaseKey, { postId }];
   }
 
-  createUserActivityKey(userId: string) {
-    return [...this.userActivityBaseKey, { userId }];
+  createUserActivityKey({ nickname }: { nickname: string }) {
+    return [...this.userActivityBaseKey, { nickname }];
   }
 
-  createUserPostsKey(userId: string) {
-    return [...this.userPostsBaseKey, { userId }];
+  createUserPostsKey({ nickname }: { nickname: string }) {
+    return [...this.userPostsBaseKey, { nickname }];
   }
 }
 

@@ -3,12 +3,12 @@ import { clientCacheKey } from '../../lib/ClientCacheKey';
 import { days } from '../../utils/duration';
 import { useFetcher } from '../useFetcher';
 
-export const useDoIFollowUserQuery = (userId: string) => {
+export const useDoIFollowUserQuery = ({ nickname }: { nickname: string }) => {
   const fetcher = useFetcher();
 
   return useQuery(
-    clientCacheKey.createDoIFollowUserKey(userId),
-    () => fetcher.doIFollowUser(userId),
+    clientCacheKey.createDoIFollowUserKey({ nickname }),
+    () => fetcher.doIFollowUser({ nickname }),
     {
       staleTime: days(1),
     }

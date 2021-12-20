@@ -3,16 +3,16 @@ import { clientCacheKey } from '../../lib/ClientCacheKey';
 import { days } from '../../utils/duration';
 import { useFetcher } from '../useFetcher';
 
-export const useUserActivityQuery = (userId: string) => {
+export const useUserActivityQuery = ({ nickname }: { nickname: string }) => {
   const fetcher = useFetcher();
 
   return useInfiniteQuery(
-    clientCacheKey.createUserActivityKey(userId),
+    clientCacheKey.createUserActivityKey({ nickname }),
     ({ pageParam = undefined }) =>
-      fetcher.getUserActivity({ userId, cursor: pageParam }),
+      fetcher.getUserActivity({ nickname, cursor: pageParam }),
     {
       staleTime: days(1),
-      enabled: !!userId,
+      enabled: !!nickname,
       getNextPageParam: (lastPage, pages) => {
         const localTotal = pages
           .map((page) => page.count)

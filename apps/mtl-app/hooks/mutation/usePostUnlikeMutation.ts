@@ -14,17 +14,19 @@ export const usePostUnlikeMutation = () => {
   const fetcher = useFetcher();
 
   return useMutation<unknown, unknown, { postId: string }>(
-    ({ postId }) => withToast(fetcher.unlikePost(postId), toastConfig),
+    ({ postId }) => withToast(fetcher.unlikePost({ postId }), toastConfig),
     {
       onMutate: async ({ postId }) => {
-        await queryClient.cancelQueries(clientCacheKey.createPostKey(postId));
+        await queryClient.cancelQueries(
+          clientCacheKey.createPostKey({ postId })
+        );
 
         const prev = queryClient.getQueryData(
-          clientCacheKey.createPostKey(postId)
+          clientCacheKey.createPostKey({ postId })
         );
 
         queryClient.setQueryData(
-          clientCacheKey.createPostKey(postId),
+          clientCacheKey.createPostKey({ postId }),
           (old: any) => {
             return {
               ...old,
@@ -39,13 +41,13 @@ export const usePostUnlikeMutation = () => {
       onError: (_, { postId }, context: any) => {
         if (context?.prev) {
           queryClient.setQueryData(
-            clientCacheKey.createPostKey(postId),
+            clientCacheKey.createPostKey({ postId }),
             context.prev
           );
         }
       },
       onSettled(_, __, { postId }) {
-        queryClient.invalidateQueries(clientCacheKey.createPostKey(postId));
+        queryClient.invalidateQueries(clientCacheKey.createPostKey({ postId }));
       },
     }
   );

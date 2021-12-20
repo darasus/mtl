@@ -13,8 +13,10 @@ import { CodeLanguage } from '.prisma/client';
 
 const EditPostPage: React.FC = () => {
   const router = useRouter();
-  const post = usePostQuery(router.query.id as string);
-  const postEditMutation = usePostEditMutation(post.data?.id as string);
+  const post = usePostQuery({ postId: router.query.id as string });
+  const postEditMutation = usePostEditMutation({
+    postId: post.data?.id as string,
+  });
   const form = useForm<PostForm>({
     resolver: yupResolver(postSchema),
   });

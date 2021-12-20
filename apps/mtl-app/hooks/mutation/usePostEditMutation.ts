@@ -18,7 +18,7 @@ const toastConfig = {
   error: 'Post is not updated.',
 };
 
-export const usePostEditMutation = (postId: string) => {
+export const usePostEditMutation = ({ postId }: { postId: string }) => {
   const queryClient = useQueryClient();
   const fetcher = useFetcher();
 
@@ -28,7 +28,7 @@ export const usePostEditMutation = (postId: string) => {
     {
       async onSettled() {
         await queryClient.invalidateQueries(
-          clientCacheKey.createPostKey(postId)
+          clientCacheKey.createPostKey({ postId })
         );
         await queryClient.invalidateQueries(clientCacheKey.feedBaseKey);
       },

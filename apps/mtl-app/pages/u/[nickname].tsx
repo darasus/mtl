@@ -19,26 +19,26 @@ import { useFollowingCountQuery } from '../../hooks/query/useFollowingCountQuery
 const UserPage: React.FC = () => {
   const { secondaryTextColor } = useColors();
   const router = useRouter();
-  const userId = router.query.id as string;
-  const user = useUserQuery(userId);
+  const nickname = router.query.nickname as string;
+  const user = useUserQuery({ nickname });
   const me = useMe();
-  const posts = useUserPostsQuery(userId);
+  const posts = useUserPostsQuery({ nickname });
   const followMutation = useFollowMutation();
   const unfollowMutation = useUnfollowMutation();
-  const followersCount = useFollowersCountQuery(userId);
-  const followingCount = useFollowingCountQuery(userId);
-  const doIFollowUser = useDoIFollowUserQuery(userId);
-  const isMyPage = me?.user?.id === userId;
+  const followersCount = useFollowersCountQuery({ nickname });
+  const followingCount = useFollowingCountQuery({ nickname });
+  const doIFollowUser = useDoIFollowUserQuery({ nickname });
+  const isMyPage = me?.user?.nickname === nickname;
 
   const handleFollow = () => {
     followMutation.mutateAsync({
-      userId: user.data?.id as string,
+      nickname: user.data?.nickname as string,
     });
   };
 
   const handleUnfollow = () => {
     unfollowMutation.mutateAsync({
-      userId: user.data?.id as string,
+      nickname: user.data?.nickname as string,
     });
   };
 

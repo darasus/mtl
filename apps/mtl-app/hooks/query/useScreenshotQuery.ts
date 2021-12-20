@@ -2,11 +2,11 @@ import { useQuery } from 'react-query';
 import { clientCacheKey } from '../../lib/ClientCacheKey';
 import { useFetcher } from '../useFetcher';
 
-export const useScreenshotQuery = (postId: string) => {
+export const useScreenshotQuery = ({ postId }: { postId: string }) => {
   const fetcher = useFetcher();
 
   return useQuery(
-    clientCacheKey.createScreenshotKey(postId),
+    clientCacheKey.createScreenshotKey({ postId }),
     () => fetcher.getScreenshot({ postId }),
     {
       refetchOnWindowFocus: false,

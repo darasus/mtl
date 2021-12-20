@@ -17,7 +17,7 @@ import { getSession } from '@auth0/nextjs-auth0';
 
 const PostPage: React.FC = () => {
   const router = useRouter();
-  const post = usePostQuery(router.query.id as string);
+  const post = usePostQuery({ postId: router.query.id as string });
   const me = useMe();
   const imageUrl = `${process.env.SCREENSHOT_API_BASE_URL}/api/thumbnail?id=${router.query.id}`;
 
@@ -72,14 +72,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const postId = ctx.query.id as string;
 
   try {
-    const post = await fetcher.getPost(postId);
+    const post = await fetcher.getPost({ postId });
 
     await Promise.all([
-      queryClient.prefetchQuery(clientCacheKey.createPostKey(postId), () =>
+      queryClient.prefetchQuery(clientCacheKey.createPostKey({ postId }), () =>
         Promise.resolve(post)
       ),
       queryClient.prefetchQuery(
-        clientCacheKey.createPostCommentsKey(post.id),
+        clientCacheKey.createPostCommentsKey({ postId: post.id }),
         () =>
           Promise.resolve({
             items: post.comments,

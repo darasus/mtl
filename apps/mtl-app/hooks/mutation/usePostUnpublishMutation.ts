@@ -14,11 +14,11 @@ export const usePostUnpublishMutation = (postId: string) => {
   const fetcher = useFetcher();
 
   return useMutation(
-    () => withToast(fetcher.unpublishPost(postId), toastConfig),
+    () => withToast(fetcher.unpublishPost({ postId }), toastConfig),
     {
       async onSettled() {
         await queryClient.invalidateQueries(
-          clientCacheKey.createPostKey(postId)
+          clientCacheKey.createPostKey({ postId })
         );
         await queryClient.invalidateQueries(clientCacheKey.feedBaseKey);
       },

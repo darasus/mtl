@@ -10,7 +10,7 @@ import { GetServerSideProps } from 'next';
 
 const PreviewPage: React.FC = () => {
   const router = useRouter();
-  const post = usePostQuery(router.query.id as string);
+  const post = usePostQuery({ postId: router.query.id as string });
   const me = useMe();
 
   if (!post.data) return null;

@@ -13,7 +13,9 @@ import { GetServerSideProps } from 'next';
 
 const ThumbnailPage: React.FC = () => {
   const router = useRouter();
-  const { data: post } = usePostQuery(router.query.id as string);
+  const { data: post } = usePostQuery({
+    postId: router.query.id as string,
+  });
   const { borderColor } = useColors();
 
   if (!post) return null;

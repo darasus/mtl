@@ -29,10 +29,10 @@ const Index: React.FC = () => {
   const isMeLoading = me?.isLoading;
 
   React.useEffect(() => {
-    if (me?.user?.id) {
-      router.push(`/u/${me?.user?.id}`);
+    if (me?.user?.nickname) {
+      router.push(`/u/${me?.user?.nickname}`);
     }
-  }, [me?.user?.id, router]);
+  }, [me?.user?.nickname, router]);
 
   if (me?.user?.id) return null;
 

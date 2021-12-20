@@ -27,50 +27,55 @@ export class Fetcher {
   getMe = (): Promise<User> =>
     this.httpConnector.request('/api/me').then((res) => res.data);
 
-  getUser = (userId: string): Promise<User> =>
-    this.httpConnector.request(`/api/user/${userId}`).then((res) => res.data);
+  getUser = ({ nickname }: { nickname: string }): Promise<User> =>
+    this.httpConnector.request(`/api/user/${nickname}`).then((res) => res.data);
 
   getUserPosts = ({
-    userId,
+    nickname,
     cursor,
   }: {
-    userId: string;
+    nickname: string;
     cursor?: string;
-  }): Promise<ApiResponse['user/:userId/posts']> =>
+  }): Promise<ApiResponse['user/:nickname/posts']> =>
     this.httpConnector
-      .request(`/api/user/${userId}/posts?${qs.stringify({ cursor })}`)
+      .request(`/api/user/${nickname}/posts?${qs.stringify({ cursor })}`)
       .then((res) => res.data);
 
-  invalidateUser = (userId: string): Promise<{ status: 'success' }> =>
+  invalidateUser = ({
+    nickname,
+  }: {
+    nickname: string;
+  }): Promise<{ status: 'success' }> =>
     this.httpConnector
-      .request(`/api/user/${userId}/invalidate`, {
+      .request(`/api/user/${nickname}/invalidate`, {
         method: 'POST',
         data: {},
       })
       .then((res) => res.data);
 
   updateUserSettings = ({
-    userId,
+    currentNickname,
     ...data
   }: {
-    userId: string;
-    nickname?: string;
+    currentNickname: string;
+    newNickname?: string;
     name?: string;
     password?: string;
     image?: string;
     email?: string;
-  }) => this.httpConnector.post(`/api/user/${userId}/update`, { ...data });
+  }) =>
+    this.httpConnector.post(`/api/user/${currentNickname}/update`, { ...data });
 
   // like
 
-  likePost = (postId: string) =>
+  likePost = ({ postId }: { postId: string }) =>
     this.httpConnector
       .request(`/api/post/${postId}/like`, {
         method: 'POST',
       })
       .then((res) => res.data);
 
-  unlikePost = (postId: string) =>
+  unlikePost = ({ postId }: { postId: string }) =>
     this.httpConnector
       .request(`/api/post/${postId}/unlike`, {
         method: 'POST',
@@ -92,7 +97,7 @@ export class Fetcher {
       .request(`/api/post/${postId}/comments?${qs.stringify({ take, skip })}`)
       .then((res) => res.data);
 
-  addComment = (postId: string, content: string) =>
+  addComment = ({ postId, content }: { postId: string; content: string }) =>
     this.httpConnector
       .request(`/api/post/${postId}/addComment`, {
         method: 'POST',
@@ -102,7 +107,7 @@ export class Fetcher {
       })
       .then((res) => res.data);
 
-  deleteComment = (commentId: string) =>
+  deleteComment = ({ commentId }: { commentId: string }) =>
     this.httpConnector
       .request(`/api/comment/${commentId}`, {
         method: 'DELETE',
@@ -111,31 +116,31 @@ export class Fetcher {
 
   // follow
 
-  doIFollowUser = (userId: string) =>
+  doIFollowUser = ({ nickname }: { nickname: string }) =>
     this.httpConnector
-      .request(`/api/user/${userId}/follow`)
+      .request(`/api/user/${nickname}/follow`)
       .then((res) => res.data);
 
-  getFollowersCount = (userId: string) =>
+  getFollowersCount = ({ nickname }: { nickname: string }) =>
     this.httpConnector
-      .request(`/api/user/${userId}/follow/count`)
+      .request(`/api/user/${nickname}/follow/count`)
       .then((res) => res.data);
 
-  getFollowingsCount = (userId: string) =>
+  getFollowingsCount = ({ nickname }: { nickname: string }) =>
     this.httpConnector
-      .request(`/api/user/${userId}/followings/count`)
+      .request(`/api/user/${nickname}/followings/count`)
       .then((res) => res.data);
 
-  followUser = (userId: string) =>
+  followUser = ({ nickname }: { nickname: string }) =>
     this.httpConnector
-      .request(`/api/user/${userId}/follow`, {
+      .request(`/api/user/${nickname}/follow`, {
         method: 'POST',
       })
       .then((res) => res.data);
 
-  unfollowUser = (userId: string) =>
+  unfollowUser = ({ nickname }: { nickname: string }) =>
     this.httpConnector
-      .request(`/api/user/${userId}/unfollow`, {
+      .request(`/api/user/${nickname}/unfollow`, {
         method: 'POST',
       })
       .then((res) => res.data);
@@ -148,7 +153,7 @@ export class Fetcher {
   }: {
     cursor?: string;
     feedType: FeedType;
-  }): Promise<ApiResponse['user/:userId/posts']> =>
+  }): Promise<ApiResponse['user/:nickname/posts']> =>
     this.httpConnector
       .request(
         `/api/feed?${qs.stringify({
@@ -160,7 +165,7 @@ export class Fetcher {
 
   // post
 
-  getPost = (postId: string): Promise<Post> =>
+  getPost = ({ postId }: { postId: string }): Promise<Post> =>
     this.httpConnector.request(`/api/post/${postId}`).then((res) => res.data);
 
   getScreenshot = ({
@@ -220,14 +225,14 @@ export class Fetcher {
       })
       .then((res) => res.data);
 
-  publishPost = (postId: string) =>
+  publishPost = ({ postId }: { postId: string }) =>
     this.httpConnector
       .request(`/api/post/${postId}/publish`, {
         method: 'PUT',
       })
       .then((res) => res.data);
 
-  unpublishPost = (postId: string) =>
+  unpublishPost = ({ postId }: { postId: string }) =>
     this.httpConnector
       .request(`/api/post/${postId}/unpublish`, {
         method: 'PUT',
@@ -246,22 +251,22 @@ export class Fetcher {
   // activity
 
   getUserActivity = ({
-    userId,
+    nickname,
     cursor,
   }: {
-    userId: string;
+    nickname: string;
     cursor: string;
   }) => {
     return this.httpConnector
       .request(
         `${
           process.env.NEXT_PUBLIC_API_BASE
-        }/api/user/${userId}/activity?${qs.stringify({ cursor })}`
+        }/api/user/${nickname}/activity?${qs.stringify({ cursor })}`
       )
       .then((res) => res.data);
   };
 
-  markActivityAsRead = (activityId: string) => {
+  markActivityAsRead = ({ activityId }: { activityId: string }) => {
     return this.httpConnector
       .request(`/api/activity/${activityId}/markAsRead`, { method: 'POST' })
       .then((res) => res.data);

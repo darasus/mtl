@@ -8,16 +8,16 @@ import { hours } from '../../utils/duration';
 import { useFetcher } from '../useFetcher';
 import { ApiResponse } from '@mtl/api-types';
 
-export const useUserPostsQuery = (userId: string) => {
+export const useUserPostsQuery = ({ nickname }: { nickname: string }) => {
   const queryClient = useQueryClient();
   const fetcher = useFetcher();
 
-  return useInfiniteQuery<ApiResponse['user/:userId/posts']>(
-    clientCacheKey.createUserPostsKey(userId),
+  return useInfiniteQuery<ApiResponse['user/:nickname/posts']>(
+    clientCacheKey.createUserPostsKey({ nickname }),
     ({ pageParam = undefined }) =>
-      fetcher.getUserPosts({ userId, cursor: pageParam }),
+      fetcher.getUserPosts({ nickname, cursor: pageParam }),
     {
-      enabled: !!userId,
+      enabled: !!nickname,
       staleTime: hours(1),
       getNextPageParam,
       onSuccess(data) {

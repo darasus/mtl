@@ -13,7 +13,7 @@ export const useCommentsQuery = ({
   const fetcher = useFetcher();
 
   return useQuery(
-    clientCacheKey.createPostCommentsKey(postId),
+    clientCacheKey.createPostCommentsKey({ postId }),
     () => fetcher.getComments({ postId, take }),
     {
       enabled: !!postId,

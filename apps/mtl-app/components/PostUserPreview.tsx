@@ -19,7 +19,7 @@ export const PostUserPreview: React.FC<Props> = ({ user }) => {
         boxShadow="base"
         mr={1}
       >
-        <RouterLink href={`/u/${user?.id}`}>
+        <RouterLink href={`/u/${user?.nickname}`}>
           <Image
             src={user?.image as string}
             width="100"
@@ -28,7 +28,7 @@ export const PostUserPreview: React.FC<Props> = ({ user }) => {
           />
         </RouterLink>
       </Box>
-      <RouterLink href={`/u/${user?.id}`}>
+      <RouterLink href={`/u/${user?.nickname}`}>
         <Text whiteSpace="nowrap" fontSize="sm">
           {user?.name}
         </Text>

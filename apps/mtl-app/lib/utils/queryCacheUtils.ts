@@ -12,19 +12,22 @@ export const onPostsInfiniteQuerySuccess = ({
   data.pages?.forEach((page) => {
     page.items?.forEach((post) => {
       const postCache = queryClient.getQueryData(
-        clientCacheKey.createPostKey(post.id)
+        clientCacheKey.createPostKey({ postId: post.id })
       );
       const postCommentsCache = queryClient.getQueryData(
-        clientCacheKey.createPostCommentsKey(post.id)
+        clientCacheKey.createPostCommentsKey({ postId: post.id })
       );
 
       if (!postCache) {
-        queryClient.setQueryData(clientCacheKey.createPostKey(post.id), post);
+        queryClient.setQueryData(
+          clientCacheKey.createPostKey({ postId: post.id }),
+          post
+        );
       }
 
       if (!postCommentsCache) {
         queryClient.setQueryData(
-          clientCacheKey.createPostCommentsKey(post.id),
+          clientCacheKey.createPostCommentsKey({ postId: post.id }),
           {
             items: post.comments,
             count: post.comments.length,

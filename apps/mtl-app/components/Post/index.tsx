@@ -30,7 +30,7 @@ export const Post: React.FC<Props> = React.memo(function Post({
   showMetaInfo = true,
   isPostStatusVisible,
 }) {
-  const { data: post } = usePostQuery(postId);
+  const { data: post } = usePostQuery({ postId });
   const { borderColor } = useColors();
 
   if (!post) return null;

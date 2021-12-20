@@ -30,7 +30,7 @@ export const ActionMenu: React.FC<Props> = ({ isMyPost, post }) => {
   const me = useMe();
   const router = useRouter();
   const { mutateAsync: deletePost, isLoading: isDeleting } =
-    usePostDeleteMutation(post.id);
+    usePostDeleteMutation({ postId: post.id });
   const unpublishMutation = usePostUnpublishMutation(post.id);
   const publishMutation = usePostPublishMutation(post.id);
 
