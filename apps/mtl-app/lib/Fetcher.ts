@@ -7,6 +7,7 @@ import { ClientHttpConnector } from './ClientHttpConnector';
 import { FeedType } from '../types/FeedType';
 import ServerFormData from 'form-data';
 import { ApiResponse } from '@mtl/api-types';
+import getConfig from 'next/config';
 
 export class Fetcher {
   httpConnector: ServerHttpConnector | ClientHttpConnector;
@@ -260,7 +261,7 @@ export class Fetcher {
     return this.httpConnector
       .request(
         `${
-          process.env.NEXT_PUBLIC_API_BASE
+          getConfig().publicRuntimeConfig.API_BASE_URL
         }/api/user/${nickname}/activity?${qs.stringify({ cursor })}`
       )
       .then((res) => res.data);

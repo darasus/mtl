@@ -1,3 +1,4 @@
+import getConfig from 'next/config';
 import NextHead from 'next/head';
 import { introImageUrl } from '../constants/introImageUrl';
 import { slogan } from '../constants/slogan';
@@ -18,7 +19,7 @@ export const Head: React.FC<Props> = ({
   twitterImage = introImageUrl,
   children,
 }) => {
-  const url = `${process.env.NEXT_PUBLIC_VERCEL_URL}/${urlPath}`;
+  const url = `${getConfig().publicRuntimeConfig.BASE_URL}/${urlPath}`;
   const titleText = `${title} | My Tiny Library`;
 
   return (

@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
+import getConfig from 'next/config';
 
 export class ClientHttpConnector {
   request: AxiosInstance;
@@ -22,7 +23,7 @@ export class ClientHttpConnector {
 
   createRequest = ({ accessToken }: { accessToken: string }) => {
     const client = axios.create({
-      baseURL: `${process.env.NEXT_PUBLIC_API_BASE}`,
+      baseURL: `${getConfig().publicRuntimeConfig.API_BASE_URL}`,
       headers: {
         Pragma: 'no-cache',
         Authorization: `Bearer ${accessToken}`,

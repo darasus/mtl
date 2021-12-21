@@ -25,12 +25,9 @@ module.exports = withPlugins([withNx], {
   experimental: {
     esmExternals: false,
   },
-  env: {
-    NEXT_PUBLIC_VERCEL_URL:
-      process.env.VERCEL_ENV === 'production'
-        ? 'https://www.mytinylibrary.com'
-        : process.env.VERCEL_URL === 'localhost:3000'
-        ? `http://${process.env.VERCEL_URL}`
-        : `https://${process.env.VERCEL_URL}`,
+  publicRuntimeConfig: {
+    PUSHER_APP_KEY: process.env.PUSHER_APP_KEY || '',
+    BASE_URL: process.env.BASE_URL || '',
+    API_BASE_URL: process.env.API_BASE_URL || '',
   },
 });

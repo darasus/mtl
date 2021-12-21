@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { IncomingMessage } from 'http';
 import * as AxiosLogger from 'axios-logger';
 import { NextApiRequestCookies } from 'next/dist/server/api-utils';
+import getConfig from 'next/config';
 
 interface Props {
   req?: IncomingMessage & {
@@ -45,7 +46,7 @@ export class ServerHttpConnector {
 
   createRequest = (props?: { config?: AxiosRequestConfig }) => {
     const client = axios.create({
-      baseURL: `${process.env.NEXT_PUBLIC_API_BASE}`,
+      baseURL: `${getConfig().publicRuntimeConfig.API_BASE_URL}`,
       ...props?.config,
     });
 

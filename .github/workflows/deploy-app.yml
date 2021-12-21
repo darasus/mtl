@@ -1,4 +1,4 @@
-name: deploy server
+name: deploy app
 on:
   push:
     branches:
@@ -15,4 +15,4 @@ jobs:
       - uses: actions/checkout@v2
       - uses: superfly/flyctl-actions@1.1
         with:
-          args: 'deploy --config ./apps/mtl-server/fly.toml --dockerfile ./apps/mtl-server/Dockerfile'
+          args: 'deploy --config ./apps/mtl-app/fly.toml --dockerfile ./apps/mtl-app/Dockerfile'

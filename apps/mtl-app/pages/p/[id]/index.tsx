@@ -14,12 +14,15 @@ import { ServerHttpConnector } from '../../../lib/ServerHttpConnector';
 import { useMe } from '../../../hooks/useMe';
 import { clientCacheKey } from '../../../lib/ClientCacheKey';
 import { getSession } from '@auth0/nextjs-auth0';
+import getConfig from 'next/config';
 
 const PostPage: React.FC = () => {
   const router = useRouter();
   const post = usePostQuery({ postId: router.query.id as string });
   const me = useMe();
-  const imageUrl = `${process.env.SCREENSHOT_API_BASE_URL}/api/thumbnail?id=${router.query.id}`;
+  const imageUrl = `${
+    getConfig().publicRuntimeConfig.SCREENSHOT_API_BASE_URL
+  }/api/thumbnail?id=${router.query.id}`;
 
   return (
     <>

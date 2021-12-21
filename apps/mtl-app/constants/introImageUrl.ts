@@ -1,1 +1,7 @@
-export const introImageUrl = `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/screenshot?url=${process.env.NEXT_PUBLIC_VERCEL_URL}/home-preview-image`;
+import getConfig from 'next/config';
+
+export const introImageUrl = `${
+  getConfig().publicRuntimeConfig.BASE_URL
+}/api/screenshot?url=${
+  getConfig().publicRuntimeConfig.BASE_URL
+}/home-preview-image`;

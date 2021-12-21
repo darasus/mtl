@@ -41,8 +41,6 @@ ENV NODE_ENV production
 
 RUN yarn nx build mtl-server --prod
 
-RUN ls -la
-
 FROM node:14-alpine as runtime
 
 COPY --from=runtime-dependencies /runtime-dependencies/node_modules ./node_modules

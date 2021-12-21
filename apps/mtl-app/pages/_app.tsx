@@ -10,6 +10,7 @@ import * as Fathom from 'fathom-client';
 import { useRouter } from 'next/router';
 import { UserProvider } from '@auth0/nextjs-auth0';
 import { MTLProvider } from '../components/MTLProvider';
+import getConfig from 'next/config';
 
 const MyApp = ({
   Component,
@@ -63,7 +64,7 @@ const MyApp = ({
               />
             </Head>
             <PusherProvider
-              clientKey={process.env.NEXT_PUBLIC_PUSHER_APP_KEY}
+              clientKey={getConfig().publicRuntimeConfig.PUSHER_APP_KEY}
               cluster="eu"
             >
               <Component {...pageProps} />
