@@ -34,9 +34,9 @@ export class ClientHttpConnector {
         return response;
       },
       function (error) {
-        // if (error?.response?.status === 401) {
-        //   window.location.href = '/api/auth/login';
-        // }
+        if (error?.response?.status === 401) {
+          window.location.href = '/api/auth/login';
+        }
         return Promise.reject(error);
       }
     );
