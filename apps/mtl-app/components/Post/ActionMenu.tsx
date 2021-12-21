@@ -70,10 +70,13 @@ export const ActionMenu: React.FC<Props> = ({ isMyPost, post }) => {
     <MenuButton {...commonProps} variant="ghost" size="xs" />
   );
 
-  const buttonComponent = useBreakpointValue({
-    base: mobileButton,
-    sm: desktopButton,
-  });
+  const buttonComponent = useBreakpointValue(
+    {
+      base: mobileButton,
+      sm: desktopButton,
+    },
+    'sm'
+  );
 
   if (isMyPost || me?.user?.role === Role.ADMIN) {
     return (

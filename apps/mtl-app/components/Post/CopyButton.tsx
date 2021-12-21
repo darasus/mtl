@@ -38,10 +38,13 @@ export const CopyButton = ({ content }: { content: string }) => {
     </Button>
   );
 
-  const buttonComponent = useBreakpointValue({
-    base: mobileButton,
-    sm: desktopButton,
-  });
+  const buttonComponent = useBreakpointValue(
+    {
+      base: mobileButton,
+      sm: desktopButton,
+    },
+    'sm'
+  );
 
   if (!buttonComponent) return mobileButton;
 

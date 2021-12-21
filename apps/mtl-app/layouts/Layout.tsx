@@ -8,10 +8,13 @@ type Props = {
 };
 
 export const Layout: React.FC<Props> = (props) => {
-  const mainPadding = useBreakpointValue({
-    base: '4',
-    mr: '0',
-  });
+  const mainPadding = useBreakpointValue(
+    {
+      base: '4',
+      md: '0',
+    },
+    'md'
+  );
 
   return (
     <>

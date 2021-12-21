@@ -38,7 +38,7 @@ export const Header: React.FC<Props> = ({ fullWidth }) => {
       base: 'mtl',
       md: 'my tiny library',
     },
-    'base'
+    'md'
   );
 
   return (
