@@ -10,7 +10,6 @@ import { useFollowersCountQuery } from '../../hooks/query/useFollowersCountQuery
 import { useUnfollowMutation } from '../../hooks/mutation/useUnfollowMutation';
 import { useDoIFollowUserQuery } from '../../hooks/query/useDoIFollowUserQuery';
 import { Layout } from '../../layouts/Layout';
-import { useColors } from '../../hooks/useColors';
 import { Head } from '../../components/Head';
 import { Heading } from '../../components/Heading';
 import { useMe } from '../../hooks/useMe';
@@ -22,19 +21,19 @@ import { createIsFirstServerCall } from '../../utils/createIsFirstServerCall';
 import { HttpConnector } from '../../lib/HttpConnector';
 import { Fetcher } from '../../lib/Fetcher';
 import { clientCacheKey } from '../../lib/ClientCacheKey';
-import { getPlaiceholder } from 'plaiceholder';
+import { getPlaiceholder, IGetPlaiceholderReturn } from 'plaiceholder';
 import { User } from '@mtl/types';
+import { rejectNil } from '../../utils/rejectNil';
 
 interface Props {
-  userProfileImage: string;
-  userProfileImageBlurhash: string;
+  userProfileImage: string | undefined;
+  userProfileImageBlurhash: string | undefined;
 }
 
 const UserPage: React.FC<Props> = ({
   userProfileImage,
   userProfileImageBlurhash,
 }) => {
-  const { secondaryTextColor } = useColors();
   const router = useRouter();
   const nickname = router.query.nickname as string;
   const user = useUserQuery({ nickname });
@@ -112,15 +111,25 @@ const UserPage: React.FC<Props> = ({
                   boxShadow="base"
                   mb={2}
                 >
-                  <Image
-                    src={userProfileImage}
-                    width="500"
-                    height="500"
-                    alt="Avatar"
-                    placeholder="blur"
-                    blurDataURL={userProfileImageBlurhash}
-                    priority={true}
-                  />
+                  {userProfileImage && userProfileImageBlurhash ? (
+                    <Image
+                      src={userProfileImage}
+                      width="500"
+                      height="500"
+                      alt="Avatar"
+                      placeholder="blur"
+                      blurDataURL={userProfileImageBlurhash}
+                      priority={true}
+                    />
+                  ) : (
+                    <Image
+                      src={user?.data?.image}
+                      width="500"
+                      height="500"
+                      alt="Avatar"
+                      priority={true}
+                    />
+                  )}
                 </Box>
                 <Box mb={1}>
                   <Text fontWeight="bold" fontSize="2xl">
@@ -220,17 +229,21 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
   }
 
-  const userImage = await getPlaiceholder(user.image, { size: 16 });
+  console.log({ user });
+  let userImage: IGetPlaiceholderReturn | null = null;
+  if (user?.image) {
+    userImage = await getPlaiceholder(user?.image, { size: 16 });
+  }
 
   return {
-    props: {
+    props: rejectNil({
       dehydratedState: dehydrate(queryClient),
       accessToken: session?.accessToken || null,
       cookies: ctx.req?.headers?.cookie ?? '',
-      user: session?.user || undefined,
-      userProfileImage: userImage.img,
-      userProfileImageBlurhash: userImage.blurhash,
-    },
+      user: session?.user || null,
+      userProfileImage: userImage?.img,
+      userProfileImageBlurhash: userImage?.blurhash,
+    }),
   };
 };
 
