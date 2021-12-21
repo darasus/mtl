@@ -23,8 +23,8 @@ export const UserPreview = React.forwardRef<HTMLDivElement>(
               >
                 <Image
                   src={me.user?.picture as string}
-                  width="100"
-                  height="100"
+                  width="50"
+                  height="50"
                   alt="Avatar"
                   quality={100}
                   priority={true}

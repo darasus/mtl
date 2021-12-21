@@ -22,8 +22,18 @@ import { createIsFirstServerCall } from '../../utils/createIsFirstServerCall';
 import { HttpConnector } from '../../lib/HttpConnector';
 import { Fetcher } from '../../lib/Fetcher';
 import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { getPlaiceholder } from 'plaiceholder';
+import { User } from '@mtl/types';
 
-const UserPage: React.FC = () => {
+interface Props {
+  userProfileImage: string;
+  userProfileImageBlurhash: string;
+}
+
+const UserPage: React.FC<Props> = ({
+  userProfileImage,
+  userProfileImageBlurhash,
+}) => {
   const { secondaryTextColor } = useColors();
   const router = useRouter();
   const nickname = router.query.nickname as string;
@@ -103,10 +113,12 @@ const UserPage: React.FC = () => {
                   mb={2}
                 >
                   <Image
-                    src={user.data?.image as string}
+                    src={userProfileImage}
                     width="500"
                     height="500"
                     alt="Avatar"
+                    placeholder="blur"
+                    blurDataURL={userProfileImageBlurhash}
                     priority={true}
                   />
                 </Box>
@@ -188,13 +200,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const fetcher = new Fetcher(httpConnector);
   const nickname = ctx.query.nickname as string;
 
+  let user: User | undefined;
+
   try {
-    const post = await fetcher.getUser({ nickname });
+    user = await fetcher.getUser({ nickname });
 
     await Promise.all([
       queryClient.prefetchQuery(
         clientCacheKey.createUserKey({ nickname }),
-        () => Promise.resolve(post)
+        () => Promise.resolve(user)
       ),
     ]);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -206,12 +220,16 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
   }
 
+  const userImage = await getPlaiceholder(user.image, { size: 16 });
+
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
       accessToken: session?.accessToken || null,
       cookies: ctx.req?.headers?.cookie ?? '',
       user: session?.user || undefined,
+      userProfileImage: userImage.img,
+      userProfileImageBlurhash: userImage.blurhash,
     },
   };
 };
