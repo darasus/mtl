@@ -32,7 +32,7 @@ export const Syntax: React.FC<Props> = ({ value, codeLanguage, slice }) => {
               padding: '10px 20px',
               marginTop: 0,
               marginBottom: 0,
-              overflow: 'scroll',
+              overflow: 'auto',
               fontFamily: 'Fira Code, monospace',
               backgroundColor: 'transparent',
             }}
