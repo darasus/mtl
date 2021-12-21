@@ -107,6 +107,7 @@ const UserPage: React.FC = () => {
                     width="500"
                     height="500"
                     alt="Avatar"
+                    priority={true}
                   />
                 </Box>
                 <Box mb={1}>

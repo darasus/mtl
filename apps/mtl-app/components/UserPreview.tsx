@@ -27,6 +27,7 @@ export const UserPreview = React.forwardRef<HTMLDivElement>(
                   height="100"
                   alt="Avatar"
                   quality={100}
+                  priority={true}
                 />
               </Box>
             )}

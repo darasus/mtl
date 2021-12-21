@@ -75,8 +75,8 @@ export const Header: React.FC<Props> = ({ fullWidth }) => {
             {breakpoint !== 'base' && (
               <Box mr={4}>
                 <Button
-                  size="xs"
                   variant="cta"
+                  size="xs"
                   data-testid="create-post-button"
                   onClick={() => router.push('/p/create')}
                 >
