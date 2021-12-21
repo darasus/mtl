@@ -1,13 +1,13 @@
 import React from 'react';
 import { useAccessToken } from '../components/MTLProvider';
-import { ClientHttpConnector } from '../lib/ClientHttpConnector';
+import { HttpConnector } from '../lib/HttpConnector';
 import { Fetcher } from '../lib/Fetcher';
 
 export const useFetcher = () => {
   const accessToken = useAccessToken();
   const httpConnector = React.useMemo(
     () =>
-      new ClientHttpConnector({
+      new HttpConnector({
         accessToken,
       }),
     [accessToken]

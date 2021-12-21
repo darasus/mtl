@@ -15,6 +15,13 @@ import { Head } from '../../components/Head';
 import { Heading } from '../../components/Heading';
 import { useMe } from '../../hooks/useMe';
 import { useFollowingCountQuery } from '../../hooks/query/useFollowingCountQuery';
+import { GetServerSideProps } from 'next';
+import { dehydrate, QueryClient } from 'react-query';
+import { getSession } from '@auth0/nextjs-auth0';
+import { createIsFirstServerCall } from '../../utils/createIsFirstServerCall';
+import { HttpConnector } from '../../lib/HttpConnector';
+import { Fetcher } from '../../lib/Fetcher';
+import { clientCacheKey } from '../../lib/ClientCacheKey';
 
 const UserPage: React.FC = () => {
   const { secondaryTextColor } = useColors();
@@ -162,6 +169,50 @@ const UserPage: React.FC = () => {
   );
 };
 
-export { getServerSideProps } from '../../components/MTLProvider';
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const queryClient = new QueryClient();
+  const session = await getSession(ctx.req, ctx.res);
+
+  if (!createIsFirstServerCall(ctx)) {
+    return {
+      props: {
+        accessToken: session?.accessToken || null,
+        cookies: ctx.req?.headers?.cookie ?? '',
+        user: session?.user || undefined,
+      },
+    };
+  }
+
+  const httpConnector = new HttpConnector();
+  const fetcher = new Fetcher(httpConnector);
+  const nickname = ctx.query.nickname as string;
+
+  try {
+    const post = await fetcher.getUser({ nickname });
+
+    await Promise.all([
+      queryClient.prefetchQuery(
+        clientCacheKey.createUserKey({ nickname }),
+        () => Promise.resolve(post)
+      ),
+    ]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (e: any) {
+    if (e?.response?.status === 404) {
+      return {
+        notFound: true,
+      };
+    }
+  }
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+      accessToken: session?.accessToken || null,
+      cookies: ctx.req?.headers?.cookie ?? '',
+      user: session?.user || undefined,
+    },
+  };
+};
 
 export default UserPage;

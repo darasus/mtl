@@ -4,7 +4,8 @@ import FormData from 'form-data';
 import invariant from 'invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Fetcher } from '../../lib/Fetcher';
-import { ServerHttpConnector } from '../../lib/ServerHttpConnector';
+import { HttpConnector } from '../../lib/HttpConnector';
+import { getSession } from '@auth0/nextjs-auth0';
 
 export const config = {
   api: {
@@ -12,7 +13,8 @@ export const config = {
   },
 };
 
-const getResponse = (req: NextApiRequest) => {
+const getResponse = async (req: NextApiRequest, res: NextApiResponse) => {
+  const session = await getSession(req, res);
   return new Promise((resolve, reject) => {
     const form = new formidable.IncomingForm();
     form.parse(req, async function (err, fields, files) {
@@ -21,7 +23,9 @@ const getResponse = (req: NextApiRequest) => {
       const image = fs.createReadStream(files.file.filepath);
       const data = new FormData();
       data.append('file', image);
-      const fetcher = new Fetcher(new ServerHttpConnector({ req }));
+      const fetcher = new Fetcher(
+        new HttpConnector({ accessToken: session?.accessToken })
+      );
 
       try {
         const response = await fetcher.uploadImageToCloudFlare(
@@ -45,7 +49,7 @@ export default async function handle(
     `The HTTP ${req.method} method is not supported at this route.`
   );
 
-  const response = await getResponse(req);
+  const response = await getResponse(req, res);
 
   return res.json(response);
 }

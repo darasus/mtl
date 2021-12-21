@@ -10,11 +10,11 @@ import { Flex, Spinner } from '@chakra-ui/react';
 import { Head } from '../../../components/Head';
 import { createIsFirstServerCall } from '../../../utils/createIsFirstServerCall';
 import { Fetcher } from '../../../lib/Fetcher';
-import { ServerHttpConnector } from '../../../lib/ServerHttpConnector';
 import { useMe } from '../../../hooks/useMe';
 import { clientCacheKey } from '../../../lib/ClientCacheKey';
 import { getSession } from '@auth0/nextjs-auth0';
 import getConfig from 'next/config';
+import { HttpConnector } from '../../../lib/HttpConnector';
 
 const PostPage: React.FC = () => {
   const router = useRouter();
@@ -70,7 +70,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const httpConnector = new ServerHttpConnector(ctx);
+  const httpConnector = new HttpConnector();
   const fetcher = new Fetcher(httpConnector);
   const postId = ctx.query.id as string;
 

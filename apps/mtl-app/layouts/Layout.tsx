@@ -1,4 +1,4 @@
-import { Flex, Box, useBreakpointValue } from '@chakra-ui/react';
+import { Flex, Box } from '@chakra-ui/react';
 import React, { ReactNode } from 'react';
 import { Footer } from '../components/Footer';
 import { Header } from '../components/Header';
@@ -8,22 +8,14 @@ type Props = {
 };
 
 export const Layout: React.FC<Props> = (props) => {
-  const mainPadding = useBreakpointValue(
-    {
-      base: '4',
-      md: '0',
-    },
-    'md'
-  );
-
   return (
     <>
       <Flex
         flexDirection="column"
         width="100%"
         alignItems="center"
-        pl={mainPadding}
-        pr={mainPadding}
+        pl={4}
+        pr={4}
       >
         <Flex flexDirection="column" width="100%" maxWidth={960} flexShrink={0}>
           <Header />

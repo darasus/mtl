@@ -2,17 +2,16 @@ import { CodeLanguage } from '.prisma/client';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 import qs from 'query-string';
-import { ServerHttpConnector } from './ServerHttpConnector';
-import { ClientHttpConnector } from './ClientHttpConnector';
+import { HttpConnector } from './HttpConnector';
 import { FeedType } from '../types/FeedType';
 import ServerFormData from 'form-data';
 import { ApiResponse } from '@mtl/api-types';
 import getConfig from 'next/config';
 
 export class Fetcher {
-  httpConnector: ServerHttpConnector | ClientHttpConnector;
+  httpConnector: HttpConnector;
 
-  constructor(httpConnector: ServerHttpConnector | ClientHttpConnector) {
+  constructor(httpConnector: HttpConnector) {
     this.httpConnector = httpConnector;
   }
 

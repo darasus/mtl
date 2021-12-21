@@ -1,11 +1,11 @@
 import axios, { AxiosInstance } from 'axios';
 import getConfig from 'next/config';
 
-export class ClientHttpConnector {
+export class HttpConnector {
   request: AxiosInstance;
 
-  constructor({ accessToken }: { accessToken: string }) {
-    this.request = this.createRequest({ accessToken });
+  constructor(props?: { accessToken?: string }) {
+    this.request = this.createRequest({ accessToken: props?.accessToken });
   }
 
   get(url: string) {
