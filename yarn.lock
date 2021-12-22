@@ -1792,6 +1792,30 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
+"@datadog/browser-core@3.10.1":
+  version "3.10.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-3.10.1.tgz#4f916fd90310026d9e657026fa700878bd2f8fb5"
+  integrity sha512-6oXfZyCdSWmiYfBY99NAP/qGPurUsIFkp7KyGf2jg4Bsl3thBw8W/RNX9/UKhRNXA6TtvLepJu88g1Mw0ld2KQ==
+  dependencies:
+    tslib "^1.10.0"
+
+"@datadog/browser-rum-core@3.10.1":
+  version "3.10.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-3.10.1.tgz#49b3b2c16c4f580ab61fc1cdde96e368cfe5d89f"
+  integrity sha512-6fHZWyMIV/ow+/JSJMSX57Y/DyeqYUrMN6zfJ62giB7GciBN9IUDVKRUWZRhSPglRoX9TNKAZAnby5CLhIxQbQ==
+  dependencies:
+    "@datadog/browser-core" "3.10.1"
+    tslib "^1.10.0"
+
+"@datadog/browser-rum@^3.10.1":
+  version "3.10.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-3.10.1.tgz#e7e21f33569431e205b2fe12fb113d1f42482866"
+  integrity sha512-+NofjDvu/6mprYC4M/xxxCcMPKhq8OhEHvRFDkON2HX88zIP8l9QX3ypabfF6omII8MUdNHG9VyJ6mWiglIGdg==
+  dependencies:
+    "@datadog/browser-core" "3.10.1"
+    "@datadog/browser-rum-core" "3.10.1"
+    tslib "^1.10.0"
+
 "@emotion/babel-plugin@11.3.0", "@emotion/babel-plugin@^11.3.0":
   version "11.3.0"
   resolved "https://registry.yarnpkg.com/@emotion/babel-plugin/-/babel-plugin-11.3.0.tgz#3a16850ba04d8d9651f07f3fb674b3436a4fb9d7"
@@ -15176,6 +15200,11 @@ xmlchars@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/xmlchars/-/xmlchars-2.2.0.tgz#060fe1bcb7f9c76fe2a17db86a9bc3ab894210cb"
   integrity sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==
+
+xmldom@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.6.0.tgz#43a96ecb8beece991cef382c08397d82d4d0c46f"
+  integrity sha512-iAcin401y58LckRZ0TkI4k0VSM1Qg0KGSc3i8rU+xrxe19A/BN1zHyVSJY7uoutVlaTSzYyk/v5AmkewAP7jtg==
 
 xregexp@2.0.0:
   version "2.0.0"

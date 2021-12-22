@@ -4,9 +4,9 @@
   "license": "MIT",
   "scripts": {
     "nx": "nx",
-    "start": "nx serve",
+    "dev:app": "nx serve",
     "dev:server": "start mtl-server",
-    "start:server": "node dist/apps/mtl-server/main.js",
+    "start:server:prod": "node dist/apps/mtl-server/main.js",
     "build": "nx build",
     "build:server": "yarn build mtl-server --prod",
     "test": "nx test",
@@ -50,6 +50,7 @@
   "dependencies": {
     "@auth0/nextjs-auth0": "^1.6.1",
     "@chakra-ui/react": "^1.7.3",
+    "@datadog/browser-rum": "^3.10.1",
     "@emotion/react": "11.5.0",
     "@emotion/server": "11.0.0",
     "@emotion/styled": "11.3.0",
@@ -113,6 +114,7 @@
     "sharp": "^0.29.3",
     "superjson": "^1.7.4",
     "tslib": "^2.0.0",
+    "xmldom": "^0.6.0",
     "yup": "^0.32.9"
   },
   "devDependencies": {

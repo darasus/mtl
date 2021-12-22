@@ -29,5 +29,15 @@ module.exports = withPlugins([withNx], {
     PUSHER_APP_KEY: process.env.PUSHER_APP_KEY || '',
     BASE_URL: process.env.BASE_URL || '',
     API_BASE_URL: process.env.API_BASE_URL || '',
+    ddRum: {
+      applicationId: '2cc395d9-aead-4bfd-95d7-29a54f536d42',
+      clientToken: 'pub3033d36d5b288f88e5708e459e43ed52',
+      site: 'datadoghq.eu',
+      service: 'mtl-app',
+      env: 'prod',
+      sampleRate: 100,
+      trackInteractions: true,
+      allowedTracingOrigins: [process.env.API_BASE_URL],
+    },
   },
 });

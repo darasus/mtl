@@ -1,4 +1,4 @@
-import App, { AppProps } from 'next/app';
+import { AppProps } from 'next/app';
 import { PusherProvider } from '@harelpls/use-pusher';
 import Head from 'next/head';
 import React from 'react';
@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import { UserProvider } from '@auth0/nextjs-auth0';
 import { MTLProvider } from '../components/MTLProvider';
 import getConfig from 'next/config';
+import { datadogRum } from '@datadog/browser-rum';
 
 const MyApp = ({
   Component,
@@ -47,6 +48,12 @@ const MyApp = ({
       router.events.off('routeChangeComplete', onRouteChangeComplete);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (process.env.NODE_ENV === 'production') {
+      datadogRum.init(getConfig().publicRuntimeConfig.ddRum);
+    }
   }, []);
 
   return (
