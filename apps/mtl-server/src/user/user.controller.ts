@@ -58,7 +58,7 @@ export class UserController {
     const myId = getMyIdByReq(req);
     const user = await this.userService.getUserByNickname({ nickname });
 
-    if (myId !== user.id) return res.status(403).send({ error: 'Forbidden' });
+    if (myId !== user?.id) return res.status(403).send({ error: 'Forbidden' });
 
     return res.send(
       await this.userService.getUserActivity({
@@ -76,7 +76,7 @@ export class UserController {
     @Param('nickname') nickname: string
   ) {
     const user = await this.userService.getUserByNickname({ nickname });
-    res.send(await this.userService.getUserFollowerCount({ userId: user.id }));
+    res.send(await this.userService.getUserFollowerCount({ userId: user?.id }));
   }
 
   @Get('user/:nickname/followings/count')
@@ -87,7 +87,7 @@ export class UserController {
   ) {
     const user = await this.userService.getUserByNickname({ nickname });
     res.send(
-      await this.userService.getUserFollowingsCount({ userId: user.id })
+      await this.userService.getUserFollowingsCount({ userId: user?.id })
     );
   }
 
@@ -106,7 +106,7 @@ export class UserController {
     res.send(
       await this.followService.doIFollow({
         followerUserId: myId,
-        followingUserId: user.id,
+        followingUserId: user?.id,
       })
     );
   }
@@ -122,12 +122,12 @@ export class UserController {
     const user = await this.userService.getUserByNickname({ nickname });
 
     const response = await this.followService.followUser({
-      followingUserId: user.id,
+      followingUserId: user?.id,
       followerUserId: myId,
     });
 
     await this.activityService.addFollowActivity({
-      ownerId: user.id,
+      ownerId: user?.id,
       authorId: myId,
       followFollowerId: response.followerId,
       followFollowingId: response.followingId,
@@ -146,8 +146,8 @@ export class UserController {
     const user = await this.userService.getUserByNickname({ nickname });
 
     const posts = await this.userService.getUserPosts({
-      userId: user.id,
-      isMe: !!myId && myId === user.id,
+      userId: user?.id,
+      isMe: !!myId && myId === user?.id,
     });
 
     return posts;
@@ -164,12 +164,12 @@ export class UserController {
     const user = await this.userService.getUserByNickname({ nickname });
 
     await this.activityService.removeFollowActivity({
-      followFollowingId: user.id,
+      followFollowingId: user?.id,
       followFollowerId: myId,
     });
 
     await this.followService.unfollowUser({
-      followingUserId: user.id,
+      followingUserId: user?.id,
       followerUserId: myId,
     });
 
@@ -239,7 +239,7 @@ export class UserController {
       .catch((err) => res.status(400).send(processErrorResponse(err)));
 
     await this.userService.updateUserSettings({
-      userId: user.id,
+      userId: user?.id,
       image: body.image,
       name: body.name,
       nickname: body.newNickname,
