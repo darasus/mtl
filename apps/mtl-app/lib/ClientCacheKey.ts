@@ -8,10 +8,10 @@ export class ClientCacheKey {
   followersCountBaseKey = ['followers_count'];
   followingsCountBaseKey = ['followings_count'];
   postBaseKey = ['post'];
-  screenshotBaseKey = ['post'];
+  screenshotBaseKey = ['post_screenshot'];
   tagsBaseKey = ['tags'];
   userActivityBaseKey = ['user_activity'];
-  userPostsBaseKey = ['user-posts'];
+  userPostsBaseKey = ['user_posts'];
 
   createUserKey({ nickname }: { nickname: string }) {
     return [...this.userBaseKey, { nickname }];
