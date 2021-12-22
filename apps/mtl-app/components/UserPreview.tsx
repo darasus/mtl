@@ -20,6 +20,7 @@ export const UserPreview = React.forwardRef<HTMLDivElement>(
                 borderRadius={100}
                 overflow="hidden"
                 boxShadow="base"
+                data-testid="my-user-picture"
               >
                 <Image
                   src={me.user?.picture as string}
