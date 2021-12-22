@@ -26,14 +26,10 @@ import { User } from '@mtl/types';
 import { rejectNil } from '../../utils/rejectNil';
 
 interface Props {
-  userProfileImage: string | undefined;
-  userProfileImageBlurhash: string | undefined;
+  userProfileImageBase64: string | undefined;
 }
 
-const UserPage: React.FC<Props> = ({
-  userProfileImage,
-  userProfileImageBlurhash,
-}) => {
+const UserPage: React.FC<Props> = ({ userProfileImageBase64 }) => {
   const router = useRouter();
   const nickname = router.query.nickname as string;
   const user = useUserQuery({ nickname });
@@ -111,14 +107,14 @@ const UserPage: React.FC<Props> = ({
                   boxShadow="base"
                   mb={2}
                 >
-                  {userProfileImage && userProfileImageBlurhash ? (
+                  {userProfileImageBase64 ? (
                     <Image
-                      src={userProfileImage}
+                      src={user?.data?.image}
                       width="500"
                       height="500"
                       alt="Avatar"
                       placeholder="blur"
-                      blurDataURL={userProfileImageBlurhash}
+                      blurDataURL={userProfileImageBase64}
                       priority={true}
                     />
                   ) : (
@@ -229,7 +225,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
   }
 
-  console.log({ user });
   let userImage: IGetPlaiceholderReturn | null = null;
   if (user?.image) {
     userImage = await getPlaiceholder(user?.image, { size: 16 });
@@ -241,8 +236,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       accessToken: session?.accessToken || null,
       cookies: ctx.req?.headers?.cookie ?? '',
       user: session?.user || null,
-      userProfileImage: userImage?.img,
-      userProfileImageBlurhash: userImage?.blurhash,
+      userProfileImageBase64: userImage?.base64,
     }),
   };
 };

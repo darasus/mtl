@@ -1,9 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const withNx = require('@nrwl/next/plugins/with-nx');
-
 const withPlugins = require('next-compose-plugins');
+const { withPlaiceholder } = require('@plaiceholder/next');
 
-module.exports = withPlugins([withNx], {
+module.exports = withPlugins([withNx, withPlaiceholder], {
   nx: {
     // Set this to false if you do not want to use SVGR
     // See: https://github.com/gregberge/svgr
