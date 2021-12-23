@@ -1,18 +1,44 @@
 import './trace';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { FastifyRequest, FastifyReply } from 'fastify';
 
 import { AppModule } from './app/app.module';
+// import { Logger } from './logger/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    // new FastifyAdapter({ logger: process.env.NODE_ENV === 'development' })
-    new FastifyAdapter()
+    new FastifyAdapter({
+      logger: {
+        prettyPrint: true,
+        serializers: {
+          res(reply: FastifyReply) {
+            // The default
+            return {
+              statusCode: reply.statusCode,
+            };
+          },
+          req(request: FastifyRequest) {
+            return {
+              method: request.method,
+              url: request.url,
+              path: request.routerPath,
+              parameters: request.params,
+              // Including the headers in the log could be in violation
+              // of privacy laws, e.g. GDPR. You should use the "redact" option to
+              // remove sensitive fields. It could also leak authentication data in
+              // the logs.
+              headers: request.headers,
+            };
+          },
+        },
+      },
+    })
   );
   app.enableCors();
   app.useGlobalPipes(
