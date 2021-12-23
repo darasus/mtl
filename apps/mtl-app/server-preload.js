@@ -20,7 +20,7 @@ function setUpDatadogTracing() {
     debug: true,
     enabled: true,
     env: 'prod',
-    hostname: 'https://api.mytinylibrary.com',
+    hostname: process.env.DD_AGENT_HOST,
     plugins: true,
     reportHostname: true,
     service: process.env.FLY_APP_NAME,
