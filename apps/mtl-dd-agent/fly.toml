@@ -1,5 +1,3 @@
-# fly.toml file generated for mtl-dd-agent on 2021-12-23T07:14:56+01:00
-
 app = "mtl-dd-agent"
 
 kill_signal = "SIGINT"

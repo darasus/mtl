@@ -4,7 +4,6 @@
     "api-types": "libs/api-types",
     "mtl-app": "apps/mtl-app",
     "mtl-app-e2e": "apps/mtl-app-e2e",
-    "mtl-dd-agent": "apps/mtl-dd-agent",
     "mtl-screenshot-api": "apps/mtl-screenshot-api",
     "mtl-server": "apps/mtl-server",
     "types": "libs/types"
