@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v2
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
       - name: Build image
         run: docker build -t mtl-server -f apps/mtl-server/Dockerfile .
       - name: Install doctl
