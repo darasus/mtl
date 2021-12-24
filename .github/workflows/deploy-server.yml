@@ -1,18 +1,24 @@
-name: deploy server
+name: build and piblish mtl-server
 on:
   push:
     branches:
       - master
 
-env:
-  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
 jobs:
-  deploy:
-    name: Deploy app
+  build_and_push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: superfly/flyctl-actions@1.1
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+      - name: Build image
+        run: docker build -t mtl-server -f apps/mtl-server/Dockerfile .
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
         with:
-          args: 'deploy --config ./apps/mtl-server/fly.toml --dockerfile ./apps/mtl-server/Dockerfile'
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Log in to DO Container Registry
+        run: doctl registry login --expiry-seconds 600
+      - name: Tag image
+        run: docker tag mtl-server registry.digitalocean.com/mtl-container-registry/mtl-server
+      - name: Push image to DO Container Registry
+        run: docker push registry.digitalocean.com/mtl-container-registry/mtl-server
