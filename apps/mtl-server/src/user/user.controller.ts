@@ -48,7 +48,6 @@ export class UserController {
 
   @Get('user/:nickname')
   async getUserById(@Param('nickname') nickname: string): Promise<User> {
-    this.logger.warn('Tried to access a post that does not exist');
     return this.userService.getUserByNickname({ nickname });
   }
 
