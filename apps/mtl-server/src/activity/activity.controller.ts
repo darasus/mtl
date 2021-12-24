@@ -1,7 +1,6 @@
-import { Controller, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from '@mtl/types';
 
 @Controller()
 export class ActivityController {
@@ -15,7 +14,7 @@ export class ActivityController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('activity/markAllAsRead')
-  async markAllActivityAsRead(@Req() req: Request) {
+  async markAllActivityAsRead(@Req() req: Express.Request) {
     const myId = req?.user?.sub?.split('|')?.[1];
 
     return this.activityService.markAllActivityAsRead({ userId: myId });

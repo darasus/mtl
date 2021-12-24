@@ -19,7 +19,8 @@ import { ActivityService } from '../activity/activity.service';
 import { OptionalUserGuard } from '../guards/OptionalUserGuard';
 import { LikeService } from '../like/like.service';
 import { AuthGuard } from '@nestjs/passport';
-import { Post as PostType, Request, Response } from '@mtl/types';
+import { Post as PostType } from '@mtl/types';
+import { Response, Request } from 'express';
 
 export class CreatePostDto {
   @IsNotEmpty()

@@ -51,7 +51,6 @@ const MyApp = ({
   }, []);
 
   React.useEffect(() => {
-    console.log(getConfig().publicRuntimeConfig.ddRum);
     datadogRum.init(getConfig().publicRuntimeConfig.ddRum);
   }, []);
 

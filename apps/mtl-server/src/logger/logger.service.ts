@@ -17,23 +17,23 @@ export class Logger implements LoggerService {
     console.log(JSON.stringify(record));
   }
 
-  log(message: any, ...optionalParams: any[]) {
+  log(message: string, ...optionalParams: any[]) {
     this.do('info', message);
   }
 
-  error(message: any, ...optionalParams: any[]) {
+  error(message: string, ...optionalParams: any[]) {
     this.do('error', message);
   }
 
-  warn(message: any, ...optionalParams: any[]) {
+  warn(message: string, ...optionalParams: any[]) {
     this.do('warn', message);
   }
 
-  debug?(message: any, ...optionalParams: any[]) {
+  debug?(message: string, ...optionalParams: any[]) {
     this.do('debug', message);
   }
 
-  verbose?(message: any, ...optionalParams: any[]) {
+  verbose?(message: string, ...optionalParams: any[]) {
     this.do('verbose', message);
   }
 }

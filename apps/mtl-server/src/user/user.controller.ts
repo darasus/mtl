@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpCode,
   HttpStatus,
   Param,
   Post,
@@ -16,8 +15,9 @@ import { ActivityService } from '../activity/activity.service';
 import { FollowService } from '../follow/follow.service';
 import { OptionalUserGuard } from '../guards/OptionalUserGuard';
 import { PrismaService } from '../prisma/prisma.service';
-import { Request, Response, User } from '@mtl/types';
+import { User } from '@mtl/types';
 import axios from 'axios';
+import { Response, Request } from 'express';
 
 import { UserService } from './user.service';
 import { processErrorResponse } from '../utils/error';
