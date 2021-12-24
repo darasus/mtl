@@ -35,12 +35,12 @@
     "docker:build:mtl-app": "docker build -t mtl-app -f apps/mtl-app/Dockerfile .",
     "docker:build:mtl-server": "docker build -t mtl-server -f apps/mtl-server/Dockerfile .",
     "docker:build:mtl-screenshot-api": "docker build -t mtl-screenshot-api -f apps/mtl-screenshot-api/Dockerfile .",
+    "docker:push:mtl-app": "docker tag mtl-app registry.digitalocean.com/mtl-container-registry/mtl-app && docker push registry.digitalocean.com/mtl-container-registry/mtl-app",
+    "docker:push:mtl-server": "docker tag mtl-server registry.digitalocean.com/mtl-container-registry/mtl-server && docker push registry.digitalocean.com/mtl-container-registry/mtl-server",
+    "docker:push:mtl-screenshot-api": "docker tag mtl-screenshot-api registry.digitalocean.com/mtl-container-registry/mtl-screenshot-api && docker push registry.digitalocean.com/mtl-container-registry/mtl-screenshot-api",
     "docker:run:mtl-app": "docker run --env-file ./.env -p 3000:3000 mtl-app",
     "docker:run:mtl-server": "docker run --env-file ./.env -p 3001:3001 mtl-server",
-    "docker:run:mtl-screenshot-api": "docker run --env-file ./.env -p 3002:3002 mtl-screenshot-api",
-    "deploy:mtl-app": "flyctl deploy --config ./apps/mtl-app/fly.toml --dockerfile ./apps/mtl-app/Dockerfile",
-    "deploy:mtl-server": "flyctl deploy --config ./apps/mtl-server/fly.toml --dockerfile ./apps/mtl-server/Dockerfile",
-    "deploy:mtl-screenshot-api": "flyctl deploy --config ./apps/mtl-screenshot-api/fly.toml --dockerfile ./apps/mtl-screenshot-api/Dockerfile"
+    "docker:run:mtl-screenshot-api": "docker run --env-file ./.env -p 3002:3002 mtl-screenshot-api"
   },
   "prisma": {
     "schema": "apps/mtl-app/prisma/schema.prisma",
