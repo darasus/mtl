@@ -25,7 +25,7 @@ export class CommentController {
   @Delete('comment/:commentId')
   async markActivityAsRead(
     @Req() req: Request,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Param('commentId') commentId: string
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
@@ -57,7 +57,5 @@ export class CommentController {
       postId: post.id,
       ownerId: post.authorId,
     });
-
-    res.send();
   }
 }

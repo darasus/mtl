@@ -1,4 +1,4 @@
-import dd from 'dd-trace';
+import dd, { Tracer } from 'dd-trace';
 import priority = require('dd-trace/ext/priority');
 import tags = require('dd-trace/ext/tags');
 
@@ -8,7 +8,7 @@ const createConfig = (env) => ({
   analytics: true,
   debug: false,
   enabled: true,
-  env: 'prod',
+  env: process.env.DD_ENV,
   plugins: true,
   reportHostname: true,
   service: 'mtl-server',
@@ -22,7 +22,6 @@ const createConfig = (env) => ({
 });
 
 const config = createConfig(process.env);
+const ddTracer: Tracer = dd.init(config);
 
-if (process.env.NODE_ENV === 'production') {
-  dd.init(config);
-}
+export { ddTracer };

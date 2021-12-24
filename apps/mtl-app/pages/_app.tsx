@@ -51,9 +51,8 @@ const MyApp = ({
   }, []);
 
   React.useEffect(() => {
-    if (process.env.NODE_ENV === 'production') {
-      datadogRum.init(getConfig().publicRuntimeConfig.ddRum);
-    }
+    console.log(getConfig().publicRuntimeConfig.ddRum);
+    datadogRum.init(getConfig().publicRuntimeConfig.ddRum);
   }, []);
 
   return (

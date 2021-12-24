@@ -33,7 +33,7 @@ module.exports = withPlugins([withNx, withPlaiceholder], {
       clientToken: 'pub3033d36d5b288f88e5708e459e43ed52',
       site: 'datadoghq.eu',
       service: 'mtl-app',
-      env: 'prod',
+      env: process.env.DD_ENV,
       sampleRate: 100,
       trackInteractions: true,
       allowedTracingOrigins: [process.env.API_BASE_URL],

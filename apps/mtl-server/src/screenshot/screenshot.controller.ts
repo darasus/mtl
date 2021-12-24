@@ -10,7 +10,10 @@ export class ScreenshotController {
   constructor(private readonly configService: ConfigService) {}
 
   @Get('screenshot')
-  async screenshot(@Res() res: Response, @Query('id') id: string) {
+  async screenshot(
+    @Res({ passthrough: true }) res: Response,
+    @Query('id') id: string
+  ) {
     const query = qs.stringify({ id });
     try {
       const response = await axios.request<ArrayBuffer>({

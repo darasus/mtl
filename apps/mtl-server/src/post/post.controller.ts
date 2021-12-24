@@ -67,42 +67,40 @@ export class PostController {
   @Post('post/create')
   async createPost(
     @Req() req: Request,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Body() body: CreatePostDto
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    res.send(await this.postService.createPost(userId, body));
+    return this.postService.createPost(userId, body);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Put('post/:postId/update')
   async updatePost(
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Body() body: UpdatePostDto,
     @Param('postId') postId: string
   ) {
-    res.send(await this.postService.updatePost(body, postId));
+    return this.postService.updatePost(body, postId);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Post('post/save')
   async markActivityAsRead(
     @Req() req: Request,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Body() body: CreatePostDto
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    res.send(
-      await this.postService.savePost(
-        {
-          title: body.title,
-          content: body.content,
-          description: body.description,
-        },
-        userId
-      )
+    return this.postService.savePost(
+      {
+        title: body.title,
+        content: body.content,
+        description: body.description,
+      },
+      userId
     );
   }
 
@@ -110,7 +108,7 @@ export class PostController {
   @Post('post/:postId/addComment')
   async addPostComment(
     @Req() req: Request,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Param('postId') postId: string,
     @Body() body: AddPostCommentDto
   ) {
@@ -128,49 +126,50 @@ export class PostController {
       ownerId: post?.authorId as string,
     });
 
-    res.send({ status: 'ok' });
+    return { status: 'ok' };
   }
 
   @Get('post/:postId/comments')
   async getPostComments(
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Param('postId') postId: string,
     @Query('take') take: string,
     @Query('skip') skip: string
   ) {
-    res.send(
-      await this.commentService.getCommentsByPostId({
-        postId,
-        take: Number(take) || undefined,
-        skip: Number(skip) || undefined,
-      })
-    );
+    return this.commentService.getCommentsByPostId({
+      postId,
+      take: Number(take) || undefined,
+      skip: Number(skip) || undefined,
+    });
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Delete('post/:postId')
-  async deletePost(@Res() res: Response, @Param('postId') postId: string) {
+  async deletePost(
+    @Res({ passthrough: true }) res: Response,
+    @Param('postId') postId: string
+  ) {
     await this.postService.deletePost(postId);
-    res.send({ status: 'ok' });
+    return { status: 'ok' };
   }
 
   @UseGuards(OptionalUserGuard)
   @Get('post/:postId')
   async getPost(
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Req() req: Request,
     @Param('postId') postId: string
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    res.send(await this.postService.fetchPost({ postId, userId }));
+    return this.postService.fetchPost({ postId, userId });
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Post('post/:postId/like')
   async likePost(
     @Req() req: Request,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Param('postId') postId: string
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
@@ -194,14 +193,14 @@ export class PostController {
       postId: post.id,
     });
 
-    res.send({ status: 'ok' });
+    return { status: 'ok' };
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Post('post/:postId/unlike')
   async unlikePost(
     @Req() req: Request,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Param('postId') postId: string
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
@@ -223,27 +222,27 @@ export class PostController {
     });
     await this.likeService.unlikePost(postId, userId);
     // await cache.del(redisCacheKey.createPostKey(postId));
-    res.send({ status: 'ok' });
+    return { status: 'ok' };
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Put('post/:postId/publish')
   async publishPost(
     @Req() req: Request,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Param('postId') postId: string
   ) {
-    res.send(await this.postService.publishPost(postId));
+    return this.postService.publishPost(postId);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Put('post/:postId/unpublish')
   async unpublishPost(
     @Req() req: Request,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Param('postId') postId: string
   ) {
-    res.send(await this.postService.unpublishPost(postId));
+    return this.postService.unpublishPost(postId);
   }
 
   @Get('post/random')

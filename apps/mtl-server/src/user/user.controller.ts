@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Query,
@@ -22,6 +24,7 @@ import { processErrorResponse } from '../utils/error';
 import { ConfigService } from '@nestjs/config';
 import { ApiResponse } from '@mtl/api-types';
 import { getMyIdByReq } from '../utils/getMyIdByReq';
+import { Logger } from '../logger/logger.service';
 
 export class UpdateUserDto {
   newNickname: string;
@@ -33,6 +36,8 @@ export class UpdateUserDto {
 
 @Controller()
 export class UserController {
+  private readonly logger = new Logger();
+
   constructor(
     private readonly userService: UserService,
     private readonly followService: FollowService,
@@ -43,6 +48,7 @@ export class UserController {
 
   @Get('user/:nickname')
   async getUserById(@Param('nickname') nickname: string): Promise<User> {
+    this.logger.warn('Tried to access a post that does not exist');
     return this.userService.getUserByNickname({ nickname });
   }
 
@@ -50,7 +56,7 @@ export class UserController {
   @Get('user/:nickname/activity')
   async getUserActivity(
     @Req() req: Request,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Param('nickname') nickname: string,
     @Query('take') take: string,
     @Query('cursor') cursor: string
@@ -58,66 +64,48 @@ export class UserController {
     const myId = getMyIdByReq(req);
     const user = await this.userService.getUserByNickname({ nickname });
 
-    if (myId !== user?.id) return res.status(403).send({ error: 'Forbidden' });
+    if (myId !== user?.id) {
+      res.status(403);
+      return { error: 'Forbidden' };
+    }
 
-    return res.send(
-      await this.userService.getUserActivity({
-        userId: myId,
-        take: Number(take) || undefined,
-        cursor,
-      })
-    );
+    res.status(HttpStatus.OK);
+    return this.userService.getUserActivity({
+      userId: myId,
+      take: Number(take) || undefined,
+      cursor,
+    });
   }
 
   @Get('user/:nickname/follow/count')
-  async getFollowerCount(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Param('nickname') nickname: string
-  ) {
+  async getFollowerCount(@Param('nickname') nickname: string) {
     const user = await this.userService.getUserByNickname({ nickname });
-    res.send(await this.userService.getUserFollowerCount({ userId: user?.id }));
+    return this.userService.getUserFollowerCount({ userId: user?.id });
   }
 
   @Get('user/:nickname/followings/count')
-  async getFollowingCount(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Param('nickname') nickname: string
-  ) {
+  async getFollowingCount(@Param('nickname') nickname: string) {
     const user = await this.userService.getUserByNickname({ nickname });
-    res.send(
-      await this.userService.getUserFollowingsCount({ userId: user?.id })
-    );
+    return this.userService.getUserFollowingsCount({ userId: user?.id });
   }
 
   @UseGuards(OptionalUserGuard)
   @Get('user/:nickname/follow')
-  async doIFollow(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Param('nickname') nickname: string
-  ) {
+  async doIFollow(@Req() req: Request, @Param('nickname') nickname: string) {
     const myId = getMyIdByReq(req);
     const user = await this.userService.getUserByNickname({ nickname });
 
-    if (!myId) return res.send({ doIFollow: false });
+    if (!myId) return { doIFollow: false };
 
-    res.send(
-      await this.followService.doIFollow({
-        followerUserId: myId,
-        followingUserId: user?.id,
-      })
-    );
+    return this.followService.doIFollow({
+      followerUserId: myId,
+      followingUserId: user?.id,
+    });
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Post('user/:nickname/follow')
-  async follow(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Param('nickname') nickname: string
-  ) {
+  async follow(@Req() req: Request, @Param('nickname') nickname: string) {
     const myId = getMyIdByReq(req);
     const user = await this.userService.getUserByNickname({ nickname });
 
@@ -133,7 +121,7 @@ export class UserController {
       followFollowingId: response.followingId,
     });
 
-    res.send({ status: 'ok' });
+    return { status: 'ok' };
   }
 
   @UseGuards(OptionalUserGuard)
@@ -155,11 +143,7 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('user/:nickname/unfollow')
-  async unfollowUser(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Param('nickname') nickname: string
-  ) {
+  async unfollowUser(@Req() req: Request, @Param('nickname') nickname: string) {
     const myId = getMyIdByReq(req);
     const user = await this.userService.getUserByNickname({ nickname });
 
@@ -173,14 +157,14 @@ export class UserController {
       followerUserId: myId,
     });
 
-    res.send({ status: 'ok' });
+    return { status: 'ok' };
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Post('user/:nickname/update')
   async updateProfile(
     @Req() req: Request,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Param('nickname') nickname: string,
     @Body() body: UpdateUserDto
   ) {
@@ -195,9 +179,10 @@ export class UserController {
     });
 
     if (existingUser && existingUser?.nickname !== body.newNickname) {
-      return res.status(400).send({
+      res.status(400);
+      return {
         error: 'User with this nickname already exists.',
-      });
+      };
     }
 
     const token = await axios(
@@ -216,7 +201,10 @@ export class UserController {
       }
     )
       .then((res) => res.data)
-      .catch((err) => res.status(400).send(processErrorResponse(err)));
+      .catch((err) => {
+        res.status(400);
+        return processErrorResponse(err);
+      });
 
     await axios(
       `${this.configService.get('auth.domain')}/api/v2/users/${req?.user?.sub}`,
@@ -247,6 +235,6 @@ export class UserController {
       email: body.email,
     });
 
-    res.send({ status: 'ok' });
+    return { status: 'ok' };
   }
 }
