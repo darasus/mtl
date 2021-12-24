@@ -31,7 +31,6 @@ COPY yarn.lock .
 COPY .eslintrc.json .
 COPY babel.config.json .
 COPY tsconfig.base.json .
-
 COPY --from=deps /app/node_modules ./node_modules
 
 ENV NODE_ENV production
