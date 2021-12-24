@@ -10,8 +10,6 @@ jobs:
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v2
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
       - name: Build image
         run: docker build -t mtl-server -f apps/mtl-server/Dockerfile .
       - name: Install doctl
@@ -24,3 +22,5 @@ jobs:
         run: docker tag mtl-server registry.digitalocean.com/mtl-container-registry/mtl-server
       - name: Push image to DO Container Registry
         run: docker push registry.digitalocean.com/mtl-container-registry/mtl-server
+      - name: Deploy server
+        run: doctl apps create-deployment 3e9d32e0-a738-4bc8-8d00-59b1af667e4f

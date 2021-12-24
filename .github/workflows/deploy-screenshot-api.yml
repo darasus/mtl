@@ -10,8 +10,6 @@ jobs:
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v2
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
       - name: Build image
         run: docker build -t mtl-screenshot-api -f apps/mtl-screenshot-api/Dockerfile .
       - name: Install doctl
@@ -24,3 +22,5 @@ jobs:
         run: docker tag mtl-screenshot-api registry.digitalocean.com/mtl-container-registry/mtl-screenshot-api
       - name: Push image to DO Container Registry
         run: docker push registry.digitalocean.com/mtl-container-registry/mtl-screenshot-api
+      - name: Deploy mtl-screenshot-app
+        run: doctl apps create-deployment 82a3692d-babb-4e71-9ce3-33b516a9c707

@@ -18,7 +18,7 @@ COPY apps/mtl-app/prisma/schema.prisma ./apps/mtl-app/prisma/schema.prisma
 
 RUN yarn install --production
 
-FROM timbru31/node-alpine-git:14 as build
+FROM node:14-alpine as builder
 
 WORKDIR /build
 
@@ -44,6 +44,6 @@ RUN yarn nx build mtl-server --prod
 FROM node:14-alpine as runtime
 
 COPY --from=runtime-dependencies /runtime-dependencies/node_modules ./node_modules
-COPY --from=build /build/dist ./dist
+COPY --from=builder /build/dist ./dist
 
 CMD ["node", "dist/apps/mtl-server/main.js"]
