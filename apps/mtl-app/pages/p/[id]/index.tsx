@@ -105,7 +105,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       dehydratedState: dehydrate(queryClient),
       accessToken: session?.accessToken || null,
       cookies: ctx.req?.headers?.cookie ?? '',
-      user: session?.user || undefined,
+      user: session?.user || null,
     },
   };
 };
