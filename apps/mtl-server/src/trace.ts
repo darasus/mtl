@@ -8,7 +8,7 @@ const createConfig = (env) => ({
   analytics: true,
   debug: false,
   enabled: true,
-  env: process.env.DD_ENV,
+  env: env.DD_ENV,
   plugins: true,
   reportHostname: true,
   service: 'mtl-server',
