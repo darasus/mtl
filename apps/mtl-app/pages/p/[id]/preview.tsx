@@ -34,7 +34,7 @@ const PreviewPage: React.FC = () => {
                 {' '}
               </Text>
               <Text as="span" fontFamily="Fira Code" color="brand">
-                my tiny libraty
+                my tiny library
               </Text>
             </Box>
           </Flex>
