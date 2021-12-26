@@ -21,6 +21,9 @@ import { LikeService } from '../like/like.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Post as PostType } from '@mtl/types';
 import { Response, Request } from 'express';
+import { CacheService } from '../cache/cache.service';
+import { CacheKeyService } from '../cache/cacheKey.service';
+import { years } from '../utils/duration';
 
 export class CreatePostDto {
   @IsNotEmpty()
@@ -61,7 +64,9 @@ export class PostController {
     private readonly postService: PostService,
     private readonly commentService: CommentService,
     private readonly activityService: ActivityService,
-    private readonly likeService: LikeService
+    private readonly likeService: LikeService,
+    private readonly cacheService: CacheService,
+    private readonly cachekeyService: CacheKeyService
   ) {}
 
   @UseGuards(AuthGuard('jwt'))
@@ -127,6 +132,9 @@ export class PostController {
       ownerId: post?.authorId as string,
     });
 
+    // clear post cache
+    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
+
     return { status: 'ok' };
   }
 
@@ -162,8 +170,13 @@ export class PostController {
     @Param('postId') postId: string
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
+    const post = await this.cacheService.fetch(
+      this.cachekeyService.createPostKey({ postId }),
+      () => this.postService.fetchPost({ postId, userId }),
+      years(1)
+    );
 
-    return this.postService.fetchPost({ postId, userId });
+    return post;
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -175,7 +188,11 @@ export class PostController {
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    const post = await this.postService.fetchPost({ postId, userId });
+    const post = await this.cacheService.fetch<PostType>(
+      this.cachekeyService.createPostKey({ postId }),
+      () => this.postService.fetchPost({ postId, userId }),
+      years(1)
+    );
 
     if (!post) {
       return res.status(400).send({ status: 'failure' });
@@ -186,7 +203,10 @@ export class PostController {
     }
 
     const like = await this.likeService.likePost(postId, userId);
-    // await cache.del(redisCacheKey.createPostKey(post.id));
+
+    // clear post cache
+    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
+
     await this.activityService.addLikeActivity({
       authorId: userId,
       likeId: like.id,
@@ -206,7 +226,11 @@ export class PostController {
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    const post = await this.postService.fetchPost({ postId, userId });
+    const post = await this.cacheService.fetch<PostType>(
+      this.cachekeyService.createPostKey({ postId }),
+      () => this.postService.fetchPost({ postId, userId }),
+      years(1)
+    );
 
     if (!post) {
       return res.status(400).send({ status: 'failure' });
@@ -221,8 +245,12 @@ export class PostController {
       authorId: userId,
       ownerId: post?.authorId as string,
     });
+
     await this.likeService.unlikePost(postId, userId);
-    // await cache.del(redisCacheKey.createPostKey(postId));
+
+    // clear post cache
+    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
+
     return { status: 'ok' };
   }
 
@@ -233,6 +261,9 @@ export class PostController {
     @Res({ passthrough: true }) res: Response,
     @Param('postId') postId: string
   ) {
+    // clear post cache
+    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
+
     return this.postService.publishPost(postId);
   }
 
@@ -243,6 +274,9 @@ export class PostController {
     @Res({ passthrough: true }) res: Response,
     @Param('postId') postId: string
   ) {
+    // clear post cache
+    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
+
     return this.postService.unpublishPost(postId);
   }
 
