@@ -29,6 +29,7 @@ export const useCreatePostMutation = () => {
     {
       async onSettled() {
         await queryClient.invalidateQueries(clientCacheKey.feedBaseKey);
+        await queryClient.invalidateQueries(clientCacheKey.userPostsBaseKey);
       },
     }
   );

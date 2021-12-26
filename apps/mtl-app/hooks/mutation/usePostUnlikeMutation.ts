@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useMutation, useQueryClient } from 'react-query';
 import { clientCacheKey } from '../../lib/ClientCacheKey';
 import { withToast } from '../../utils/withToast';
@@ -12,6 +13,7 @@ const toastConfig = {
 export const usePostUnlikeMutation = () => {
   const queryClient = useQueryClient();
   const fetcher = useFetcher();
+  const router = useRouter();
 
   return useMutation<unknown, unknown, { postId: string }>(
     ({ postId }) => withToast(fetcher.unlikePost({ postId }), toastConfig),
@@ -46,8 +48,15 @@ export const usePostUnlikeMutation = () => {
           );
         }
       },
-      onSettled(_, __, { postId }) {
-        queryClient.invalidateQueries(clientCacheKey.createPostKey({ postId }));
+      async onSettled(_, __, { postId }) {
+        if (router.pathname === '/p/[id]') {
+          await queryClient.invalidateQueries(
+            clientCacheKey.createPostKey({ postId })
+          );
+        }
+        if (router.pathname === '/u/[nickname]') {
+          await queryClient.invalidateQueries(clientCacheKey.userPostsBaseKey);
+        }
       },
     }
   );

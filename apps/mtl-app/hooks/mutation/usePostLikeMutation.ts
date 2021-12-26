@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { useFetcher } from '../useFetcher';
 import { clientCacheKey } from '../../lib/ClientCacheKey';
 import { withToast } from '../../utils/withToast';
+import { useRouter } from 'next/router';
 
 const toastConfig = {
   loading: 'Liking...',
@@ -12,6 +13,7 @@ const toastConfig = {
 export const usePostLikeMutation = () => {
   const queryClient = useQueryClient();
   const fetcher = useFetcher();
+  const router = useRouter();
 
   return useMutation(
     ({ postId }: { postId: string }) =>
@@ -47,8 +49,16 @@ export const usePostLikeMutation = () => {
           );
         }
       },
-      onSettled(_, __, { postId }) {
-        queryClient.invalidateQueries(clientCacheKey.createPostKey({ postId }));
+      async onSettled(_, __, { postId }) {
+        console.log(router.pathname);
+        if (router.pathname === '/p/[id]') {
+          await queryClient.invalidateQueries(
+            clientCacheKey.createPostKey({ postId })
+          );
+        }
+        if (router.pathname === '/u/[nickname]') {
+          await queryClient.invalidateQueries(clientCacheKey.userPostsBaseKey);
+        }
       },
     }
   );

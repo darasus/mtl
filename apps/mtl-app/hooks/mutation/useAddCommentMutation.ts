@@ -84,8 +84,8 @@ export const useAddCommentMutation = () => {
           );
         }
       },
-      onSettled(_, __, { postId }) {
-        queryClient.invalidateQueries(
+      async onSettled(_, __, { postId }) {
+        await queryClient.invalidateQueries(
           clientCacheKey.createPostCommentsKey({ postId })
         );
       },

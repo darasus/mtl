@@ -24,7 +24,10 @@ import { ActivityController } from '../activity/activity.controller';
 import { PusherService } from '../pusher/pusher.service';
 
 @Module({
-  imports: [CacheModule.register(), AuthModule],
+  imports: [
+    // CacheModule.register(),
+    AuthModule,
+  ],
   controllers: [
     AppController,
     UserController,
@@ -49,10 +52,10 @@ import { PusherService } from '../pusher/pusher.service';
     ConfigService,
     ActivityService,
     PusherService,
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
-    },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: CacheInterceptor,
+    // },
   ],
 })
 export class AppModule {}
