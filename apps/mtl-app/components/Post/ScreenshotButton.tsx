@@ -11,7 +11,10 @@ interface Props {
 }
 
 export const ScreenshotButton: React.FC<Props> = ({ post }) => {
-  const { refetch, isFetching } = useScreenshotQuery({ postId: post.id });
+  const { refetch, isFetching } = useScreenshotQuery({
+    postId: post.id,
+    updateDate: post.updatedAt,
+  });
 
   const handleClick = React.useCallback(async () => {
     const screenshot = await refetch();

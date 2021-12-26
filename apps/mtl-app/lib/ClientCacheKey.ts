@@ -41,7 +41,13 @@ export class ClientCacheKey {
     return [...this.postBaseKey, { postId }];
   }
 
-  createScreenshotKey({ postId }: { postId: string }) {
+  createScreenshotKey({
+    postId,
+    updateDate,
+  }: {
+    postId: string;
+    updateDate: Date;
+  }) {
     return [...this.screenshotBaseKey, { postId }];
   }
 

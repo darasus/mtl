@@ -172,14 +172,21 @@ export class Fetcher {
     postId,
     width,
     height,
+    updateDate,
   }: {
     postId: string;
     width?: number;
     height?: number;
+    updateDate: Date;
   }): Promise<Blob> => {
     return this.httpConnector
       .request(
-        `/api/screenshot?${qs.stringify({ id: postId, width, height })}`,
+        `/api/screenshot?${qs.stringify({
+          id: postId,
+          width,
+          height,
+          updateDate,
+        })}`,
         {
           responseType: 'blob',
         }
