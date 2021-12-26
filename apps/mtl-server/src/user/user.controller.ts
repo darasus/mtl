@@ -25,6 +25,9 @@ import { ConfigService } from '@nestjs/config';
 import { ApiResponse } from '@mtl/api-types';
 import { getMyIdByReq } from '../utils/getMyIdByReq';
 import { Logger } from '../logger/logger.service';
+import { CacheService } from '../cache/cache.service';
+import { CacheKeyService } from '../cache/cacheKey.service';
+import { years } from '../utils/duration';
 
 export class UpdateUserDto {
   newNickname: string;
@@ -43,12 +46,18 @@ export class UserController {
     private readonly followService: FollowService,
     private readonly activityService: ActivityService,
     private readonly prismaService: PrismaService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly cacheService: CacheService,
+    private readonly cacheKeyService: CacheKeyService
   ) {}
 
   @Get('user/:nickname')
   async getUserById(@Param('nickname') nickname: string): Promise<User> {
-    return this.userService.getUserByNickname({ nickname });
+    return this.cacheService.fetch(
+      this.cacheKeyService.createUserKey({ nickname }),
+      () => this.userService.getUserByNickname({ nickname }),
+      years(1)
+    );
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -233,6 +242,10 @@ export class UserController {
       password: body.password,
       email: body.email,
     });
+
+    await this.cacheService.del(
+      this.cacheKeyService.createUserKey({ nickname })
+    );
 
     return { status: 'ok' };
   }

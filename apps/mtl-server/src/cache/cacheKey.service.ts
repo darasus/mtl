@@ -2,16 +2,12 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class CacheKeyService {
-  createUserSessionKey({ email }: { email: string }): string {
-    return `user:${email}:session`;
-  }
-
   createUserByEmailKey({ email }: { email: string }): string {
     return `user:${email}`;
   }
 
-  createUserKey({ userId }: { userId: string }): string {
-    return `user:${userId}`;
+  createUserKey({ nickname }: { nickname: string }): string {
+    return `user:${nickname}`;
   }
 
   createPostKey({ postId }: { postId: string }): string {
