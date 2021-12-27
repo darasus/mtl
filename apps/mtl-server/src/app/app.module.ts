@@ -1,11 +1,10 @@
-import { CacheInterceptor, CacheModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 import { UserController } from '../user/user.controller';
 import { UserService } from '../user/user.service';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthModule } from '../auth/auth.module';
 import { FollowService } from '../follow/follow.service';
 import { ActivityService } from '../activity/activity.service';
@@ -26,10 +25,7 @@ import { CacheKeyService } from '../cache/cacheKey.service';
 import { CacheService } from '../cache/cache.service';
 
 @Module({
-  imports: [
-    // CacheModule.register(),
-    AuthModule,
-  ],
+  imports: [AuthModule],
   controllers: [
     AppController,
     UserController,
@@ -56,10 +52,6 @@ import { CacheService } from '../cache/cache.service';
     PusherService,
     CacheKeyService,
     CacheService,
-    // {
-    //   provide: APP_INTERCEPTOR,
-    //   useClass: CacheInterceptor,
-    // },
   ],
 })
 export class AppModule {}
