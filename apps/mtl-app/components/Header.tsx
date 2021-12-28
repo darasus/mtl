@@ -13,6 +13,8 @@ import {
   Spinner,
   Text,
   useBreakpointValue,
+  useColorModeValue,
+  useColorMode,
 } from '@chakra-ui/react';
 import {
   PlusSmIcon,
@@ -24,6 +26,7 @@ import {
 import { useMe } from '../hooks/useMe';
 import { ActivityBadge } from '../components/ActivityBadge/ActivityBadge';
 import { Link } from './Link';
+import { useColors } from '../hooks/useColors';
 
 interface Props {
   fullWidth?: boolean;
@@ -40,6 +43,8 @@ export const Header: React.FC<Props> = ({ fullWidth }) => {
     },
     'md'
   );
+  const colorMode = useColorMode();
+  const colors = useColors();
 
   return (
     <Box
@@ -48,10 +53,10 @@ export const Header: React.FC<Props> = ({ fullWidth }) => {
       top={4}
       right={4}
       left={4}
-      borderColor="gray.900"
+      borderColor={colors.borderColor}
       borderWidth="thin"
       px={5}
-      backgroundColor="black"
+      backgroundColor={colorMode.colorMode === 'dark' ? 'black' : 'white'}
       zIndex="docked"
       maxW={fullWidth ? undefined : '960px'}
       margin="0 auto"

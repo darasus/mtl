@@ -21,7 +21,7 @@ module.exports = withPlugins([withNx, withPlaiceholder], {
     ],
   },
   reactStrictMode: true,
-  swcMinify: true,
+  swcMinify: false,
   experimental: {
     esmExternals: false,
   },

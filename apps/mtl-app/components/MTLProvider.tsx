@@ -8,6 +8,7 @@ import { Toaster } from 'react-hot-toast';
 import { theme } from '../theme';
 import React from 'react';
 import { GetServerSideProps } from 'next';
+import { rejectNil } from '../utils/rejectNil';
 
 const AccessTokenContext = React.createContext<string | null>(null);
 
@@ -27,9 +28,10 @@ export const MTLProvider: React.FC<Props> = ({
   children,
   accessToken,
 }) => {
-  const colorModeManager = cookies
-    ? cookieStorageManager(cookies)
-    : localStorageManager;
+  const colorModeManager =
+    typeof cookies === 'string'
+      ? cookieStorageManager(cookies)
+      : localStorageManager;
 
   return (
     <>
@@ -61,10 +63,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getSession(req, res);
 
   return {
-    props: {
+    props: rejectNil({
       accessToken: session?.accessToken || null,
       user: session?.user || null,
       cookies: req.headers.cookie ?? '',
-    },
+    }),
   };
 };
