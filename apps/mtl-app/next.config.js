@@ -3,6 +3,7 @@ const withPlugins = require('next-compose-plugins');
 const { withPlaiceholder } = require('@plaiceholder/next');
 
 module.exports = withPlugins([withNx, withPlaiceholder], {
+  productionBrowserSourceMaps: true,
   nx: {
     // Set this to false if you do not want to use SVGR
     // See: https://github.com/gregberge/svgr
