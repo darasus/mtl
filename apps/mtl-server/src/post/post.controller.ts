@@ -88,7 +88,12 @@ export class PostController {
     @Body() body: UpdatePostDto,
     @Param('postId') postId: string
   ) {
-    return this.postService.updatePost(body, postId);
+    const post = await this.postService.updatePost(body, postId);
+
+    // clear post cache
+    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
+
+    return post;
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -100,7 +105,7 @@ export class PostController {
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    return this.postService.savePost(
+    const post = this.postService.savePost(
       {
         title: body.title,
         content: body.content,
@@ -108,6 +113,8 @@ export class PostController {
       },
       userId
     );
+
+    return post;
   }
 
   @UseGuards(AuthGuard('jwt'))
