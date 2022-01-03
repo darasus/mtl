@@ -12,8 +12,6 @@ export class Logger implements LoggerService {
       ddTracer.inject(span.context(), formats.LOG, record);
     }
 
-    console.log(ddTracer.getRumData());
-
     console.log(JSON.stringify(record));
   }
 

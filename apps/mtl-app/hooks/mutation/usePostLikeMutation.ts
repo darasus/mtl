@@ -50,7 +50,6 @@ export const usePostLikeMutation = () => {
         }
       },
       async onSettled(_, __, { postId }) {
-        console.log(router.pathname);
         if (router.pathname === '/p/[id]') {
           await queryClient.invalidateQueries(
             clientCacheKey.createPostKey({ postId })
