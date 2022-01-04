@@ -75,8 +75,8 @@ const UserPage: React.FC<Props> = ({ userProfileImageBase64 }) => {
         variant="outline"
         mb={1}
         onClick={handleUnfollow}
-        disabled={unfollowMutation.isLoading}
-        isLoading={unfollowMutation.isLoading}
+        disabled={unfollowMutation.isLoading || doIFollowUser.isLoading}
+        isLoading={unfollowMutation.isLoading || doIFollowUser.isLoading}
       >
         Unfollow
       </Button>
@@ -85,8 +85,8 @@ const UserPage: React.FC<Props> = ({ userProfileImageBase64 }) => {
         variant="outline"
         mb={1}
         onClick={handleFollow}
-        disabled={followMutation.isLoading}
-        isLoading={followMutation.isLoading}
+        disabled={followMutation.isLoading || doIFollowUser.isLoading}
+        isLoading={followMutation.isLoading || doIFollowUser.isLoading}
       >
         Follow
       </Button>
@@ -257,6 +257,18 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       queryClient.prefetchQuery(
         clientCacheKey.createUserKey({ nickname }),
         () => Promise.resolve(user)
+      ),
+      queryClient.prefetchQuery(
+        clientCacheKey.createFollowersCountKey({ nickname }),
+        () => fetcher.getFollowersCount({ nickname })
+      ),
+      queryClient.prefetchQuery(
+        clientCacheKey.createFollowingCountKey({ nickname }),
+        () => fetcher.getFollowingsCount({ nickname })
+      ),
+      queryClient.prefetchQuery(
+        clientCacheKey.createUserTagsKey({ nickname }),
+        () => fetcher.fetchUserTags({ nickname })
       ),
     ]);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
