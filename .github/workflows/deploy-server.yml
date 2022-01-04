@@ -1,4 +1,4 @@
-name: build and piblish mtl-server
+name: build and publish mtl-server
 on:
   push:
     branches:

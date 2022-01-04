@@ -1,4 +1,4 @@
-name: build and piblish mtl-screenshot-api
+name: build and publish mtl-screenshot-api
 on:
   push:
     branches:

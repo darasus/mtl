@@ -1,4 +1,4 @@
-name: build and piblish mtl-app
+name: build and publish mtl-app
 on:
   push:
     branches:
