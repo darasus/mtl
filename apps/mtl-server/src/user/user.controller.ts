@@ -138,12 +138,16 @@ export class UserController {
     @Req() req: Request,
     @Param('nickname') nickname: string
   ): Promise<ApiResponse['user/:nickname/posts']> {
+    const tags = (req.query?.tags as string)?.split(',');
+    const cursor = req.query?.cursor as string;
     const myId = getMyIdByReq(req);
     const user = await this.userService.getUserByNickname({ nickname });
 
     const posts = await this.userService.getUserPosts({
       userId: user?.id,
       isMe: !!myId && myId === user?.id,
+      tags,
+      cursor,
     });
 
     return posts;
@@ -166,6 +170,11 @@ export class UserController {
     });
 
     return { status: 'ok' };
+  }
+
+  @Get('user/:nickname/tags')
+  async getUserTags(@Param('nickname') nickname: string) {
+    return this.userService.getUserTags({ nickname });
   }
 
   @UseGuards(AuthGuard('jwt'))

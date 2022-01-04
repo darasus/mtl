@@ -91,7 +91,7 @@ export const DesktopHeader: React.FC<Props> = React.memo(
                     </Box>
                     <Box>
                       <Text fontSize="sm" whiteSpace="nowrap">{`${post.tags
-                        ?.map((tag) => tag.tag.name)
+                        ?.map((tag) => tag.tag.name.toLowerCase())
                         .join(',')}`}</Text>
                     </Box>
                   </Flex>

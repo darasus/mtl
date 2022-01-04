@@ -12,6 +12,7 @@ import { UserProvider } from '@auth0/nextjs-auth0';
 import { MTLProvider } from '../components/MTLProvider';
 import getConfig from 'next/config';
 import { datadogRum } from '@datadog/browser-rum';
+import { RecoilRoot } from 'recoil';
 
 const MyApp = ({
   Component,
@@ -72,7 +73,9 @@ const MyApp = ({
               clientKey={getConfig().publicRuntimeConfig.PUSHER_APP_KEY}
               cluster="eu"
             >
-              <Component {...pageProps} />
+              <RecoilRoot>
+                <Component {...pageProps} />
+              </RecoilRoot>
             </PusherProvider>
           </Hydrate>
           <ReactQueryDevtools />

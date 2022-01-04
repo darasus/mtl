@@ -7,6 +7,7 @@ import { FeedType } from '../types/FeedType';
 import ServerFormData from 'form-data';
 import { ApiResponse } from '@mtl/api-types';
 import getConfig from 'next/config';
+import { rejectNil } from '../utils/rejectNil';
 
 export class Fetcher {
   httpConnector: HttpConnector;
@@ -33,13 +34,23 @@ export class Fetcher {
   getUserPosts = ({
     nickname,
     cursor,
+    tags,
   }: {
     nickname: string;
     cursor?: string;
-  }): Promise<ApiResponse['user/:nickname/posts']> =>
-    this.httpConnector
-      .request(`/api/user/${nickname}/posts?${qs.stringify({ cursor })}`)
+    tags?: string[];
+  }): Promise<ApiResponse['user/:nickname/posts']> => {
+    const query = qs.stringify(
+      rejectNil({
+        cursor,
+        tags: tags?.length > 0 ? tags?.join(',') : null,
+      })
+    );
+    console.log({ query });
+    return this.httpConnector
+      .request(`/api/user/${nickname}/posts?${query}`)
       .then((res) => res.data);
+  };
 
   invalidateUser = ({
     nickname,
@@ -65,6 +76,15 @@ export class Fetcher {
     email?: string;
   }) =>
     this.httpConnector.post(`/api/user/${currentNickname}/update`, { ...data });
+
+  fetchUserTags = ({
+    nickname,
+  }: {
+    nickname: string;
+  }): Promise<ApiResponse['user/:nickname/tags']> =>
+    this.httpConnector
+      .get(`/api/user/${nickname}/tags`)
+      .then((res) => res.data);
 
   // like
 

@@ -70,7 +70,7 @@ export const MobileHeader: React.FC<Props> = ({ post }) => {
               </Box>
               <Box>
                 <Text fontSize="sm" whiteSpace="nowrap">{`${post.tags
-                  .map((tag) => tag.tag.name)
+                  .map((tag) => tag.tag.name.toLowerCase())
                   .join(',')}`}</Text>
               </Box>
             </Flex>

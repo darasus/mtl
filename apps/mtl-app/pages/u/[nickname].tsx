@@ -1,6 +1,16 @@
 import React from 'react';
 import { Post } from '../../components/Post';
-import { Badge, Box, Button, Flex, Spinner, Text } from '@chakra-ui/react';
+import {
+  Badge,
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Spinner,
+  Stack,
+  Tag,
+  Text,
+} from '@chakra-ui/react';
 import Image from 'next/image';
 import { useUserQuery } from '../../hooks/query/useUserQuery';
 import { useRouter } from 'next/router';
@@ -24,12 +34,16 @@ import { clientCacheKey } from '../../lib/ClientCacheKey';
 import { getPlaiceholder, IGetPlaiceholderReturn } from 'plaiceholder';
 import { User } from '@mtl/types';
 import { rejectNil } from '../../utils/rejectNil';
+import { useUserTagsQuery } from '../../hooks/query/useUserTagsQuery';
+import { useRecoilState } from 'recoil';
+import { userTagFilterAtom } from '../../atoms/userTagFilterAtom';
 
 interface Props {
   userProfileImageBase64: string | undefined;
 }
 
 const UserPage: React.FC<Props> = ({ userProfileImageBase64 }) => {
+  const [userTagFilter, setUserTagFilter] = useRecoilState(userTagFilterAtom);
   const router = useRouter();
   const nickname = router.query.nickname as string;
   const user = useUserQuery({ nickname });
@@ -41,6 +55,7 @@ const UserPage: React.FC<Props> = ({ userProfileImageBase64 }) => {
   const followingCount = useFollowingCountQuery({ nickname });
   const doIFollowUser = useDoIFollowUserQuery({ nickname });
   const isMyPage = me?.user?.nickname === nickname;
+  const userTags = useUserTagsQuery({ nickname });
 
   const handleFollow = () => {
     followMutation.mutateAsync({
@@ -77,6 +92,17 @@ const UserPage: React.FC<Props> = ({ userProfileImageBase64 }) => {
       </Button>
     )
   ) : null;
+
+  const handleTagClick = React.useCallback(
+    (id) => () => {
+      if (userTagFilter.includes(id)) {
+        setUserTagFilter((prev) => prev.filter((tagId) => tagId !== id));
+      } else {
+        setUserTagFilter((prev) => [...prev, id]);
+      }
+    },
+    [setUserTagFilter, userTagFilter]
+  );
 
   return (
     <>
@@ -151,7 +177,24 @@ const UserPage: React.FC<Props> = ({ userProfileImageBase64 }) => {
         </Box>
         <Box>
           <Heading title="My libraries" />
-          {posts.isLoading && (
+          {userTags.data?.length > 0 && (
+            <Flex flexWrap="wrap" mb={3}>
+              {userTags.data?.map((tag) => (
+                <Button
+                  mr={1}
+                  mb={1}
+                  key={tag.id}
+                  borderRadius="full"
+                  size="xs"
+                  variant={userTagFilter.includes(tag.id) ? 'cta' : 'solid'}
+                  onClick={handleTagClick(tag.id)}
+                >
+                  {tag.name}
+                </Button>
+              ))}
+            </Flex>
+          )}
+          {(posts.isLoading || userTags.isLoading) && (
             <Flex justifyContent="center">
               <Spinner />
             </Flex>

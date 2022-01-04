@@ -14,6 +14,10 @@ export class ClientCacheKey {
   userPostsBaseKey = ['user_posts'];
 
   createUserKey({ nickname }: { nickname: string }) {
+    return [...this.userBaseKey, 'tags', { nickname }];
+  }
+
+  createUserTagsKey({ nickname }: { nickname: string }) {
     return [...this.userBaseKey, { nickname }];
   }
 
@@ -55,8 +59,8 @@ export class ClientCacheKey {
     return [...this.userActivityBaseKey, { nickname }];
   }
 
-  createUserPostsKey({ nickname }: { nickname: string }) {
-    return [...this.userPostsBaseKey, { nickname }];
+  createUserPostsKey({ nickname, tags }: { nickname: string; tags: string[] }) {
+    return [...this.userPostsBaseKey, { nickname, tags }];
   }
 }
 

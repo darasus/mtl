@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, TagsOnPosts } from '@prisma/client';
 import { userFragment } from '../fragments/userFragment';
 import { likeFragment } from '../fragments/likeFragment';
 import { commentFragment } from '../fragments/commentFragment';
@@ -53,11 +53,13 @@ export class UserService {
     isMe,
     cursor,
     take = 10,
+    tags,
   }: {
     userId: string;
     isMe: boolean;
     cursor?: string;
     take?: number;
+    tags?: string[];
   }): Promise<ApiPage<Post>> {
     const postsCount = await this.prisma.post.count({
       where: {
@@ -69,6 +71,17 @@ export class UserService {
       where: {
         authorId: userId,
         ...(isMe ? {} : { published: true }),
+        ...(tags?.length > 0
+          ? {
+              tags: {
+                every: {
+                  tagId: {
+                    in: tags,
+                  },
+                },
+              },
+            }
+          : {}),
       },
       orderBy: [
         {
@@ -224,4 +237,40 @@ export class UserService {
       },
     });
   }
+
+  async getUserTags({ nickname }: { nickname: string }) {
+    const posts = await this.prisma.post.findMany({
+      where: {
+        author: {
+          nickname,
+        },
+      },
+      select: {
+        tags: true,
+      },
+    });
+
+    const tagsOnPosts = posts.reduce(
+      (acc, item) => [...acc, ...item.tags],
+      [] as TagsOnPosts[]
+    );
+
+    const uniqueTagIds = getUniqueListBy(tagsOnPosts, 'tagId').map(
+      (t) => t.tagId
+    );
+
+    const tags = await this.prisma.tag.findMany({
+      where: {
+        id: {
+          in: uniqueTagIds,
+        },
+      },
+    });
+
+    return tags;
+  }
+}
+
+function getUniqueListBy<T>(arr: Array<T>, key: string) {
+  return [...new Map(arr.map((item) => [item[key], item])).values()];
 }
