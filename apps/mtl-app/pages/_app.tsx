@@ -37,7 +37,7 @@ const MyApp = ({
 
   React.useEffect(() => {
     Fathom.load('STOSBNAU', {
-      includedDomains: ['www.mytinylibrary.com'],
+      includedDomains: ['mytinylibrary.com'],
     });
 
     function onRouteChangeComplete() {
