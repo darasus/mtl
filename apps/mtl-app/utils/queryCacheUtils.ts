@@ -1,6 +1,6 @@
 import { ApiPage, Post } from '@mtl/types';
 import { InfiniteData, QueryClient } from 'react-query';
-import { clientCacheKey } from '../ClientCacheKey';
+import { clientCacheKey } from '../lib/ClientCacheKey';
 
 export const onPostsInfiniteQuerySuccess = ({
   data,

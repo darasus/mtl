@@ -1,7 +1,7 @@
 import {
   onPostsInfiniteQuerySuccess,
   getNextPageParam,
-} from '../../lib/utils/queryCacheUtils';
+} from '../../utils/queryCacheUtils';
 import { useInfiniteQuery, useQueryClient } from 'react-query';
 import { clientCacheKey } from '../../lib/ClientCacheKey';
 import { FeedType } from '../../types/FeedType';
