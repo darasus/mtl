@@ -35,6 +35,7 @@ import { getPlaiceholder, IGetPlaiceholderReturn } from 'plaiceholder';
 import { User } from '@mtl/types';
 import { rejectNil } from '../../utils/rejectNil';
 import { UserTagCloud } from '../../features/UserTagCloud';
+import { UserProfile } from '../../features/UserProfile';
 
 interface Props {
   userProfileImageBase64: string | undefined;
@@ -46,119 +47,13 @@ const UserPage: React.FC<Props> = ({ userProfileImageBase64 }) => {
   const user = useUserQuery({ nickname });
   const me = useMe();
   const posts = useUserPostsQuery({ nickname });
-  const followMutation = useFollowMutation();
-  const unfollowMutation = useUnfollowMutation();
-  const followersCount = useFollowersCountQuery({ nickname });
-  const followingCount = useFollowingCountQuery({ nickname });
-  const doIFollowUser = useDoIFollowUserQuery({ nickname });
-  const isMyPage = me?.user?.nickname === nickname;
-
-  const handleFollow = () => {
-    followMutation.mutateAsync({
-      nickname: user.data?.nickname as string,
-    });
-  };
-
-  const handleUnfollow = () => {
-    unfollowMutation.mutateAsync({
-      nickname: user.data?.nickname as string,
-    });
-  };
-
-  const followButton = !isMyPage ? (
-    doIFollowUser.data?.doIFollow ? (
-      <Button
-        variant="outline"
-        mb={1}
-        onClick={handleUnfollow}
-        disabled={unfollowMutation.isLoading || doIFollowUser.isLoading}
-        isLoading={unfollowMutation.isLoading || doIFollowUser.isLoading}
-      >
-        Unfollow
-      </Button>
-    ) : (
-      <Button
-        variant="outline"
-        mb={1}
-        onClick={handleFollow}
-        disabled={followMutation.isLoading || doIFollowUser.isLoading}
-        isLoading={followMutation.isLoading || doIFollowUser.isLoading}
-      >
-        Follow
-      </Button>
-    )
-  ) : null;
 
   return (
     <>
       <Head title={user.data?.name as string} urlPath={`u/${user.data?.id}`} />
       <Layout>
         <Box>
-          <Flex
-            flexDirection="column"
-            marginBottom="size-100"
-            alignItems="center"
-            mb={3}
-          >
-            {user.isLoading && (
-              <Flex justifyContent="center">
-                <Spinner />
-              </Flex>
-            )}
-            {user.data && (
-              <Flex flexDirection="column" alignItems="center">
-                <Box
-                  width={250}
-                  height={250}
-                  overflow="hidden"
-                  marginBottom="size-100"
-                  borderRadius="full"
-                  borderWidth="thick"
-                  borderColor="brand"
-                  boxShadow="base"
-                  mb={2}
-                >
-                  {userProfileImageBase64 ? (
-                    <Image
-                      src={user?.data?.image}
-                      width="500"
-                      height="500"
-                      alt="Avatar"
-                      placeholder="blur"
-                      blurDataURL={userProfileImageBase64}
-                      priority={true}
-                    />
-                  ) : (
-                    <Image
-                      src={user?.data?.image}
-                      width="500"
-                      height="500"
-                      alt="Avatar"
-                      priority={true}
-                    />
-                  )}
-                </Box>
-                <Box mb={1}>
-                  <Text fontWeight="bold" fontSize="2xl">
-                    {user.data?.name}
-                  </Text>
-                </Box>
-                <Flex mb={3}>
-                  <Box mr={2}>
-                    <Badge>{`${new Intl.NumberFormat('en-IN').format(
-                      followersCount.data || 0
-                    )} followers`}</Badge>
-                  </Box>
-                  <Box>
-                    <Badge>{`${new Intl.NumberFormat('en-IN').format(
-                      followingCount.data || 0
-                    )} following`}</Badge>
-                  </Box>
-                </Flex>
-                {followButton}
-              </Flex>
-            )}
-          </Flex>
+          <UserProfile userProfileImageBase64={userProfileImageBase64} />
         </Box>
         <Box>
           <Heading title="My libraries" />
