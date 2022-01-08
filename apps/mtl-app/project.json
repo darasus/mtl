@@ -48,6 +48,12 @@
         "lintFilePatterns": ["apps/mtl-app/**/*.{ts,tsx,js,jsx}"]
       },
       "outputs": ["{options.outputFile}"]
+    },
+    "check-types": {
+      "builder": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "yarn tsc --project apps/mtl-app/tsconfig.json --noEmit"
+      }
     }
   },
   "tags": []

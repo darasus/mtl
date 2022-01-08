@@ -1,12 +1,12 @@
 import { Button, Text, IconButton, useBreakpointValue } from '@chakra-ui/react';
 import React from 'react';
 import { usePostLikeMutation } from '../../hooks/mutation/usePostLikeMutation';
-import { Post } from '../../types/Post';
+import { TPost } from '../../types/Post';
 import { ThumbDownIcon, ThumbUpIcon } from '@heroicons/react/outline';
 import { usePostUnlikeMutation } from '../../hooks/mutation/usePostUnlikeMutation';
 
 interface Props {
-  post: Post;
+  post: TPost;
   isPostLoading?: boolean;
 }
 

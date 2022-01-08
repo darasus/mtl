@@ -4,10 +4,10 @@ import { paramCase } from 'change-case';
 import React from 'react';
 import download from 'js-file-download';
 import { useScreenshotQuery } from '../../hooks/query/useScreenshotQuery';
-import { Post } from '../../types/Post';
+import { TPost } from '../../types/Post';
 
 interface Props {
-  post: Post;
+  post: TPost;
 }
 
 export const ScreenshotButton: React.FC<Props> = ({ post }) => {

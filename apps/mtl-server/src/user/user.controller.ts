@@ -140,6 +140,11 @@ export class UserController {
   ): Promise<ApiResponse['user/:nickname/posts']> {
     const tags = (req.query?.tags as string)?.split(',');
     const cursor = req.query?.cursor as string;
+    const published =
+      typeof req.query?.published === 'string'
+        ? JSON.parse(req.query?.published)
+        : undefined;
+
     const myId = getMyIdByReq(req);
     const user = await this.userService.getUserByNickname({ nickname });
 
@@ -148,6 +153,7 @@ export class UserController {
       isMe: !!myId && myId === user?.id,
       tags,
       cursor,
+      published,
     });
 
     return posts;

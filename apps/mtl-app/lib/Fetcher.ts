@@ -1,5 +1,5 @@
 import { CodeLanguage } from '.prisma/client';
-import { Post } from '../types/Post';
+import { TPost } from '../types/Post';
 import { User } from '../types/User';
 import qs from 'query-string';
 import { HttpConnector } from './HttpConnector';
@@ -34,19 +34,21 @@ export class Fetcher {
   getUserPosts = ({
     nickname,
     cursor,
-    tags,
+    tags = [],
+    published,
   }: {
     nickname: string;
     cursor?: string;
     tags?: string[];
+    published?: boolean;
   }): Promise<ApiResponse['user/:nickname/posts']> => {
     const query = qs.stringify(
       rejectNil({
         cursor,
         tags: tags?.length > 0 ? tags?.join(',') : null,
+        published,
       })
     );
-    console.log({ query });
     return this.httpConnector
       .request(`/api/user/${nickname}/posts?${query}`)
       .then((res) => res.data);
@@ -185,7 +187,7 @@ export class Fetcher {
 
   // post
 
-  getPost = ({ postId }: { postId: string }): Promise<Post> =>
+  getPost = ({ postId }: { postId: string }): Promise<TPost> =>
     this.httpConnector.request(`/api/post/${postId}`).then((res) => res.data);
 
   getScreenshot = ({
@@ -266,7 +268,7 @@ export class Fetcher {
       })
       .then((res) => res.data);
 
-  getRandomPost = (): Promise<Post> =>
+  getRandomPost = (): Promise<TPost> =>
     this.httpConnector.request(`/api/post/random`, {}).then((res) => res.data);
 
   // tags

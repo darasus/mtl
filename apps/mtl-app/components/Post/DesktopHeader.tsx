@@ -1,5 +1,5 @@
 import { Box, Flex, Text, useBreakpoint, Tooltip } from '@chakra-ui/react';
-import { Post as PostType } from '../../types/Post';
+import { TPost } from '../../types/Post';
 import { ThumbUpIcon, ChatIcon, TagIcon } from '@heroicons/react/outline';
 import { StatusOnlineIcon, StatusOfflineIcon } from '@heroicons/react/solid';
 import React from 'react';
@@ -11,7 +11,7 @@ import { useMe } from '../../hooks/useMe';
 import { CodeLanguage } from '.prisma/client';
 
 interface Props {
-  post: PostType;
+  post: TPost;
   showMetaInfo?: boolean;
   isPostStatusVisible?: boolean;
 }

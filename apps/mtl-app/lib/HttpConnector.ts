@@ -4,7 +4,7 @@ import getConfig from 'next/config';
 export class HttpConnector {
   request: AxiosInstance;
 
-  constructor(props?: { accessToken?: string }) {
+  constructor(props?: { accessToken: string | null | undefined }) {
     this.request = this.createRequest({ accessToken: props?.accessToken });
   }
 
@@ -21,7 +21,11 @@ export class HttpConnector {
     return this.request(url, { method: 'DELETE' });
   }
 
-  createRequest = ({ accessToken }: { accessToken: string }) => {
+  createRequest = ({
+    accessToken,
+  }: {
+    accessToken: string | null | undefined;
+  }) => {
     const client = axios.create({
       baseURL: `${getConfig().publicRuntimeConfig.API_BASE_URL}`,
       headers: {

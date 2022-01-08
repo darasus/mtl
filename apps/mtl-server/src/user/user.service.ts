@@ -54,12 +54,14 @@ export class UserService {
     cursor,
     take = 10,
     tags,
+    published,
   }: {
     userId: string;
     isMe: boolean;
     cursor?: string;
     take?: number;
     tags?: string[];
+    published?: boolean;
   }): Promise<ApiPage<Post>> {
     const postsCount = await this.prisma.post.count({
       where: {
@@ -71,6 +73,7 @@ export class UserService {
       where: {
         authorId: userId,
         ...(isMe ? {} : { published: true }),
+        ...(typeof published === 'boolean' ? { published } : {}),
         ...(tags?.length > 0
           ? {
               tags: {

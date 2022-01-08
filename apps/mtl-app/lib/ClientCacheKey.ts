@@ -59,8 +59,16 @@ export class ClientCacheKey {
     return [...this.userActivityBaseKey, { nickname }];
   }
 
-  createUserPostsKey({ nickname, tags }: { nickname: string; tags: string[] }) {
-    return [...this.userPostsBaseKey, { nickname, tags }];
+  createUserPostsKey({
+    nickname,
+    tags,
+    published,
+  }: {
+    nickname: string;
+    tags?: string[];
+    published?: boolean;
+  }) {
+    return [...this.userPostsBaseKey, { nickname, tags, published }];
   }
 }
 

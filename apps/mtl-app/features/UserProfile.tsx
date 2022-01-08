@@ -89,7 +89,7 @@ export const UserProfile: React.FC<Props> = ({ userProfileImageBase64 }) => {
           >
             {userProfileImageBase64 ? (
               <Image
-                src={user?.data?.image}
+                src={user?.data?.image as string}
                 width="500"
                 height="500"
                 alt="Avatar"
@@ -99,7 +99,7 @@ export const UserProfile: React.FC<Props> = ({ userProfileImageBase64 }) => {
               />
             ) : (
               <Image
-                src={user?.data?.image}
+                src={user?.data?.image as string}
                 width="500"
                 height="500"
                 alt="Avatar"
