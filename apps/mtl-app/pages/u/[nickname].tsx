@@ -1,29 +1,8 @@
 import React from 'react';
-import { Post } from '../../components/Post';
-import {
-  Badge,
-  Box,
-  Button,
-  Flex,
-  HStack,
-  Spinner,
-  Stack,
-  Tag,
-  Text,
-} from '@chakra-ui/react';
-import Image from 'next/image';
+import { Box } from '@chakra-ui/react';
 import { useUserQuery } from '../../hooks/query/useUserQuery';
-import { useRouter } from 'next/router';
-import { useUserPostsQuery } from '../../hooks/query/useUserPostsQuery';
-import { useFollowMutation } from '../../hooks/mutation/useFollowMutation';
-import { useFollowersCountQuery } from '../../hooks/query/useFollowersCountQuery';
-import { useUnfollowMutation } from '../../hooks/mutation/useUnfollowMutation';
-import { useDoIFollowUserQuery } from '../../hooks/query/useDoIFollowUserQuery';
 import { Layout } from '../../layouts/Layout';
 import { Head } from '../../components/Head';
-import { Heading } from '../../components/Heading';
-import { useMe } from '../../hooks/useMe';
-import { useFollowingCountQuery } from '../../hooks/query/useFollowingCountQuery';
 import { GetServerSideProps } from 'next';
 import { dehydrate, QueryClient } from 'react-query';
 import { getSession } from '@auth0/nextjs-auth0';
@@ -34,8 +13,12 @@ import { clientCacheKey } from '../../lib/ClientCacheKey';
 import { getPlaiceholder, IGetPlaiceholderReturn } from 'plaiceholder';
 import { User } from '@mtl/types';
 import { rejectNil } from '../../utils/rejectNil';
-import { UserTagCloud } from '../../features/UserTagCloud';
 import { UserProfile } from '../../features/UserProfile';
+import { UserProfileTabs } from '../../features/UserProfileTabs';
+import { useUserPostsQuery } from '../../hooks/query/useUserPostsQuery';
+import { PostList } from '../../components/PostList';
+import { TPost } from '../../types/Post';
+import { useRouter } from 'next/router';
 
 interface Props {
   userProfileImageBase64: string | undefined;
@@ -43,10 +26,17 @@ interface Props {
 
 const UserPage: React.FC<Props> = ({ userProfileImageBase64 }) => {
   const router = useRouter();
-  const nickname = router.query.nickname as string;
-  const user = useUserQuery({ nickname });
-  const me = useMe();
-  const posts = useUserPostsQuery({ nickname });
+  const user = useUserQuery({ nickname: router.query.nickname as string });
+  const postsData = useUserPostsQuery({
+    nickname: router.query.nickname as string,
+  });
+  const posts = React.useMemo(
+    () =>
+      (postsData.data?.pages || []).reduce((acc, page) => {
+        return [...acc, ...page.items];
+      }, [] as TPost[]),
+    [postsData.data?.pages]
+  );
 
   return (
     <>
@@ -56,38 +46,14 @@ const UserPage: React.FC<Props> = ({ userProfileImageBase64 }) => {
           <UserProfile userProfileImageBase64={userProfileImageBase64} />
         </Box>
         <Box>
-          <Heading title="My libraries" />
-          <UserTagCloud />
-          {posts.isLoading && (
-            <Flex justifyContent="center">
-              <Spinner />
-            </Flex>
-          )}
-          {posts.data?.pages.map((page) => {
-            return page.items.map((post) => (
-              <Box key={post.id} mb={6}>
-                <Post
-                  postId={post.id}
-                  isMyPost={post.authorId === me?.user?.id}
-                  isPostStatusVisible
-                />
-              </Box>
-            ));
-          })}
-          {posts.hasNextPage && (
-            <Flex justifyContent="center">
-              <Button
-                color="brand"
-                borderColor="brand"
-                variant="outline"
-                size="sm"
-                isLoading={posts.isFetchingNextPage}
-                onClick={() => posts.fetchNextPage()}
-              >
-                Load more...
-              </Button>
-            </Flex>
-          )}
+          <UserProfileTabs />
+          <PostList
+            posts={posts}
+            fetchNextPage={postsData.fetchNextPage}
+            hasNextPage={postsData.hasNextPage}
+            isFetchingNextPage={postsData.isFetchingNextPage}
+            isLoading={postsData.isLoading}
+          />
         </Box>
       </Layout>
     </>

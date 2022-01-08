@@ -7,24 +7,26 @@ import { clientCacheKey } from '../../lib/ClientCacheKey';
 import { hours } from '../../utils/duration';
 import { useFetcher } from '../useFetcher';
 import { ApiResponse } from '@mtl/api-types';
-import { userTagFilterAtom } from '../../atoms/userTagFilterAtom';
+import { userPostsFilterAtom } from '../../atoms/userPostsFilterAtom';
 import { useRecoilState } from 'recoil';
 
 export const useUserPostsQuery = ({ nickname }: { nickname: string }) => {
   const queryClient = useQueryClient();
   const fetcher = useFetcher();
-  const [userTagFilter] = useRecoilState(userTagFilterAtom);
+  const [userPostsFilter] = useRecoilState(userPostsFilterAtom);
 
   return useInfiniteQuery<ApiResponse['user/:nickname/posts']>(
     clientCacheKey.createUserPostsKey({
       nickname,
-      tags: userTagFilter,
+      tags: userPostsFilter.tags,
+      published: userPostsFilter.published,
     }),
     ({ pageParam = undefined }) =>
       fetcher.getUserPosts({
         nickname,
         cursor: pageParam,
-        tags: userTagFilter,
+        tags: userPostsFilter.tags,
+        published: userPostsFilter.published,
       }),
     {
       enabled: !!nickname,

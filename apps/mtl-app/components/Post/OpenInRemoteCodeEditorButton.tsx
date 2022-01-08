@@ -4,9 +4,9 @@ import { Text } from '@chakra-ui/layout';
 import { useBreakpointValue } from '@chakra-ui/media-query';
 import { LightningBoltIcon } from '@heroicons/react/outline';
 import { useOpenInRemoveCodeEditor } from '../../hooks/useOpenInRemoveCodeEditor';
-import { Post } from '../../types/Post';
+import { TPost } from '../../types/Post';
 
-export const OpenInRemoteCodeEditorButton = ({ post }: { post: Post }) => {
+export const OpenInRemoteCodeEditorButton = ({ post }: { post: TPost }) => {
   const onClick = useOpenInRemoveCodeEditor({
     codeLanguage: post.codeLanguage as CodeLanguage,
     title: post.title,

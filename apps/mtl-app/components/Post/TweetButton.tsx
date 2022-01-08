@@ -3,9 +3,9 @@ import { Text } from '@chakra-ui/layout';
 import { useBreakpointValue } from '@chakra-ui/media-query';
 import { ShareIcon } from '@heroicons/react/outline';
 import React from 'react';
-import { Post } from '../../types/Post';
+import { TPost } from '../../types/Post';
 
-export const TweetButton = ({ post }: { post: Post }) => {
+export const TweetButton = ({ post }: { post: TPost }) => {
   const handleTweetClick = React.useCallback(() => {
     window.open(
       `https://twitter.com/intent/tweet?text=${encodeURI(

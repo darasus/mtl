@@ -110,6 +110,7 @@
     "react-markdown": "^6.0.3",
     "react-monaco-editor": "^0.43.0",
     "react-query": "^3.18.1",
+    "react-select": "^5.2.1",
     "react-use": "^17.3.1",
     "recoil": "^0.5.2",
     "reflect-metadata": "^0.1.13",

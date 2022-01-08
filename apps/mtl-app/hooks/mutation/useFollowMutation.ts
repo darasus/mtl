@@ -23,13 +23,17 @@ export const useFollowMutation = () => {
           clientCacheKey.createFollowersCountKey({ nickname })
         );
         qc.invalidateQueries(
-          clientCacheKey.createFollowersCountKey({ nickname: me.user.nickname })
+          clientCacheKey.createFollowersCountKey({
+            nickname: me?.user?.nickname as string,
+          })
         );
         qc.invalidateQueries(
           clientCacheKey.createFollowingCountKey({ nickname })
         );
         qc.invalidateQueries(
-          clientCacheKey.createFollowingCountKey({ nickname: me.user.nickname })
+          clientCacheKey.createFollowingCountKey({
+            nickname: me?.user?.nickname as string,
+          })
         );
         qc.invalidateQueries(
           clientCacheKey.createDoIFollowUserKey({ nickname })

@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import { Post as PostType } from '../../types/Post';
+import { TPost } from '../../types/Post';
 import {
   ThumbUpIcon,
   ChatIcon,
@@ -12,7 +12,7 @@ import { useColors } from '../../hooks/useColors';
 import { CodeLanguage } from '.prisma/client';
 
 interface Props {
-  post: PostType;
+  post: TPost;
 }
 
 const codeExtensionMap = {
@@ -33,7 +33,7 @@ export const MobileHeader: React.FC<Props> = ({ post }) => {
           <Flex color={secondaryTextColor} width="100%">
             <Flex mr={2} alignItems="center" minWidth={0}>
               <Text fontSize="sm" color={secondaryTextColor} isTruncated>
-                <RouterLink href={`/u/${post.author.nickname}`}>
+                <RouterLink href={`/u/${post.author?.nickname as string}`}>
                   {post.author?.name}
                 </RouterLink>
               </Text>

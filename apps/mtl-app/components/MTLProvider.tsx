@@ -10,7 +10,7 @@ import React from 'react';
 import { GetServerSideProps } from 'next';
 import { rejectNil } from '../utils/rejectNil';
 
-const AccessTokenContext = React.createContext<string | null>(null);
+const AccessTokenContext = React.createContext<string | null | undefined>(null);
 
 export const useAccessToken = () => {
   const accessToken = React.useContext(AccessTokenContext);

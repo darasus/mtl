@@ -24,13 +24,17 @@ export const useUnfollowMutation = () => {
           clientCacheKey.createFollowersCountKey({ nickname })
         );
         qc.invalidateQueries(
-          clientCacheKey.createFollowersCountKey({ nickname: me?.user?.id })
+          clientCacheKey.createFollowersCountKey({
+            nickname: me?.user?.id as string,
+          })
         );
         qc.invalidateQueries(
           clientCacheKey.createFollowingCountKey({ nickname })
         );
         qc.invalidateQueries(
-          clientCacheKey.createFollowingCountKey({ nickname: me?.user?.id })
+          clientCacheKey.createFollowingCountKey({
+            nickname: me?.user?.id as string,
+          })
         );
         qc.invalidateQueries(
           clientCacheKey.createDoIFollowUserKey({ nickname })

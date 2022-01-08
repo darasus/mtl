@@ -15,7 +15,7 @@ import {
   DotsVerticalIcon,
 } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
-import { Post } from '../../types/Post';
+import { TPost } from '../../types/Post';
 import { usePostUnpublishMutation } from '../../hooks/mutation/usePostUnpublishMutation';
 import { usePostPublishMutation } from '../../hooks/mutation/usePostPublishMutation';
 import { usePostDeleteMutation } from '../../hooks/mutation/usePostDeleteMutation';
@@ -23,7 +23,7 @@ import { Role, useMe } from '../../hooks/useMe';
 
 interface Props {
   isMyPost: boolean;
-  post: Post;
+  post: TPost;
 }
 
 export const ActionMenu: React.FC<Props> = ({ isMyPost, post }) => {

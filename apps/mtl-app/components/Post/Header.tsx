@@ -1,11 +1,11 @@
 import { useBreakpointValue } from '@chakra-ui/react';
-import { Post as PostType } from '../../types/Post';
+import { TPost } from '../../types/Post';
 import React from 'react';
 import { MobileHeader } from './MobileHeader';
 import { DesktopHeader } from './DesktopHeader';
 
 interface Props {
-  post: PostType;
+  post: TPost;
   showMetaInfo?: boolean;
   isPostStatusVisible?: boolean;
 }
