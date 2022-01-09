@@ -29,6 +29,9 @@ COPY apps/mtl-server ./apps/mtl-server
 COPY libs/types ./libs/types
 COPY libs/api-utils ./libs/api-utils
 COPY libs/api-types ./libs/api-types
+COPY libs/cache ./libs/cache
+COPY libs/prisma ./libs/prisma
+COPY libs/utils ./libs/utils
 COPY workspace.json ./workspace.json
 COPY nx.json ./nx.json
 COPY package.json ./package.json
