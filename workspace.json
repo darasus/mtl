@@ -2,11 +2,12 @@
   "version": 2,
   "projects": {
     "api-types": "libs/api-types",
+    "api-utils": "libs/api-utils",
     "mtl-app": "apps/mtl-app",
     "mtl-app-e2e": "apps/mtl-app-e2e",
     "mtl-screenshot-api": "apps/mtl-screenshot-api",
     "mtl-server": "apps/mtl-server",
-    "types": "libs/types",
-    "api-utils": "libs/api-utils"
+    "prisma": "libs/prisma",
+    "types": "libs/types"
   }
 }

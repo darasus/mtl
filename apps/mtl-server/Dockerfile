@@ -4,7 +4,7 @@ WORKDIR /build-dependencies
 
 COPY package.json .
 COPY yarn.lock .
-COPY apps/mtl-app/prisma/schema.prisma ./apps/mtl-app/prisma/schema.prisma
+COPY libs/prisma/src/lib/schema.prisma ./libs/prisma/src/lib/schema.prisma
 
 RUN yarn install
 
@@ -14,7 +14,7 @@ WORKDIR /runtime-dependencies
 
 COPY package.json .
 COPY yarn.lock .
-COPY apps/mtl-app/prisma/schema.prisma ./apps/mtl-app/prisma/schema.prisma
+COPY libs/prisma/src/lib/schema.prisma ./libs/prisma/src/lib/schema.prisma
 
 RUN yarn install --production
 

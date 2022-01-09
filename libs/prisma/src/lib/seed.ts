@@ -1,5 +1,4 @@
-import { v4 as uuid } from 'uuid';
-import cuid from 'cuid';
+import * as cuid from 'cuid';
 import * as faker from 'faker';
 import * as bcrypt from 'bcrypt';
 import { CodeLanguage } from '.prisma/client';
@@ -346,7 +345,7 @@ main()
     prisma.$disconnect();
   });
 
-function shuffle(array) {
+function shuffle(array: any) {
   let currentIndex = array.length,
     randomIndex;
 
