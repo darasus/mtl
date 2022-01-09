@@ -4,9 +4,9 @@ import React from 'react';
 import { useFeedQuery } from '../hooks/query/useFeedQuery';
 import { Layout } from '../layouts/Layout';
 import { Head } from '../components/Head';
-import { FeedType } from '../types/FeedType';
 import { Heading } from '../components/Heading';
 import { useMe } from '../hooks/useMe';
+import { FeedType } from '@mtl/types';
 
 const Feed: React.FC = () => {
   const [feedType, setFeedType] = React.useState(FeedType.Following);

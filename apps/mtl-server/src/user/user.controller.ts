@@ -15,7 +15,7 @@ import { ActivityService } from '../activity/activity.service';
 import { FollowService } from '../follow/follow.service';
 import { OptionalUserGuard } from '../guards/OptionalUserGuard';
 import { PrismaService } from '../prisma/prisma.service';
-import { User } from '@mtl/types';
+import { Route } from '@mtl/types';
 import axios from 'axios';
 import { Response, Request } from 'express';
 
@@ -51,8 +51,10 @@ export class UserController {
     private readonly cacheKeyService: CacheKeyService
   ) {}
 
-  @Get('user/:nickname')
-  async getUserById(@Param('nickname') nickname: string): Promise<User> {
+  @Get(Route.User)
+  async getUserById(
+    @Param('nickname') nickname: string
+  ): Promise<ApiResponse[Route.User]> {
     return this.cacheService.fetch(
       this.cacheKeyService.createUserKey({ nickname }),
       () => this.userService.getUserByNickname({ nickname }),
@@ -61,20 +63,20 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('user/:nickname/activity')
+  @Get(Route.UserActivity)
   async getUserActivity(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
     @Param('nickname') nickname: string,
     @Query('take') take: string,
     @Query('cursor') cursor: string
-  ) {
+  ): Promise<ApiResponse[Route.UserActivity]> {
     const myId = getMyIdByReq(req);
     const user = await this.userService.getUserByNickname({ nickname });
 
     if (myId !== user?.id) {
       res.status(403);
-      return { error: 'Forbidden' };
+      return null;
     }
 
     res.status(HttpStatus.OK);
@@ -85,21 +87,28 @@ export class UserController {
     });
   }
 
-  @Get('user/:nickname/follow/count')
-  async getFollowerCount(@Param('nickname') nickname: string) {
+  @Get(Route.UserFollowCount)
+  async getFollowerCount(
+    @Param('nickname') nickname: string
+  ): Promise<ApiResponse[Route.UserFollowCount]> {
     const user = await this.userService.getUserByNickname({ nickname });
     return this.userService.getUserFollowerCount({ userId: user?.id });
   }
 
-  @Get('user/:nickname/followings/count')
-  async getFollowingCount(@Param('nickname') nickname: string) {
+  @Get(Route.UserFollowingsCount)
+  async getFollowingCount(
+    @Param('nickname') nickname: string
+  ): Promise<ApiResponse[Route.UserFollowingsCount]> {
     const user = await this.userService.getUserByNickname({ nickname });
     return this.userService.getUserFollowingsCount({ userId: user?.id });
   }
 
   @UseGuards(OptionalUserGuard)
-  @Get('user/:nickname/follow')
-  async doIFollow(@Req() req: Request, @Param('nickname') nickname: string) {
+  @Get(Route.DoIFillowUser)
+  async doIFollow(
+    @Req() req: Request,
+    @Param('nickname') nickname: string
+  ): Promise<ApiResponse[Route.DoIFillowUser]> {
     const myId = getMyIdByReq(req);
     const user = await this.userService.getUserByNickname({ nickname });
 
@@ -133,11 +142,11 @@ export class UserController {
   }
 
   @UseGuards(OptionalUserGuard)
-  @Get('user/:nickname/posts')
+  @Get(Route.UserPosts)
   async getUserPosts(
     @Req() req: Request,
     @Param('nickname') nickname: string
-  ): Promise<ApiResponse['user/:nickname/posts']> {
+  ): Promise<ApiResponse[Route.UserPosts]> {
     const tags = (req.query?.tags as string)?.split(',');
     const cursor = req.query?.cursor as string;
     const published =
@@ -178,8 +187,10 @@ export class UserController {
     return { status: 'ok' };
   }
 
-  @Get('user/:nickname/tags')
-  async getUserTags(@Param('nickname') nickname: string) {
+  @Get(Route.UserTags)
+  async getUserTags(
+    @Param('nickname') nickname: string
+  ): Promise<ApiResponse[Route.UserTags]> {
     return this.userService.getUserTags({ nickname });
   }
 

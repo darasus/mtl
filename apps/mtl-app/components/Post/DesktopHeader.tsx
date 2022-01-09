@@ -1,5 +1,4 @@
 import { Box, Flex, Text, useBreakpoint, Tooltip } from '@chakra-ui/react';
-import { TPost } from '../../types/Post';
 import { ThumbUpIcon, ChatIcon, TagIcon } from '@heroicons/react/outline';
 import { StatusOnlineIcon, StatusOfflineIcon } from '@heroicons/react/solid';
 import React from 'react';
@@ -9,6 +8,7 @@ import { useColors } from '../../hooks/useColors';
 import { CodeLanguageIcon } from './CodeLanguageIcon';
 import { useMe } from '../../hooks/useMe';
 import { CodeLanguage } from '.prisma/client';
+import { TPost } from '@mtl/types';
 
 interface Props {
   post: TPost;

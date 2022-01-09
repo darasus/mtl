@@ -1,4 +1,4 @@
-import { Post } from '@mtl/types';
+import { TPost } from '@mtl/types';
 import * as Prisma from '@prisma/client';
 import * as R from 'ramda';
 
@@ -10,7 +10,7 @@ export type InputPost = Prisma.Post & {
   author: Omit<Prisma.User, 'password'> | null;
 };
 
-export const preparePost = (post: InputPost, userId?: string): Post => {
+export const preparePost = (post: InputPost, userId?: string): TPost => {
   const isLikedByMe = userId
     ? post.likes.some(
         (

@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Spinner } from '@chakra-ui/react';
+import { TPost } from '@mtl/types';
 import React from 'react';
 import { useMe } from '../hooks/useMe';
-import { TPost } from '../types/Post';
 import { Post } from './Post';
 
 interface Props {

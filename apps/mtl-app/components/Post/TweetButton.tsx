@@ -2,8 +2,8 @@ import { Button, IconButton } from '@chakra-ui/button';
 import { Text } from '@chakra-ui/layout';
 import { useBreakpointValue } from '@chakra-ui/media-query';
 import { ShareIcon } from '@heroicons/react/outline';
+import { TPost } from '@mtl/types';
 import React from 'react';
-import { TPost } from '../../types/Post';
 
 export const TweetButton = ({ post }: { post: TPost }) => {
   const handleTweetClick = React.useCallback(() => {

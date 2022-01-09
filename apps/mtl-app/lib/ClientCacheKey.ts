@@ -1,4 +1,4 @@
-import { FeedType } from '../types/FeedType';
+import { FeedType } from '@mtl/types';
 
 export class ClientCacheKey {
   userBaseKey = ['user'];

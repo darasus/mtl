@@ -4,7 +4,7 @@ import { paramCase } from 'change-case';
 import React from 'react';
 import download from 'js-file-download';
 import { useScreenshotQuery } from '../../hooks/query/useScreenshotQuery';
-import { TPost } from '../../types/Post';
+import { TPost } from '@mtl/types';
 
 interface Props {
   post: TPost;

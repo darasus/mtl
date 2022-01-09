@@ -1,8 +1,8 @@
 import { useBreakpointValue } from '@chakra-ui/react';
-import { TPost } from '../../types/Post';
 import React from 'react';
 import { MobileHeader } from './MobileHeader';
 import { DesktopHeader } from './DesktopHeader';
+import { TPost } from '@mtl/types';
 
 interface Props {
   post: TPost;

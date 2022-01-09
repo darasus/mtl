@@ -11,13 +11,12 @@ import { HttpConnector } from '../../lib/HttpConnector';
 import { Fetcher } from '../../lib/Fetcher';
 import { clientCacheKey } from '../../lib/ClientCacheKey';
 import { getPlaiceholder, IGetPlaiceholderReturn } from 'plaiceholder';
-import { User } from '@mtl/types';
+import { TPost, User } from '@mtl/types';
 import { rejectNil } from '../../utils/rejectNil';
 import { UserProfile } from '../../features/UserProfile';
 import { UserProfileTabs } from '../../features/UserProfileTabs';
 import { useUserPostsQuery } from '../../hooks/query/useUserPostsQuery';
 import { PostList } from '../../components/PostList';
-import { TPost } from '../../types/Post';
 import { useRouter } from 'next/router';
 
 interface Props {

@@ -19,11 +19,12 @@ import { ActivityService } from '../activity/activity.service';
 import { OptionalUserGuard } from '../guards/OptionalUserGuard';
 import { LikeService } from '../like/like.service';
 import { AuthGuard } from '@nestjs/passport';
-import { Post as PostType } from '@mtl/types';
+import { TPost, Route } from '@mtl/types';
 import { Response, Request } from 'express';
 import { CacheService } from '../cache/cache.service';
 import { CacheKeyService } from '../cache/cacheKey.service';
 import { years } from '../utils/duration';
+import { ApiResponse } from '@mtl/api-types';
 
 export class CreatePostDto {
   @IsNotEmpty()
@@ -145,13 +146,13 @@ export class PostController {
     return { status: 'ok' };
   }
 
-  @Get('post/:postId/comments')
+  @Get(Route.PostComments)
   async getPostComments(
     @Res({ passthrough: true }) res: Response,
     @Param('postId') postId: string,
     @Query('take') take: string,
     @Query('skip') skip: string
-  ) {
+  ): Promise<ApiResponse[Route.PostComments]> {
     return this.commentService.getCommentsByPostId({
       postId,
       take: Number(take) || undefined,
@@ -170,12 +171,12 @@ export class PostController {
   }
 
   @UseGuards(OptionalUserGuard)
-  @Get('post/:postId')
+  @Get(Route.Post)
   async getPost(
     @Res({ passthrough: true }) res: Response,
     @Req() req: Request,
     @Param('postId') postId: string
-  ) {
+  ): Promise<ApiResponse[Route.Post]> {
     const userId = req?.user?.sub?.split('|')?.[1];
     const post = await this.cacheService.fetch(
       this.cachekeyService.createPostKey({ postId }),
@@ -195,7 +196,7 @@ export class PostController {
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    const post = await this.cacheService.fetch<PostType>(
+    const post = await this.cacheService.fetch<TPost>(
       this.cachekeyService.createPostKey({ postId }),
       () => this.postService.fetchPost({ postId, userId }),
       years(1)
@@ -233,7 +234,7 @@ export class PostController {
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    const post = await this.cacheService.fetch<PostType>(
+    const post = await this.cacheService.fetch<TPost>(
       this.cachekeyService.createPostKey({ postId }),
       () => this.postService.fetchPost({ postId, userId }),
       years(1)
@@ -287,8 +288,8 @@ export class PostController {
     return this.postService.unpublishPost(postId);
   }
 
-  @Get('post/random')
-  async getRandomPost(): Promise<PostType> {
+  @Get(Route.RandomPost)
+  async getRandomPost(): Promise<ApiResponse[Route.RandomPost]> {
     return this.postService.getRandomPost();
   }
 }

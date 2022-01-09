@@ -1,7 +1,6 @@
+import { NonCursorApiPages, TComment } from '@mtl/types';
 import { useMutation, useQueryClient } from 'react-query';
 import { clientCacheKey } from '../../lib/ClientCacheKey';
-import { NonCursorApiPages } from '../../types/ApiPage';
-import { Comment } from '../../types/Post';
 import { withToast } from '../../utils/withToast';
 import { useFetcher } from '../useFetcher';
 import { useMe } from '../useMe';
@@ -14,7 +13,7 @@ const toastConfig = {
   error: 'Comment is not posted.',
 };
 
-type Data = NonCursorApiPages<Comment> | undefined;
+type Data = NonCursorApiPages<TComment> | undefined;
 
 export const useAddCommentMutation = () => {
   const queryClient = useQueryClient();
@@ -22,7 +21,7 @@ export const useAddCommentMutation = () => {
   const fetcher = useFetcher();
 
   return useMutation<
-    Comment,
+    TComment,
     unknown,
     Variables,
     {

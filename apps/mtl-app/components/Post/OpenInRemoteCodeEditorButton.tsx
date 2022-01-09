@@ -3,8 +3,8 @@ import { Button, IconButton } from '@chakra-ui/button';
 import { Text } from '@chakra-ui/layout';
 import { useBreakpointValue } from '@chakra-ui/media-query';
 import { LightningBoltIcon } from '@heroicons/react/outline';
+import { TPost } from '@mtl/types';
 import { useOpenInRemoveCodeEditor } from '../../hooks/useOpenInRemoveCodeEditor';
-import { TPost } from '../../types/Post';
 
 export const OpenInRemoteCodeEditorButton = ({ post }: { post: TPost }) => {
   const onClick = useOpenInRemoveCodeEditor({

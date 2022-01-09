@@ -4,6 +4,7 @@ import { rejectNil } from '../utils/rejectNil';
 import { FeedService } from './feed.service';
 import { Request } from 'express';
 import { ApiResponse } from '@mtl/api-types';
+import { Route } from '@mtl/types';
 
 enum FeedType {
   Latest = 'latest',
@@ -14,14 +15,14 @@ enum FeedType {
 export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
-  @Get('feed')
+  @Get(Route.Feed)
   @UseGuards(OptionalUserGuard)
   async getUserById(
     @Req() req: Request,
     @Query('feedType') feedType: FeedType,
     @Query('cursor') cursor?: string,
     @Query('take') take?: string
-  ): Promise<ApiResponse['feed']> {
+  ): Promise<ApiResponse[Route.Feed]> {
     const params = rejectNil({
       userId: req?.user?.sub?.split('|')?.[1],
       cursor,

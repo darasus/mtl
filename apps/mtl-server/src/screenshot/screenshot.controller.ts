@@ -7,6 +7,8 @@ import * as qs from 'query-string';
 import { CacheService } from '../cache/cache.service';
 import { CacheKeyService } from '../cache/cacheKey.service';
 import { years } from '../utils/duration';
+import { Route } from '@mtl/types';
+import { ApiResponse } from '@mtl/api-types';
 
 @Controller()
 export class ScreenshotController {
@@ -16,14 +18,14 @@ export class ScreenshotController {
     private readonly cacheKeyService: CacheKeyService
   ) {}
 
-  @Get('screenshot')
+  @Get(Route.PostScreenshot)
   async screenshot(
     @Res({ passthrough: true }) res: Response,
     @Query('id') id: string,
     @Query('updateDate') updateDate: string,
     @Query('width') width: string,
     @Query('height') height: string
-  ) {
+  ): Promise<ApiResponse[Route.PostScreenshot]> {
     const query = qs.stringify({ id, updateDate, width, height });
     const cacheKey = this.cacheKeyService.createScreenshotKey({
       id,

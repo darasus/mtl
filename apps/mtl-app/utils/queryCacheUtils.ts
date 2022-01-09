@@ -1,4 +1,4 @@
-import { ApiPage, Post } from '@mtl/types';
+import { ApiPage, TPost } from '@mtl/types';
 import { InfiniteData, QueryClient } from 'react-query';
 import { clientCacheKey } from '../lib/ClientCacheKey';
 
@@ -6,7 +6,7 @@ export const onPostsInfiniteQuerySuccess = ({
   data,
   queryClient,
 }: {
-  data: InfiniteData<ApiPage<Post>>;
+  data: InfiniteData<ApiPage<TPost>>;
   queryClient: QueryClient;
 }) => {
   data.pages?.forEach((page) => {

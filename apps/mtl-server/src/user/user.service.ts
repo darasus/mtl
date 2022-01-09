@@ -7,7 +7,6 @@ import { commentFragment } from '../fragments/commentFragment';
 import { tagsFragment } from '../fragments/tagsFragment';
 import { preparePost } from '../utils/preparePosts';
 import { activityFragment } from '../fragments/activityFragment';
-import { ApiPage, Post } from '@mtl/types';
 
 @Injectable()
 export class UserService {
@@ -62,7 +61,7 @@ export class UserService {
     take?: number;
     tags?: string[];
     published?: boolean;
-  }): Promise<ApiPage<Post>> {
+  }) {
     const postsCount = await this.prisma.post.count({
       where: {
         authorId: userId,
@@ -197,7 +196,7 @@ export class UserService {
         items: [],
         count: 0,
         total: 0,
-        cursor: 0,
+        cursor: null,
       };
     }
 

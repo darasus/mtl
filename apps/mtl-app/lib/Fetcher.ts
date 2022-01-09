@@ -1,13 +1,11 @@
 import { CodeLanguage } from '.prisma/client';
-import { TPost } from '../types/Post';
-import { User } from '../types/User';
 import qs from 'query-string';
 import { HttpConnector } from './HttpConnector';
-import { FeedType } from '../types/FeedType';
 import ServerFormData from 'form-data';
 import { ApiResponse } from '@mtl/api-types';
-import getConfig from 'next/config';
 import { rejectNil } from '../utils/rejectNil';
+import { FeedType, Route } from '@mtl/types';
+import { createApiRoute } from '@mtl/api-utils';
 
 export class Fetcher {
   httpConnector: HttpConnector;
@@ -18,18 +16,19 @@ export class Fetcher {
 
   // auth
 
-  refetchAuthUserProfile = (): Promise<void> =>
-    this.httpConnector.request.get(
-      `${window.location.origin}/api/auth/refetch`
-    );
+  refetchAuthUserProfile = (): Promise<any> =>
+    this.httpConnector.get(`${window.location.origin}/api/auth/refetch`);
 
   // user
 
-  getMe = (): Promise<User> =>
-    this.httpConnector.request('/api/me').then((res) => res.data);
-
-  getUser = ({ nickname }: { nickname: string }): Promise<User> =>
-    this.httpConnector.request(`/api/user/${nickname}`).then((res) => res.data);
+  getUser = ({
+    nickname,
+  }: {
+    nickname: string;
+  }): Promise<ApiResponse[Route.User]> =>
+    this.httpConnector
+      .get(createApiRoute({ route: Route.User, variable: { nickname } }))
+      .then((res) => res.data);
 
   getUserPosts = ({
     nickname,
@@ -41,7 +40,7 @@ export class Fetcher {
     cursor?: string;
     tags?: string[];
     published?: boolean;
-  }): Promise<ApiResponse['user/:nickname/posts']> => {
+  }): Promise<ApiResponse[Route.UserPosts]> => {
     const query = qs.stringify(
       rejectNil({
         cursor,
@@ -50,7 +49,13 @@ export class Fetcher {
       })
     );
     return this.httpConnector
-      .request(`/api/user/${nickname}/posts?${query}`)
+      .get(
+        createApiRoute({
+          route: Route.UserPosts,
+          variable: { nickname },
+          query,
+        })
+      )
       .then((res) => res.data);
   };
 
@@ -60,10 +65,7 @@ export class Fetcher {
     nickname: string;
   }): Promise<{ status: 'success' }> =>
     this.httpConnector
-      .request(`/api/user/${nickname}/invalidate`, {
-        method: 'POST',
-        data: {},
-      })
+      .post(`/api/user/${nickname}/invalidate`, {})
       .then((res) => res.data);
 
   updateUserSettings = ({
@@ -83,25 +85,21 @@ export class Fetcher {
     nickname,
   }: {
     nickname: string;
-  }): Promise<ApiResponse['user/:nickname/tags']> =>
+  }): Promise<ApiResponse[Route.UserTags]> =>
     this.httpConnector
-      .get(`/api/user/${nickname}/tags`)
+      .get(createApiRoute({ route: Route.UserTags, variable: { nickname } }))
       .then((res) => res.data);
 
   // like
 
   likePost = ({ postId }: { postId: string }) =>
     this.httpConnector
-      .request(`/api/post/${postId}/like`, {
-        method: 'POST',
-      })
+      .post(`/api/post/${postId}/like`, {})
       .then((res) => res.data);
 
   unlikePost = ({ postId }: { postId: string }) =>
     this.httpConnector
-      .request(`/api/post/${postId}/unlike`, {
-        method: 'POST',
-      })
+      .post(`/api/post/${postId}/unlike`, {})
       .then((res) => res.data);
 
   // comments
@@ -116,55 +114,67 @@ export class Fetcher {
     skip?: number;
   }) =>
     this.httpConnector
-      .request(`/api/post/${postId}/comments?${qs.stringify({ take, skip })}`)
+      .get(`/api/post/${postId}/comments?${qs.stringify({ take, skip })}`)
       .then((res) => res.data);
 
   addComment = ({ postId, content }: { postId: string; content: string }) =>
     this.httpConnector
-      .request(`/api/post/${postId}/addComment`, {
-        method: 'POST',
-        data: {
-          content,
-        },
+      .post(`/api/post/${postId}/addComment`, {
+        content,
       })
       .then((res) => res.data);
 
   deleteComment = ({ commentId }: { commentId: string }) =>
     this.httpConnector
-      .request(`/api/comment/${commentId}`, {
-        method: 'DELETE',
-      })
+      .delete(`/api/comment/${commentId}`)
       .then((res) => res.data);
 
   // follow
 
-  doIFollowUser = ({ nickname }: { nickname: string }) =>
+  doIFollowUser = ({
+    nickname,
+  }: {
+    nickname: string;
+  }): Promise<ApiResponse[Route.DoIFillowUser]> =>
     this.httpConnector
-      .request(`/api/user/${nickname}/follow`)
+      .get(
+        createApiRoute({ route: Route.DoIFillowUser, variable: { nickname } })
+      )
       .then((res) => res.data);
 
-  getFollowersCount = ({ nickname }: { nickname: string }) =>
+  getFollowersCount = ({
+    nickname,
+  }: {
+    nickname: string;
+  }): Promise<ApiResponse[Route.UserFollowCount]> =>
     this.httpConnector
-      .request(`/api/user/${nickname}/follow/count`)
+      .get(
+        createApiRoute({ route: Route.UserFollowCount, variable: { nickname } })
+      )
       .then((res) => res.data);
 
-  getFollowingsCount = ({ nickname }: { nickname: string }) =>
+  getFollowingsCount = ({
+    nickname,
+  }: {
+    nickname: string;
+  }): Promise<ApiResponse[Route.UserFollowingsCount]> =>
     this.httpConnector
-      .request(`/api/user/${nickname}/followings/count`)
+      .get(
+        createApiRoute({
+          route: Route.UserFollowingsCount,
+          variable: { nickname },
+        })
+      )
       .then((res) => res.data);
 
   followUser = ({ nickname }: { nickname: string }) =>
     this.httpConnector
-      .request(`/api/user/${nickname}/follow`, {
-        method: 'POST',
-      })
+      .post(`/api/user/${nickname}/follow`, {})
       .then((res) => res.data);
 
   unfollowUser = ({ nickname }: { nickname: string }) =>
     this.httpConnector
-      .request(`/api/user/${nickname}/unfollow`, {
-        method: 'POST',
-      })
+      .post(`/api/user/${nickname}/unfollow`, {})
       .then((res) => res.data);
 
   // feed
@@ -175,20 +185,29 @@ export class Fetcher {
   }: {
     cursor?: string;
     feedType: FeedType;
-  }): Promise<ApiResponse['user/:nickname/posts']> =>
+  }): Promise<ApiResponse[Route.Feed]> =>
     this.httpConnector
-      .request(
-        `/api/feed?${qs.stringify({
-          cursor,
-          feedType,
-        })}`
+      .get(
+        createApiRoute({
+          route: Route.Feed,
+          query: qs.stringify({
+            cursor,
+            feedType,
+          }),
+        })
       )
       .then((res) => res.data);
 
   // post
 
-  getPost = ({ postId }: { postId: string }): Promise<TPost> =>
-    this.httpConnector.request(`/api/post/${postId}`).then((res) => res.data);
+  getPost = ({
+    postId,
+  }: {
+    postId: string;
+  }): Promise<ApiResponse[Route.Post]> =>
+    this.httpConnector
+      .get(createApiRoute({ route: Route.Post, variable: { postId } }))
+      .then((res) => res.data);
 
   getScreenshot = ({
     postId,
@@ -223,19 +242,10 @@ export class Fetcher {
     codeLanguage: CodeLanguage;
     tagId: string;
   }) =>
-    this.httpConnector
-      .request(`/api/post/create`, {
-        method: 'POST',
-        data,
-      })
-      .then((res) => res.data);
+    this.httpConnector.post(`/api/post/create`, data).then((res) => res.data);
 
   deletePost = (postId: string) =>
-    this.httpConnector
-      .request(`/api/post/${postId}`, {
-        method: 'DELETE',
-      })
-      .then((res) => res.data);
+    this.httpConnector.delete(`/api/post/${postId}`).then((res) => res.data);
 
   updatePost = (
     postId: string,
@@ -248,33 +258,30 @@ export class Fetcher {
     }
   ) =>
     this.httpConnector
-      .request(`/api/post/${postId}/update`, {
-        method: 'PUT',
-        data,
-      })
+      .put(`/api/post/${postId}/update`, data)
       .then((res) => res.data);
 
   publishPost = ({ postId }: { postId: string }) =>
     this.httpConnector
-      .request(`/api/post/${postId}/publish`, {
-        method: 'PUT',
-      })
+      .put(`/api/post/${postId}/publish`, {})
       .then((res) => res.data);
 
   unpublishPost = ({ postId }: { postId: string }) =>
     this.httpConnector
-      .request(`/api/post/${postId}/unpublish`, {
-        method: 'PUT',
-      })
+      .put(`/api/post/${postId}/unpublish`, {})
       .then((res) => res.data);
 
-  getRandomPost = (): Promise<TPost> =>
-    this.httpConnector.request(`/api/post/random`, {}).then((res) => res.data);
+  getRandomPost = (): Promise<ApiResponse[Route.RandomPost]> =>
+    this.httpConnector
+      .get(createApiRoute({ route: Route.RandomPost }))
+      .then((res) => res.data);
 
   // tags
 
-  getAllTags = () => {
-    return this.httpConnector.request(`/api/tags`).then((res) => res.data);
+  getAllTags = (): Promise<ApiResponse[Route.Tags]> => {
+    return this.httpConnector
+      .get(createApiRoute({ route: Route.Tags }))
+      .then((res) => res.data);
   };
 
   // activity
@@ -285,25 +292,27 @@ export class Fetcher {
   }: {
     nickname: string;
     cursor: string;
-  }) => {
+  }): Promise<ApiResponse[Route.UserActivity]> => {
     return this.httpConnector
-      .request(
-        `${
-          getConfig().publicRuntimeConfig.API_BASE_URL
-        }/api/user/${nickname}/activity?${qs.stringify({ cursor })}`
+      .get(
+        createApiRoute({
+          route: Route.UserActivity,
+          variable: { nickname },
+          query: qs.stringify({ cursor }),
+        })
       )
       .then((res) => res.data);
   };
 
   markActivityAsRead = ({ activityId }: { activityId: string }) => {
     return this.httpConnector
-      .request(`/api/activity/${activityId}/markAsRead`, { method: 'POST' })
+      .post(`/api/activity/${activityId}/markAsRead`, {})
       .then((res) => res.data);
   };
 
   markAllActivityAsRead = () => {
     return this.httpConnector
-      .request(`/api/activity/markAllAsRead`, { method: 'POST' })
+      .post(`/api/activity/markAllAsRead`, {})
       .then((res) => res.data);
   };
 

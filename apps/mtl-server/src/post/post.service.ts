@@ -6,7 +6,7 @@ import { likeFragment } from '../fragments/likeFragment';
 import { commentFragment } from '../fragments/commentFragment';
 import { tagsFragment } from '../fragments/tagsFragment';
 import { preparePost } from '../utils/preparePosts';
-import { Post } from '@mtl/types';
+import { TPost } from '@mtl/types';
 
 @Injectable()
 export class PostService {
@@ -199,7 +199,7 @@ export class PostService {
   }: {
     postId: string;
     userId?: string;
-  }): Promise<Post | null> {
+  }): Promise<TPost | null> {
     // const post = await cache.fetch(
     //   redisCacheKey.createPostKey(postId),
     //   () =>
@@ -295,7 +295,7 @@ export class PostService {
     // await cache.del(redisCacheKey.createPostKey(postId));
   }
 
-  async getRandomPost(): Promise<Post> {
+  async getRandomPost(): Promise<TPost> {
     const productsCount = await this.prisma.post.count();
     const skip = Math.floor(Math.random() * productsCount);
     const post = await this.prisma.post.findMany({

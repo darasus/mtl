@@ -6,6 +6,7 @@
     "mtl-app-e2e": "apps/mtl-app-e2e",
     "mtl-screenshot-api": "apps/mtl-screenshot-api",
     "mtl-server": "apps/mtl-server",
-    "types": "libs/types"
+    "types": "libs/types",
+    "api-utils": "libs/api-utils"
   }
 }

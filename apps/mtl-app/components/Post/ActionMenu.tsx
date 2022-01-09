@@ -15,11 +15,11 @@ import {
   DotsVerticalIcon,
 } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
-import { TPost } from '../../types/Post';
 import { usePostUnpublishMutation } from '../../hooks/mutation/usePostUnpublishMutation';
 import { usePostPublishMutation } from '../../hooks/mutation/usePostPublishMutation';
 import { usePostDeleteMutation } from '../../hooks/mutation/usePostDeleteMutation';
 import { Role, useMe } from '../../hooks/useMe';
+import { TPost } from '@mtl/types';
 
 interface Props {
   isMyPost: boolean;

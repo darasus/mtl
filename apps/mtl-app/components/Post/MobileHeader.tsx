@@ -1,5 +1,4 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import { TPost } from '../../types/Post';
 import {
   ThumbUpIcon,
   ChatIcon,
@@ -10,6 +9,7 @@ import React from 'react';
 import { RouterLink } from '../RouterLinkt';
 import { useColors } from '../../hooks/useColors';
 import { CodeLanguage } from '.prisma/client';
+import { TPost } from '@mtl/types';
 
 interface Props {
   post: TPost;
