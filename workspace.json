@@ -3,11 +3,13 @@
   "projects": {
     "api-types": "libs/api-types",
     "api-utils": "libs/api-utils",
+    "cache": "libs/cache",
     "mtl-app": "apps/mtl-app",
     "mtl-app-e2e": "apps/mtl-app-e2e",
     "mtl-screenshot-api": "apps/mtl-screenshot-api",
     "mtl-server": "apps/mtl-server",
     "prisma": "libs/prisma",
-    "types": "libs/types"
+    "types": "libs/types",
+    "utils": "libs/utils"
   }
 }

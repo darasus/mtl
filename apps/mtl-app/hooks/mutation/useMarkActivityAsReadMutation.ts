@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from 'react-query';
-import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { clientCacheKey } from '@mtl/cache';
 import { useFetcher } from '../useFetcher';
 import { useMe } from '../useMe';
 

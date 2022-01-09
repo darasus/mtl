@@ -1,6 +1,6 @@
+import { clientCacheKey } from '@mtl/cache';
 import { NonCursorApiPages, TComment } from '@mtl/types';
 import { useMutation, useQueryClient } from 'react-query';
-import { clientCacheKey } from '../../lib/ClientCacheKey';
 import { withToast } from '../../utils/withToast';
 import { useFetcher } from '../useFetcher';
 import { useMe } from '../useMe';

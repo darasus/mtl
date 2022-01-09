@@ -1,10 +1,10 @@
 import { Controller, Get, Query, UseGuards, Req } from '@nestjs/common';
 import { OptionalUserGuard } from '../guards/OptionalUserGuard';
-import { rejectNil } from '../utils/rejectNil';
 import { FeedService } from './feed.service';
 import { Request } from 'express';
 import { ApiResponse } from '@mtl/api-types';
 import { Route } from '@mtl/types';
+import { rejectNil } from '@mtl/utils';
 
 enum FeedType {
   Latest = 'latest',

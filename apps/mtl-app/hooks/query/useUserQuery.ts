@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { clientCacheKey } from '@mtl/cache';
 import { useFetcher } from '../useFetcher';
 
 export const useUserQuery = ({ nickname }: { nickname: string }) => {

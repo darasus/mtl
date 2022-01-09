@@ -23,8 +23,8 @@ import { TPost, Route } from '@mtl/types';
 import { Response, Request } from 'express';
 import { CacheService } from '../cache/cache.service';
 import { CacheKeyService } from '../cache/cacheKey.service';
-import { years } from '../utils/duration';
 import { ApiResponse } from '@mtl/api-types';
+import { years } from '@mtl/utils';
 
 export class CreatePostDto {
   @IsNotEmpty()

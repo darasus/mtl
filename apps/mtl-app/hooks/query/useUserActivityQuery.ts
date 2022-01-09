@@ -1,6 +1,6 @@
+import { clientCacheKey } from '@mtl/cache';
+import { days } from '@mtl/utils';
 import { useInfiniteQuery } from 'react-query';
-import { clientCacheKey } from '../../lib/ClientCacheKey';
-import { days } from '../../utils/duration';
 import { useFetcher } from '../useFetcher';
 
 export const useUserActivityQuery = ({ nickname }: { nickname: string }) => {

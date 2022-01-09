@@ -8,7 +8,7 @@ import { Toaster } from 'react-hot-toast';
 import { theme } from '../theme';
 import React from 'react';
 import { GetServerSideProps } from 'next';
-import { rejectNil } from '../utils/rejectNil';
+import { rejectNil } from '@mtl/utils';
 
 const AccessTokenContext = React.createContext<string | null | undefined>(null);
 

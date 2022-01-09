@@ -2,13 +2,12 @@ import { Controller, Get, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
-import { processErrorResponse } from '../utils/error';
 import * as qs from 'query-string';
 import { CacheService } from '../cache/cache.service';
 import { CacheKeyService } from '../cache/cacheKey.service';
-import { years } from '../utils/duration';
 import { Route } from '@mtl/types';
 import { ApiResponse } from '@mtl/api-types';
+import { processErrorResponse, years } from '@mtl/utils';
 
 @Controller()
 export class ScreenshotController {

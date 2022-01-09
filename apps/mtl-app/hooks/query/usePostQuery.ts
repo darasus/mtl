@@ -1,7 +1,7 @@
+import { clientCacheKey } from '@mtl/cache';
+import { days } from '@mtl/utils';
 import { useRouter } from 'next/router';
 import { useQuery, useQueryClient } from 'react-query';
-import { clientCacheKey } from '../../lib/ClientCacheKey';
-import { days } from '../../utils/duration';
 import { useFetcher } from '../useFetcher';
 
 export const usePostQuery = ({ postId }: { postId: string }) => {

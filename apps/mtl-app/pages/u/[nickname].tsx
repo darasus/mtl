@@ -6,18 +6,17 @@ import { Head } from '../../components/Head';
 import { GetServerSideProps } from 'next';
 import { dehydrate, QueryClient } from 'react-query';
 import { getSession } from '@auth0/nextjs-auth0';
-import { createIsFirstServerCall } from '../../utils/createIsFirstServerCall';
 import { HttpConnector } from '../../lib/HttpConnector';
 import { Fetcher } from '../../lib/Fetcher';
-import { clientCacheKey } from '../../lib/ClientCacheKey';
 import { getPlaiceholder, IGetPlaiceholderReturn } from 'plaiceholder';
 import { TPost, User } from '@mtl/types';
-import { rejectNil } from '../../utils/rejectNil';
 import { UserProfile } from '../../features/UserProfile';
 import { UserProfileTabs } from '../../features/UserProfileTabs';
 import { useUserPostsQuery } from '../../hooks/query/useUserPostsQuery';
 import { PostList } from '../../components/PostList';
 import { useRouter } from 'next/router';
+import { createIsFirstServerCall, rejectNil } from '@mtl/utils';
+import { clientCacheKey } from '@mtl/cache';
 
 interface Props {
   userProfileImageBase64: string | undefined;

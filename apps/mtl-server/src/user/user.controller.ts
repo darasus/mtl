@@ -20,14 +20,13 @@ import axios from 'axios';
 import { Response, Request } from 'express';
 
 import { UserService } from './user.service';
-import { processErrorResponse } from '../utils/error';
 import { ConfigService } from '@nestjs/config';
 import { ApiResponse } from '@mtl/api-types';
 import { getMyIdByReq } from '../utils/getMyIdByReq';
 import { Logger } from '../logger/logger.service';
 import { CacheService } from '../cache/cache.service';
 import { CacheKeyService } from '../cache/cacheKey.service';
-import { years } from '../utils/duration';
+import { processErrorResponse, years } from '@mtl/utils';
 
 export class UpdateUserDto {
   newNickname: string;

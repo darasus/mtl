@@ -1,13 +1,13 @@
-import {
-  onPostsInfiniteQuerySuccess,
-  getNextPageParam,
-} from '../../utils/queryCacheUtils';
 import { useInfiniteQuery, useQueryClient } from 'react-query';
-import { clientCacheKey } from '../../lib/ClientCacheKey';
-import { hours } from '../../utils/duration';
 import { useFetcher } from '../useFetcher';
 import { ApiResponse } from '@mtl/api-types';
 import { FeedType } from '@mtl/types';
+import {
+  clientCacheKey,
+  getNextPageParam,
+  onPostsInfiniteQuerySuccess,
+} from '@mtl/cache';
+import { hours } from '@mtl/utils';
 
 export const useFeedQuery = ({ feedType }: { feedType: FeedType }) => {
   const queryClient = useQueryClient();

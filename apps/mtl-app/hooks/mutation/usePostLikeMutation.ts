@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { useFetcher } from '../useFetcher';
-import { clientCacheKey } from '../../lib/ClientCacheKey';
+import { clientCacheKey } from '@mtl/cache';
 import { withToast } from '../../utils/withToast';
 import { useRouter } from 'next/router';
 

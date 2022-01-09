@@ -1,6 +1,6 @@
+import { clientCacheKey } from './ClientCacheKey';
 import { ApiPage, TPost } from '@mtl/types';
 import { InfiniteData, QueryClient } from 'react-query';
-import { clientCacheKey } from '../lib/ClientCacheKey';
 
 export const onPostsInfiniteQuerySuccess = ({
   data,
@@ -37,14 +37,4 @@ export const onPostsInfiniteQuerySuccess = ({
       }
     });
   });
-};
-
-export const getNextPageParam = (lastPage, pages) => {
-  const localTotal = pages
-    .map((page) => page.count)
-    .reduce((prev, next) => prev + next, 0);
-
-  if (localTotal === lastPage.total) return undefined;
-
-  return lastPage.cursor;
 };

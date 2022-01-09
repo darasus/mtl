@@ -8,13 +8,13 @@ import { QueryClient } from 'react-query';
 import { dehydrate } from 'react-query/hydration';
 import { Flex, Spinner } from '@chakra-ui/react';
 import { Head } from '../../../components/Head';
-import { createIsFirstServerCall } from '../../../utils/createIsFirstServerCall';
 import { Fetcher } from '../../../lib/Fetcher';
 import { useMe } from '../../../hooks/useMe';
-import { clientCacheKey } from '../../../lib/ClientCacheKey';
 import { getSession } from '@auth0/nextjs-auth0';
 import getConfig from 'next/config';
 import { HttpConnector } from '../../../lib/HttpConnector';
+import { createIsFirstServerCall } from '@mtl/utils';
+import { clientCacheKey } from '@mtl/cache';
 
 const PostPage: React.FC = () => {
   const router = useRouter();

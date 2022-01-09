@@ -3,9 +3,9 @@ import qs from 'query-string';
 import { HttpConnector } from './HttpConnector';
 import ServerFormData from 'form-data';
 import { ApiResponse } from '@mtl/api-types';
-import { rejectNil } from '../utils/rejectNil';
 import { FeedType, Route } from '@mtl/types';
 import { createApiRoute } from '@mtl/api-utils';
+import { rejectNil } from '@mtl/utils';
 
 export class Fetcher {
   httpConnector: HttpConnector;

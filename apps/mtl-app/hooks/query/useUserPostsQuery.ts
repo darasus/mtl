@@ -1,14 +1,14 @@
-import {
-  onPostsInfiniteQuerySuccess,
-  getNextPageParam,
-} from '../../utils/queryCacheUtils';
 import { useInfiniteQuery, useQueryClient } from 'react-query';
-import { clientCacheKey } from '../../lib/ClientCacheKey';
-import { hours } from '../../utils/duration';
 import { useFetcher } from '../useFetcher';
 import { ApiResponse } from '@mtl/api-types';
 import { userPostsFilterAtom } from '../../atoms/userPostsFilterAtom';
 import { useRecoilState } from 'recoil';
+import {
+  clientCacheKey,
+  onPostsInfiniteQuerySuccess,
+  getNextPageParam,
+} from '@mtl/cache';
+import { hours } from '@mtl/utils';
 
 export const useUserPostsQuery = ({ nickname }: { nickname: string }) => {
   const queryClient = useQueryClient();

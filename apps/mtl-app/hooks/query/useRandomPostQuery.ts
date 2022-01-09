@@ -1,5 +1,5 @@
+import { days } from '@mtl/utils';
 import { useQuery } from 'react-query';
-import { days } from '../../utils/duration';
 import { useFetcher } from '../useFetcher';
 
 export const useRandomPostQuery = () => {
