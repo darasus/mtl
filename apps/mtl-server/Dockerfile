@@ -27,6 +27,7 @@ COPY apps/mtl-app-e2e/project.json ./apps/mtl-app-e2e/project.json
 COPY apps/mtl-screenshot-api/project.json ./apps/mtl-screenshot-api/project.json
 COPY apps/mtl-server ./apps/mtl-server
 COPY libs/types ./libs/types
+COPY libs/api-utils ./libs/api-utils
 COPY libs/api-types ./libs/api-types
 COPY workspace.json ./workspace.json
 COPY nx.json ./nx.json
