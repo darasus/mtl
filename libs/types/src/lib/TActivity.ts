@@ -1,3 +1,12 @@
-import * as Prisma from '@prisma/client';
+// import * as Prisma from '@prisma/client';
 
-export type TActivity = Prisma.Activity;
+import { BaseEntity } from './BaseEntity';
+
+// export type TActivity = Prisma.Activity;
+
+export interface TActivity extends BaseEntity {
+  read: boolean;
+  type: string;
+  ownerId: string;
+  authorId: string;
+}

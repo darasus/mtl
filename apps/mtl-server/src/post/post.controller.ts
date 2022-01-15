@@ -25,6 +25,13 @@ import { CacheService } from '../cache/cache.service';
 import { CacheKeyService } from '../cache/cacheKey.service';
 import { ApiResponse } from '@mtl/api-types';
 import { years } from '@mtl/utils';
+import { postRepository } from '../redis/entities/post';
+import { redisConnect } from '../redis/redis.client';
+import { commentRepository } from '../redis/entities/comment';
+import { likeRepository } from '../redis/entities/like';
+import { userRepository } from '../redis/entities/user';
+import { tagRepository } from '../redis/entities/tag';
+import cuid = require('cuid');
 
 export class CreatePostDto {
   @IsNotEmpty()
@@ -65,9 +72,7 @@ export class PostController {
     private readonly postService: PostService,
     private readonly commentService: CommentService,
     private readonly activityService: ActivityService,
-    private readonly likeService: LikeService,
-    private readonly cacheService: CacheService,
-    private readonly cachekeyService: CacheKeyService
+    private readonly likeService: LikeService
   ) {}
 
   @UseGuards(AuthGuard('jwt'))
@@ -90,30 +95,6 @@ export class PostController {
     @Param('postId') postId: string
   ) {
     const post = await this.postService.updatePost(body, postId);
-
-    // clear post cache
-    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
-
-    return post;
-  }
-
-  @UseGuards(AuthGuard('jwt'))
-  @Post('post/save')
-  async markActivityAsRead(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-    @Body() body: CreatePostDto
-  ) {
-    const userId = req?.user?.sub?.split('|')?.[1];
-
-    const post = this.postService.savePost(
-      {
-        title: body.title,
-        content: body.content,
-        description: body.description,
-      },
-      userId
-    );
 
     return post;
   }
@@ -139,9 +120,6 @@ export class PostController {
       commentId: comment.id,
       ownerId: post?.authorId as string,
     });
-
-    // clear post cache
-    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
 
     return { status: 'ok' };
   }
@@ -178,13 +156,8 @@ export class PostController {
     @Param('postId') postId: string
   ): Promise<ApiResponse[Route.Post]> {
     const userId = req?.user?.sub?.split('|')?.[1];
-    const post = await this.cacheService.fetch(
-      this.cachekeyService.createPostKey({ postId }),
-      () => this.postService.fetchPost({ postId, userId }),
-      years(1)
-    );
 
-    return post;
+    return this.postService.fetchPost({ postId, userId });
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -196,11 +169,7 @@ export class PostController {
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    const post = await this.cacheService.fetch<TPost>(
-      this.cachekeyService.createPostKey({ postId }),
-      () => this.postService.fetchPost({ postId, userId }),
-      years(1)
-    );
+    const post = this.postService.fetchPost({ postId, userId });
 
     if (!post) {
       return res.status(400).send({ status: 'failure' });
@@ -211,9 +180,6 @@ export class PostController {
     }
 
     const like = await this.likeService.likePost(postId, userId);
-
-    // clear post cache
-    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
 
     await this.activityService.addLikeActivity({
       authorId: userId,
@@ -234,11 +200,7 @@ export class PostController {
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    const post = await this.cacheService.fetch<TPost>(
-      this.cachekeyService.createPostKey({ postId }),
-      () => this.postService.fetchPost({ postId, userId }),
-      years(1)
-    );
+    const post = this.postService.fetchPost({ postId, userId });
 
     if (!post) {
       return res.status(400).send({ status: 'failure' });
@@ -256,9 +218,6 @@ export class PostController {
 
     await this.likeService.unlikePost(postId, userId);
 
-    // clear post cache
-    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
-
     return { status: 'ok' };
   }
 
@@ -269,9 +228,6 @@ export class PostController {
     @Res({ passthrough: true }) res: Response,
     @Param('postId') postId: string
   ) {
-    // clear post cache
-    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
-
     return this.postService.publishPost(postId);
   }
 
@@ -282,14 +238,52 @@ export class PostController {
     @Res({ passthrough: true }) res: Response,
     @Param('postId') postId: string
   ) {
-    // clear post cache
-    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
-
     return this.postService.unpublishPost(postId);
   }
 
   @Get(Route.RandomPost)
   async getRandomPost(): Promise<ApiResponse[Route.RandomPost]> {
     return this.postService.getRandomPost();
+  }
+
+  @Post('test/postCreate')
+  async createPost1() {
+    await redisConnect();
+    const post = postRepository.createEntity();
+    post.id = cuid();
+    post.content = 'Content';
+    post.title = 'Title';
+    post.description = 'Description';
+    post.published = false;
+    post.authorId = null;
+    post.likeIds = [];
+    post.commentIds = [];
+    post.codeLanguage = null;
+    post.tagIds = [];
+    post.likesCount = 0;
+    post.commentsCount = 0;
+    await postRepository.save(post);
+    return post.id;
+  }
+
+  @Get('test/recreateIndex')
+  async recreateIndex() {
+    await redisConnect();
+    await postRepository.dropIndex();
+    await postRepository.createIndex();
+
+    await commentRepository.dropIndex();
+    await commentRepository.createIndex();
+
+    await likeRepository.dropIndex();
+    await likeRepository.createIndex();
+
+    await userRepository.dropIndex();
+    await userRepository.createIndex();
+
+    await tagRepository.dropIndex();
+    await tagRepository.createIndex();
+
+    return { status: 'ok' };
   }
 }

@@ -23,6 +23,7 @@ import { ActivityController } from '../activity/activity.controller';
 import { PusherService } from '../pusher/pusher.service';
 import { CacheKeyService } from '../cache/cacheKey.service';
 import { CacheService } from '../cache/cache.service';
+import { Auth0Controller } from '../auth0/auth0.controller';
 
 @Module({
   imports: [AuthModule],
@@ -35,6 +36,7 @@ import { CacheService } from '../cache/cache.service';
     ScreenshotController,
     TagController,
     ActivityController,
+    Auth0Controller,
   ],
   providers: [
     AppService,

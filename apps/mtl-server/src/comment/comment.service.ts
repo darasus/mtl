@@ -2,13 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { commentFragment } from '../fragments/commentFragment';
 import { PusherService } from '../pusher/pusher.service';
+import { commentRepository } from '../redis/entities/comment';
 
 @Injectable()
 export class CommentService {
-  constructor(
-    private prisma: PrismaService,
-    private pusherService: PusherService
-  ) {}
+  constructor(private pusherService: PusherService) {}
 
   async isMyComment({
     commentId,
@@ -17,14 +15,11 @@ export class CommentService {
     commentId: string;
     userId: string;
   }) {
-    const comment = await this.prisma.comment.findFirst({
-      where: {
-        id: commentId,
-      },
-      include: {
-        author: true,
-      },
-    });
+    const comment = await commentRepository
+      .search()
+      .where('id')
+      .equals(commentId)
+      .return.first();
 
     return comment?.author?.id === userId;
   }
@@ -37,11 +32,12 @@ export class CommentService {
     postId: string;
     ownerId: string;
   }) {
-    await this.prisma.comment.delete({
-      where: {
-        id: commentId,
-      },
-    });
+    const comment = await commentRepository
+      .search()
+      .where('id')
+      .equals(commentId)
+      .return.first();
+    commentRepository.remove(comment.entityId);
 
     await this.pusherService.pusher.trigger(
       `activity-user-${ownerId}`,
@@ -50,8 +46,6 @@ export class CommentService {
         data: null,
       }
     );
-
-    // await cache.del(redisCacheKey.createPostKey(postId));
   }
 
   async getCommentsByPostId({

@@ -7,11 +7,12 @@ import { commentFragment } from '../fragments/commentFragment';
 import { tagsFragment } from '../fragments/tagsFragment';
 import { preparePost } from '../utils/preparePosts';
 import { TPost } from '@mtl/types';
+import { Repository } from 'redis-om';
+import { postRepository, postSchema } from '../redis/entities/post';
+import { redisClient, redisConnect } from '../redis/redis.client';
 
 @Injectable()
 export class PostService {
-  constructor(private prisma: PrismaService) {}
-
   async updatePost(
     {
       title,
@@ -28,87 +29,95 @@ export class PostService {
     },
     postId: string
   ) {
-    const oldPost = await this.prisma.post.findFirst({
-      where: {
-        id: postId,
-      },
-      include: {
-        tags: {
-          select: {
-            tagId: true,
-          },
-        },
-      },
-    });
+    // const oldPost = await this.prisma.post.findFirst({
+    //   where: {
+    //     id: postId,
+    //   },
+    //   include: {
+    //     tags: {
+    //       select: {
+    //         tagId: true,
+    //       },
+    //     },
+    //   },
+    // });
 
-    if (oldPost?.tags[0]?.tagId) {
-      await this.prisma.tagsOnPosts.delete({
-        where: {
-          postId_tagId: {
-            postId,
-            tagId: oldPost?.tags?.[0]?.tagId,
-          },
-        },
-      });
-    }
+    const oldPost = await postRepository.fetch(postId);
 
-    await this.prisma.tagsOnPosts.create({
-      data: {
-        postId,
-        tagId,
-      },
-    });
+    oldPost.title = title;
+    oldPost.content = content;
+    oldPost.description = description;
+    oldPost.codeLanguage = codeLanguage;
+    oldPost.tagIds = [tagId];
+    oldPost.updatedAt = new Date();
 
-    const post = await this.prisma.post.update({
-      where: {
-        id: postId,
-      },
-      data: {
-        title,
-        content,
-        description,
-        codeLanguage,
-        updatedAt: new Date(),
-      },
-      include: {
-        author: {
-          select: userFragment,
-        },
-        likes: {
-          select: likeFragment,
-        },
-        comments: {
-          select: commentFragment,
-        },
-        tags: tagsFragment,
-      },
-    });
+    await postRepository.save(oldPost);
+
+    // TODO: fix tag update
+    // if (oldPost?.tags[0]?.tagId) {
+    //   await this.prisma.tagsOnPosts.delete({
+    //     where: {
+    //       postId_tagId: {
+    //         postId,
+    //         tagId: oldPost?.tags?.[0]?.tagId,
+    //       },
+    //     },
+    //   });
+    // }
+
+    // await this.prisma.tagsOnPosts.create({
+    //   data: {
+    //     postId,
+    //     tagId,
+    //   },
+    // });
+
+    // const post = await this.prisma.post.update({
+    //   where: {
+    //     id: postId,
+    //   },
+    //   data: {
+    //     title,
+    //     content,
+    //     description,
+    //     codeLanguage,
+    //     updatedAt: new Date(),
+    //   },
+    //   include: {
+    //     author: {
+    //       select: userFragment,
+    //     },
+    //     likes: {
+    //       select: likeFragment,
+    //     },
+    //     comments: {
+    //       select: commentFragment,
+    //     },
+    //     tags: tagsFragment,
+    //   },
+    // });
 
     // await cache.del(redisCacheKey.createPostKey(postId));
 
-    return post;
+    return oldPost;
   }
 
   async unpublishPost(postId: string) {
-    await this.prisma.post.update({
-      where: { id: postId },
-      data: {
-        published: false,
-      },
-    });
+    const oldPost = await postRepository.fetch(postId);
 
-    // await cache.del(redisCacheKey.createPostKey(postId));
+    oldPost.published = false;
+    oldPost.updatedAt = new Date();
+
+    await postRepository.save(oldPost);
   }
 
   async publishPost(postId: string) {
-    await this.prisma.post.update({
-      where: { id: postId },
-      data: {
-        published: true,
-      },
-    });
+    const oldPost = await postRepository.fetch(postId);
 
-    // await cache.del(redisCacheKey.createPostKey(postId));
+    oldPost.published = true;
+    oldPost.updatedAt = new Date();
+
+    await postRepository.save(oldPost);
   }
 
   async createPost(
@@ -129,68 +138,16 @@ export class PostService {
       isPublished: boolean;
     }
   ) {
-    const post = await this.prisma.post.create({
-      data: {
-        title,
-        content,
-        description,
-        published: isPublished,
-        codeLanguage,
-        author: { connect: { id: userId } },
-      },
-      include: {
-        author: {
-          select: userFragment,
-        },
-        likes: {
-          select: likeFragment,
-        },
-        comments: {
-          select: commentFragment,
-        },
-        tags: tagsFragment,
-      },
-    });
-
-    await this.prisma.tagsOnPosts.create({
-      data: {
-        postId: post.id,
-        tagId,
-      },
-    });
-
-    return preparePost({ ...post, commentsCount: 0 }, userId);
-  }
-
-  async savePost(
-    {
+    const post = await postRepository.createAndSave({
       title,
       content,
       description,
-    }: { title: string; content: string; description: string },
-    userId: string
-  ) {
-    await this.prisma.post.create({
-      data: {
-        title,
-        content,
-        description,
-        published: false,
-        author: { connect: { id: userId } },
-      },
-      include: {
-        author: {
-          select: userFragment,
-        },
-        likes: {
-          select: likeFragment,
-        },
-        comments: {
-          select: commentFragment,
-        },
-        tags: tagsFragment,
-      },
+      codeLanguage,
+      tagId: [tagId],
+      isPublished,
     });
+
+    return post;
   }
 
   async fetchPost({
@@ -200,125 +157,76 @@ export class PostService {
     postId: string;
     userId?: string;
   }): Promise<TPost | null> {
-    // const post = await cache.fetch(
-    //   redisCacheKey.createPostKey(postId),
-    //   () =>
-    //     prisma.post.findUnique({
-    //       where: {
-    //         id: postId,
-    //       },
-    //       include: {
-    //         author: {
-    //           select: userFragment,
-    //         },
-    //         likes: {
-    //           select: likeFragment,
-    //         },
-    //         comments: {
-    //           select: commentFragment,
-    //         },
-    //         tags: tagsFragment,
-    //       },
-    //     }),
-    //   days(365)
-    // );
+    await redisConnect();
+    const post = await postRepository
+      .search()
+      .where('id')
+      .equals(postId)
+      .return.first();
+    await Promise.all([
+      post.addAuthor(),
+      // post.addComments(),
+      // post.addCommentsCount(),
+      // post.addLikesCount(),
+      // post.addTags(),
+    ]);
 
-    const post = await this.prisma.post.findUnique({
-      where: {
-        id: postId,
-      },
-      include: {
-        author: {
-          select: userFragment,
-        },
-        likes: {
-          select: likeFragment,
-        },
-        comments: {
-          select: commentFragment,
-        },
-        tags: tagsFragment,
-      },
-    });
+    // if (!post || (!post.published && userId && post.authorId !== userId)) {
+    //   return null;
+    // }
 
-    if (!post || (!post.published && userId && post.authorId !== userId)) {
-      return null;
-    }
+    // console.log({ post });
 
-    return preparePost(
-      {
-        ...post,
-        commentsCount: post.comments.length,
-        comments: post.comments.slice(-5),
-      },
-      userId
-    );
+    return post;
   }
 
   async findPostByCommentId(commentId: string) {
-    const post = await this.prisma.post.findFirst({
-      where: {
-        comments: {
-          some: {
-            id: commentId,
-          },
-        },
-      },
-    });
+    const post = await postRepository
+      .search()
+      .where('commentIds')
+      .contain(commentId)
+      .return.first();
 
     return post;
   }
 
   async deletePost(postId: string) {
-    await this.prisma.like.deleteMany({
-      where: {
-        postId,
-      },
-    });
+    const post = await postRepository
+      .search()
+      .where('id')
+      .equals(postId)
+      .return.first();
+    postRepository.remove(post.entityId);
 
-    await this.prisma.comment.deleteMany({
-      where: {
-        postId,
-      },
-    });
+    // TODO: remove all post related data
+    // await this.prisma.like.deleteMany({
+    //   where: {
+    //     postId,
+    //   },
+    // });
 
-    await this.prisma.tagsOnPosts.deleteMany({
-      where: {
-        postId,
-      },
-    });
+    // await this.prisma.comment.deleteMany({
+    //   where: {
+    //     postId,
+    //   },
+    // });
 
-    await this.prisma.post.delete({
-      where: { id: postId },
-    });
+    // await this.prisma.tagsOnPosts.deleteMany({
+    //   where: {
+    //     postId,
+    //   },
+    // });
+
+    // await this.prisma.post.delete({
+    //   where: { id: postId },
+    // });
 
     // await cache.del(redisCacheKey.createPostKey(postId));
   }
 
   async getRandomPost(): Promise<TPost> {
-    const productsCount = await this.prisma.post.count();
-    const skip = Math.floor(Math.random() * productsCount);
-    const post = await this.prisma.post.findMany({
-      take: 1,
-      skip: skip,
-      include: {
-        author: {
-          select: userFragment,
-        },
-        likes: {
-          select: likeFragment,
-        },
-        comments: {
-          select: commentFragment,
-        },
-        tags: tagsFragment,
-      },
-    });
+    const post = await postRepository.search().return.first();
 
-    return preparePost({
-      ...post[0],
-      commentsCount: post[0].comments.length,
-      comments: post[0].comments.slice(-5),
-    });
+    return post;
   }
 }
