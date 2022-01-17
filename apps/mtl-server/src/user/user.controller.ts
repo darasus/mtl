@@ -24,8 +24,6 @@ import { ConfigService } from '@nestjs/config';
 import { ApiResponse } from '@mtl/api-types';
 import { getMyIdByReq } from '../utils/getMyIdByReq';
 import { Logger } from '../logger/logger.service';
-import { CacheService } from '../cache/cache.service';
-import { CacheKeyService } from '../cache/cacheKey.service';
 import { processErrorResponse, years } from '@mtl/utils';
 
 export class UpdateUserDto {
@@ -45,20 +43,19 @@ export class UserController {
     private readonly followService: FollowService,
     private readonly activityService: ActivityService,
     private readonly prismaService: PrismaService,
-    private readonly configService: ConfigService,
-    private readonly cacheService: CacheService,
-    private readonly cacheKeyService: CacheKeyService
+    private readonly configService: ConfigService
   ) {}
 
   @Get(Route.User)
   async getUserById(
     @Param('nickname') nickname: string
   ): Promise<ApiResponse[Route.User]> {
-    return this.cacheService.fetch(
-      this.cacheKeyService.createUserKey({ nickname }),
-      () => this.userService.getUserByNickname({ nickname }),
-      years(1)
-    );
+    return null;
+    // return this.cacheService.fetch(
+    //   this.cacheKeyService.createUserKey({ nickname }),
+    //   () => this.userService.getUserByNickname({ nickname }),
+    //   years(1)
+    // );
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -78,12 +75,12 @@ export class UserController {
       return null;
     }
 
-    res.status(HttpStatus.OK);
-    return this.userService.getUserActivity({
-      userId: myId,
-      take: Number(take) || undefined,
-      cursor,
-    });
+    res.status(HttpStatus.OK).send([]);
+    // return this.userService.getUserActivity({
+    //   userId: myId,
+    //   take: Number(take) || undefined,
+    //   cursor,
+    // });
   }
 
   @Get(Route.UserFollowCount)
@@ -190,7 +187,8 @@ export class UserController {
   async getUserTags(
     @Param('nickname') nickname: string
   ): Promise<ApiResponse[Route.UserTags]> {
-    return this.userService.getUserTags({ nickname });
+    return [];
+    // return this.userService.getUserTags({ nickname });
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -268,9 +266,9 @@ export class UserController {
       email: body.email,
     });
 
-    await this.cacheService.del(
-      this.cacheKeyService.createUserKey({ nickname })
-    );
+    // await this.cacheService.del(
+    //   this.cacheKeyService.createUserKey({ nickname })
+    // );
 
     return { status: 'ok' };
   }

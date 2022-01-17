@@ -21,8 +21,6 @@ import { TagService } from '../tag/tag.service';
 import { ConfigService } from '@nestjs/config';
 import { ActivityController } from '../activity/activity.controller';
 import { PusherService } from '../pusher/pusher.service';
-import { CacheKeyService } from '../cache/cacheKey.service';
-import { CacheService } from '../cache/cache.service';
 import { Auth0Controller } from '../auth0/auth0.controller';
 
 @Module({
@@ -52,8 +50,6 @@ import { Auth0Controller } from '../auth0/auth0.controller';
     ConfigService,
     ActivityService,
     PusherService,
-    CacheKeyService,
-    CacheService,
   ],
 })
 export class AppModule {}

@@ -2,59 +2,27 @@ import {
   Controller,
   Get,
   Query,
-  UseGuards,
   Req,
   Post,
   Put,
   Delete,
   Res,
 } from '@nestjs/common';
-import { OptionalUserGuard } from '../guards/OptionalUserGuard';
 import { Request, Response } from 'express';
-import { ApiResponse } from '@mtl/api-types';
-import { Route } from '@mtl/types';
-import { rejectNil } from '@mtl/utils';
-import { userRepository } from '../redis/entities/user';
-import { redisConnect } from '../redis/redis.client';
-import cuid = require('cuid');
-import * as bcrypt from 'bcrypt';
+import { UserActions } from '../redis/actions/UserActions';
 
 @Controller()
 export class Auth0Controller {
+  userActions = new UserActions();
   // create
   @Post('/auth0/create')
   async create(@Req() req: Request, @Res() res: Response) {
     console.log('create');
 
     try {
-      await redisConnect();
+      const user = await this.userActions.register(req.body);
 
-      const existingUser = await userRepository
-        .search()
-        .where('email')
-        .equals(req.body.email)
-        .return.first();
-
-      if (existingUser) {
-        return res.status(403).send({ message: 'User already exists' });
-      }
-
-      const user = await userRepository.createAndSave({
-        id: cuid(),
-        nickname: req.body.email,
-        name: req.body.email,
-        email: req.body.email,
-        image: '/user-image.png',
-        password: bcrypt.hashSync(req.body.password, 10),
-        updatedAt: new Date().toISOString(),
-        createdAt: new Date().toISOString(),
-        emailVerified: false,
-        postIds: [],
-        commentIds: [],
-        likeIds: [],
-        followerIds: [],
-        followingIds: [],
-      });
+      console.log(user);
 
       return res.send({
         user_id: user.id,
@@ -62,63 +30,62 @@ export class Auth0Controller {
         email: user.email,
       });
     } catch (error) {
-      return res.status(400).send({ status: 'failure' });
+      console.log(error);
+      return res.status(400).send(error);
     }
   }
 
   // login
-  @Get('/auth0/login')
+  @Post('/auth0/login')
   async login(@Req() req: Request, @Res() res: Response) {
     console.log('login');
 
     try {
-      await redisConnect();
-      const user = await userRepository
-        .search()
-        .where('email')
-        .equals(req.body.email)
-        .and('password')
-        .equals(bcrypt.hashSync(req.body.password, 10))
-        .return.first();
+      const user = await this.userActions.login(req.body);
 
-      if (!user) {
-        return res.status(401).send({ message: 'User not found' });
-      }
-
-      return res.send({
+      const payload = {
         user_id: user.id,
         nickname: user.nickname,
         email: user.email,
-      });
+      };
+
+      console.log({ user });
+      console.log({ payload });
+
+      return res.status(200).send(payload);
     } catch (error) {
-      return res.status(400).send({ status: 'failure' });
+      console.log(error);
+      return res.status(401).send(error);
     }
   }
 
   // get user
   @Get('/auth0/user')
-  async getUser(@Req() req: Request, @Res() res: Response) {
+  async getUser(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query('email') email: string
+  ) {
     console.log('get user');
 
     try {
-      await redisConnect();
-      const user = await userRepository
-        .search()
-        .where('email')
-        .equals(req.body.email)
-        .return.first();
+      const user = await this.userActions.getUserByEmail({
+        email,
+      });
 
-      if (!user) {
-        return res.status(401).send({ message: 'User not found' });
-      }
-
-      return res.send({
+      const payload = {
         user_id: user.id,
         nickname: user.nickname,
         email: user.email,
-      });
+        emailVerified: user.emailVerified,
+      };
+
+      console.log(payload);
+
+      return res.status(200).send(payload);
     } catch (error) {
-      res.status(400).send({ status: 'failure' });
+      console.log(error);
+      return res.status(401).send({ status: 'failure' });
     }
   }
 
@@ -128,21 +95,7 @@ export class Auth0Controller {
     console.log('verify');
 
     try {
-      await redisConnect();
-      const user = await userRepository
-        .search()
-        .where('email')
-        .equals(req.body.email)
-        .return.first();
-
-      if (!user) {
-        return res.status(404).send({ message: 'User not found' });
-      }
-
-      user.emailVerified = true;
-      user.updatedAt = new Date().toISOString();
-
-      await userRepository.save(user);
+      const user = await this.userActions.verifyEmail(req.body);
 
       return res.send({
         user_id: user.id,
@@ -150,15 +103,26 @@ export class Auth0Controller {
         email: user.email,
       });
     } catch (error) {
-      return res.status(400).send({ status: 'failure' });
+      return error;
     }
   }
 
   // change password
-  @Put('/auth0/user')
-  async putUser(@Req() req: Request) {
+  @Put('/auth0/user/changePassword')
+  async putUser(@Req() req: Request, @Res() res: Response) {
     console.log('change password');
-    return { status: 'ok' };
+
+    try {
+      const user = await this.userActions.changePassword(req.body);
+
+      return res.send({
+        user_id: user.id,
+        nickname: user.nickname,
+        email: user.email,
+      });
+    } catch (error) {
+      return error;
+    }
   }
 
   // delete user

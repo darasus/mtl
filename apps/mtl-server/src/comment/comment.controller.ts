@@ -12,19 +12,16 @@ import { PostService } from '../post/post.service';
 import { ActivityService } from '../activity/activity.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
-import { CacheService } from '../cache/cache.service';
-import { CacheKeyService } from '../cache/cacheKey.service';
 
 @Controller()
 export class CommentController {
   constructor(
     private readonly commentService: CommentService,
     private readonly postService: PostService,
-    private readonly activityService: ActivityService,
-    private readonly cacheService: CacheService,
-    private readonly cacheKeyService: CacheKeyService
+    private readonly activityService: ActivityService
   ) {}
 
+  // TODO: migrate
   @UseGuards(AuthGuard('jwt'))
   @Delete('comment/:commentId')
   async markActivityAsRead(
@@ -50,11 +47,6 @@ export class CommentController {
     const post = await this.postService.findPostByCommentId(commentId);
 
     if (!post) return null;
-
-    // clear post cache
-    await this.cacheService.del(
-      this.cacheKeyService.createPostKey({ postId: post.id })
-    );
 
     await this.activityService.removeCommentActivity({
       commentId,

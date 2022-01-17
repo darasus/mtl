@@ -19,19 +19,10 @@ import { ActivityService } from '../activity/activity.service';
 import { OptionalUserGuard } from '../guards/OptionalUserGuard';
 import { LikeService } from '../like/like.service';
 import { AuthGuard } from '@nestjs/passport';
-import { TPost, Route } from '@mtl/types';
+import { Route } from '@mtl/types';
 import { Response, Request } from 'express';
-import { CacheService } from '../cache/cache.service';
-import { CacheKeyService } from '../cache/cacheKey.service';
 import { ApiResponse } from '@mtl/api-types';
-import { years } from '@mtl/utils';
-import { postRepository } from '../redis/entities/post';
-import { redisConnect } from '../redis/redis.client';
-import { commentRepository } from '../redis/entities/comment';
-import { likeRepository } from '../redis/entities/like';
-import { userRepository } from '../redis/entities/user';
-import { tagRepository } from '../redis/entities/tag';
-import cuid = require('cuid');
+import { PostActions } from '../redis/actions/PostActions';
 
 export class CreatePostDto {
   @IsNotEmpty()
@@ -43,7 +34,7 @@ export class CreatePostDto {
   @IsNotEmpty()
   codeLanguage: Prisma.CodeLanguage;
   @IsNotEmpty()
-  tagId: string;
+  tagIds: string[];
   @IsNotEmpty()
   isPublished: boolean;
 }
@@ -58,7 +49,7 @@ export class UpdatePostDto {
   @IsNotEmpty()
   codeLanguage: Prisma.CodeLanguage;
   @IsNotEmpty()
-  tagId: string;
+  tagIds: string[];
 }
 
 export class AddPostCommentDto {
@@ -68,6 +59,8 @@ export class AddPostCommentDto {
 
 @Controller()
 export class PostController {
+  postActions = new PostActions();
+
   constructor(
     private readonly postService: PostService,
     private readonly commentService: CommentService,
@@ -75,7 +68,7 @@ export class PostController {
     private readonly likeService: LikeService
   ) {}
 
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   @Post('post/create')
   async createPost(
     @Req() req: Request,
@@ -84,7 +77,14 @@ export class PostController {
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    return this.postService.createPost(userId, body);
+    console.log({ body });
+
+    try {
+      return this.postActions.createPost({ ...body, userId });
+    } catch (error) {
+      console.log(error);
+      return res.end(error);
+    }
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -94,7 +94,7 @@ export class PostController {
     @Body() body: UpdatePostDto,
     @Param('postId') postId: string
   ) {
-    const post = await this.postService.updatePost(body, postId);
+    const post = await this.postService.updatePost({ ...body, postId });
 
     return post;
   }
@@ -169,7 +169,7 @@ export class PostController {
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    const post = this.postService.fetchPost({ postId, userId });
+    const post = await this.postService.fetchPost({ postId, userId });
 
     if (!post) {
       return res.status(400).send({ status: 'failure' });
@@ -200,7 +200,7 @@ export class PostController {
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    const post = this.postService.fetchPost({ postId, userId });
+    const post = await this.postService.fetchPost({ postId, userId });
 
     if (!post) {
       return res.status(400).send({ status: 'failure' });
@@ -241,49 +241,23 @@ export class PostController {
     return this.postService.unpublishPost(postId);
   }
 
-  @Get(Route.RandomPost)
-  async getRandomPost(): Promise<ApiResponse[Route.RandomPost]> {
-    return this.postService.getRandomPost();
-  }
-
   @Post('test/postCreate')
   async createPost1() {
-    await redisConnect();
-    const post = postRepository.createEntity();
-    post.id = cuid();
-    post.content = 'Content';
-    post.title = 'Title';
-    post.description = 'Description';
-    post.published = false;
-    post.authorId = null;
-    post.likeIds = [];
-    post.commentIds = [];
-    post.codeLanguage = null;
-    post.tagIds = [];
-    post.likesCount = 0;
-    post.commentsCount = 0;
-    await postRepository.save(post);
-    return post.id;
-  }
-
-  @Get('test/recreateIndex')
-  async recreateIndex() {
-    await redisConnect();
-    await postRepository.dropIndex();
-    await postRepository.createIndex();
-
-    await commentRepository.dropIndex();
-    await commentRepository.createIndex();
-
-    await likeRepository.dropIndex();
-    await likeRepository.createIndex();
-
-    await userRepository.dropIndex();
-    await userRepository.createIndex();
-
-    await tagRepository.dropIndex();
-    await tagRepository.createIndex();
-
-    return { status: 'ok' };
+    const { createPost } = new PostActions();
+    try {
+      const post = await createPost({
+        content: 'content',
+        description: 'description',
+        title: 'title',
+        codeLanguage: 'JAVASCRIPT',
+        isPublished: true,
+        tagIds: [],
+        userId: '5f0e8b9b8b9c8a0f8c8b9c8',
+      });
+      console.log({ post });
+      return post;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

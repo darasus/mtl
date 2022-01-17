@@ -5,7 +5,6 @@ import { userFragment } from '../fragments/userFragment';
 import { likeFragment } from '../fragments/likeFragment';
 import { commentFragment } from '../fragments/commentFragment';
 import { tagsFragment } from '../fragments/tagsFragment';
-import { preparePost } from '../utils/preparePosts';
 import { activityFragment } from '../fragments/activityFragment';
 
 @Injectable()
@@ -113,33 +112,33 @@ export class UserService {
       },
     });
 
-    if (posts.length === 0) {
-      return {
-        items: [],
-        count: 0,
-        total: 0,
-        cursor: null,
-      };
-    }
-
-    const lastActivityInResults = posts[posts.length - 1];
-    const newCursor = lastActivityInResults.id;
-
+    // if (posts.length === 0) {
     return {
-      count: posts.length,
-      total: postsCount,
-      cursor: newCursor,
-      items: posts.map((post) =>
-        preparePost(
-          {
-            ...post,
-            commentsCount: post.comments.length,
-            comments: post.comments.slice(-5),
-          },
-          userId
-        )
-      ),
+      items: [],
+      count: 0,
+      total: 0,
+      cursor: null,
     };
+    // }
+
+    // const lastActivityInResults = posts[posts.length - 1];
+    // const newCursor = lastActivityInResults.id;
+
+    // return {
+    //   count: posts.length,
+    //   total: postsCount,
+    //   cursor: newCursor,
+    //   items: posts.map((post) =>
+    //     preparePost(
+    //       {
+    //         ...post,
+    //         commentsCount: post.comments.length,
+    //         comments: post.comments.slice(-5),
+    //       },
+    //       userId
+    //     )
+    //   ),
+    // };
   }
 
   async getUserActivity({
