@@ -27,6 +27,7 @@ import { Logger } from '../logger/logger.service';
 import { processErrorResponse, years } from '@mtl/utils';
 import { UserActions } from '../redis/actions/UserActions';
 import { PostActions } from '../redis/actions/PostActions';
+import { ActivityActions } from '../redis/actions/ActivityActions';
 
 export class UpdateUserDto {
   newNickname: string;
@@ -41,6 +42,7 @@ export class UserController {
   private readonly logger = new Logger();
   private readonly userActions = new UserActions();
   private readonly postActions = new PostActions();
+  private readonly activityActions = new ActivityActions();
 
   constructor(
     private readonly userService: UserService,
@@ -66,20 +68,21 @@ export class UserController {
     @Query('take') take: string,
     @Query('cursor') cursor: string
   ): Promise<ApiResponse[Route.UserActivity]> {
-    const myId = getMyIdByReq(req);
-    const user = await this.userService.getUserByNickname({ nickname });
+    // const myId = getMyIdByReq(req);
+    // const user = await this.userService.getUserByNickname({ nickname });
 
-    if (myId !== user?.id) {
-      res.status(403);
-      return null;
-    }
+    // if (myId !== user?.id) {
+    //   res.status(403);
+    //   return null;
+    // }
 
-    res.status(HttpStatus.OK).send([]);
+    // res.status(HttpStatus.OK).send([]);
     // return this.userService.getUserActivity({
     //   userId: myId,
     //   take: Number(take) || undefined,
     //   cursor,
     // });
+    return this.activityActions.getUserActivities({ nickname });
   }
 
   @Get(Route.UserFollowCount)

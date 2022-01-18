@@ -1,19 +1,5 @@
-import * as cuid from 'cuid';
-import * as faker from 'faker';
-import * as bcrypt from 'bcrypt';
-import 'colors';
 import { TagActions } from '../redis/actions/TagActions';
-import { UserActions } from '../redis/actions/UserActions';
-import { FollowActions } from '../redis/actions/FollowActions';
-import { graph } from '../redis/redis.graph';
-import { PostActions } from '../redis/actions/PostActions';
-import { CodeLanguage } from '@prisma/client';
-import { TUser } from '@mtl/types';
 import cliProgress = require('cli-progress');
-import { generateTags } from './generateTags';
-import { generateUsers } from './generateUsers';
-import { generateFollows } from './generateFollows';
-import { generatePosts } from './generatePosts';
 
 const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
@@ -210,26 +196,21 @@ const tagNames = [
   'Meta',
 ];
 
-async function main() {
-  try {
-    await graph.deleteGraph();
-    await generateTags();
-    const { me, users } = await generateUsers();
-    await generateFollows({ me, users });
-    await generatePosts({ me });
+const tagActions = new TagActions();
 
-    // TODO: assign tags to posts
-    // TODO: assign comments to posts
-    // TODO: assign likes to posts
-    // TODO: create activities
+export const generateTags = async () => {
+  let currIndex = 0;
 
-    graph.close();
-  } catch (error) {
-    console.error(error);
-    process.exit(1);
+  // create tags
+  console.log('Creating tags...');
+
+  bar.start(tagNames.length, 0);
+
+  for (const name of tagNames) {
+    bar.update(currIndex + 1);
+    await tagActions.createTag({ name });
+    currIndex++;
   }
-  console.log('done');
-  process.exit(0);
-}
 
-main();
+  bar.stop();
+};

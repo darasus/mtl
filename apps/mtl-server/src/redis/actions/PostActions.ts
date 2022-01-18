@@ -15,7 +15,7 @@ export class PostActions {
 
   private createListQuery({ query, params }) {
     return graph.query(query, params).then((post) => {
-      const list = [];
+      const list: TPost[] = [];
       while (post.hasNext()) {
         const record = post.next();
         list.push(new Post(record.get('post')));

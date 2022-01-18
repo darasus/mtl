@@ -1,5 +1,6 @@
+import { ApiPage, TActivity } from '@mtl/types';
 import * as cuid from 'cuid';
-import { Comment } from '../entities';
+import { Activity } from '../entities';
 import { graph } from '../redis.graph';
 
 export class ActivityActions {
@@ -7,22 +8,38 @@ export class ActivityActions {
     return graph.query(query, params).then((post) => {
       while (post.hasNext()) {
         const record = post.next();
-        return new Comment(record.get('comment'));
+        return new Activity(record.get('activity'));
       }
     });
   }
 
-  getUserActivities({ userId }) {
-    const params = { userId } as any;
+  private createListQuery({ query, params }) {
+    return graph.query(query, params).then((post) => {
+      const list = [];
+      while (post.hasNext()) {
+        const record = post.next();
+        list.push(new Activity(record.get('activity')));
+      }
+      return list;
+    });
+  }
 
-    return this.createQuery({
+  async getUserActivities({ nickname }): Promise<ApiPage<TActivity>> {
+    const params = { nickname } as any;
+
+    const activity = await this.createListQuery({
       query: `
-          MATCH (u:User)-[:HAS]->(a:Activity)
-          WITH u, a
-          ORDER by a.createdAt DESC
-          RETURN u, a
+          MATCH (user:User {nickname: $nickname})-[h:HAS]->(activity:Activity)
+          RETURN activity
         `,
       params,
     });
+
+    return {
+      items: activity,
+      total: activity.length,
+      count: activity.length,
+      cursor: null,
+    };
   }
 }
