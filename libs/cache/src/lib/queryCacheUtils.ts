@@ -30,7 +30,7 @@ export const onPostsInfiniteQuerySuccess = ({
           clientCacheKey.createPostCommentsKey({ postId: post.id }),
           {
             items: post.comments,
-            count: post.comments.length,
+            count: post.comments?.length,
             total: post.commentsCount,
           }
         );

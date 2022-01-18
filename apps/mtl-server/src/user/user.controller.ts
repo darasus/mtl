@@ -25,6 +25,8 @@ import { ApiResponse } from '@mtl/api-types';
 import { getMyIdByReq } from '../utils/getMyIdByReq';
 import { Logger } from '../logger/logger.service';
 import { processErrorResponse, years } from '@mtl/utils';
+import { UserActions } from '../redis/actions/UserActions';
+import { PostActions } from '../redis/actions/PostActions';
 
 export class UpdateUserDto {
   newNickname: string;
@@ -37,6 +39,8 @@ export class UpdateUserDto {
 @Controller()
 export class UserController {
   private readonly logger = new Logger();
+  private readonly userActions = new UserActions();
+  private readonly postActions = new PostActions();
 
   constructor(
     private readonly userService: UserService,
@@ -50,12 +54,7 @@ export class UserController {
   async getUserById(
     @Param('nickname') nickname: string
   ): Promise<ApiResponse[Route.User]> {
-    return null;
-    // return this.cacheService.fetch(
-    //   this.cacheKeyService.createUserKey({ nickname }),
-    //   () => this.userService.getUserByNickname({ nickname }),
-    //   years(1)
-    // );
+    return this.userActions.getUserByNickname({ nickname });
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -143,25 +142,25 @@ export class UserController {
     @Req() req: Request,
     @Param('nickname') nickname: string
   ): Promise<ApiResponse[Route.UserPosts]> {
-    const tags = (req.query?.tags as string)?.split(',');
-    const cursor = req.query?.cursor as string;
-    const published =
-      typeof req.query?.published === 'string'
-        ? JSON.parse(req.query?.published)
-        : undefined;
+    // const tags = (req.query?.tags as string)?.split(',');
+    // const cursor = req.query?.cursor as string;
+    // const published =
+    //   typeof req.query?.published === 'string'
+    //     ? JSON.parse(req.query?.published)
+    //     : undefined;
 
-    const myId = getMyIdByReq(req);
-    const user = await this.userService.getUserByNickname({ nickname });
+    // const myId = getMyIdByReq(req);
+    // const user = await this.userService.getUserByNickname({ nickname });
 
-    const posts = await this.userService.getUserPosts({
-      userId: user?.id,
-      isMe: !!myId && myId === user?.id,
-      tags,
-      cursor,
-      published,
-    });
+    // const posts = await this.userService.getUserPosts({
+    //   userId: user?.id,
+    //   isMe: !!myId && myId === user?.id,
+    //   tags,
+    //   cursor,
+    //   published,
+    // });
 
-    return posts;
+    return this.postActions.getUserPosts({ nickname });
   }
 
   @UseGuards(AuthGuard('jwt'))

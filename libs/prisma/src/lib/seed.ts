@@ -1,22 +1,8 @@
 import * as cuid from 'cuid';
 import * as faker from 'faker';
 import * as bcrypt from 'bcrypt';
-import { CodeLanguage } from '.prisma/client';
-import { PrismaClient } from '@prisma/client';
 import 'colors';
-
-let prisma: PrismaClient;
-
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient();
-} else {
-  if (!(global as any).prisma) {
-    (global as any).prisma = new PrismaClient({
-      // log: ["query", "info", "warn", "error"],
-    });
-  }
-  prisma = (global as any).prisma;
-}
+import { TagActions } from './redis/actions/TagActions';
 
 const tagNames = [
   'React',
@@ -212,155 +198,124 @@ const tagNames = [
 ];
 
 async function main() {
-  // reset all
-  await prisma.tagsOnPosts.deleteMany();
-  await prisma.tag.deleteMany();
-  await prisma.activity.deleteMany();
-  await prisma.like.deleteMany();
-  await prisma.comment.deleteMany();
-  await prisma.post.deleteMany();
-  await prisma.follow.deleteMany();
-  await prisma.user.deleteMany();
+  const tagActions = new TagActions();
+
+  // TODO: reset
 
   // create tags
-  await prisma.tag.createMany({
-    data: tagNames.map((t) => ({ name: t })),
-    skipDuplicates: true,
-  });
-
-  // create users
-  const user1Id = 'e141ecbf-0857-474b-9fc7-4d3f456135c5';
-  const password = await bcrypt.hash('Password01!', 10);
-  await prisma.user.create({
-    data: {
-      id: user1Id,
-      email: 'idarase@gmail.com',
-      name: 'Ilya Daraseliya',
-      nickname: 'darasus',
-      password,
-      image:
-        'https://imagedelivery.net/1Y4KoCbQQUt_e_VWvskl5g/ca74724d-1c39-4cc7-5bb3-237120eeda00/public',
-    },
-  });
-
-  const usersData = Array.from({ length: 10000 }).map(() => ({
-    id: cuid(),
-    email: `_${faker.random.alphaNumeric(5)}_${faker.internet
-      .email()
-      .toLowerCase()}`,
-    name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-    nickname: `${faker.internet
-      .userName()
-      .toLowerCase()}_${faker.random.alphaNumeric(5)}`,
-    password,
-    image: 'https://mytinylibrary.com/user-image.png',
-  }));
-
-  await prisma.user.createMany({
-    data: usersData,
-  });
-
-  // create follows
-  await prisma.follow.createMany({
-    data: usersData.map((user) => ({
-      followerId: user.id,
-      followingId: user1Id,
-    })),
-  });
-
-  // create posts
-  const tags = await prisma.tag.findMany();
-  const postsData = Array.from({ length: 1000 }).map(() => ({
-    id: cuid(),
-    codeLanguage: CodeLanguage.JAVASCRIPT,
-    title: faker.lorem.sentence(),
-    description: faker.lorem.sentence(),
-    content: faker.lorem.sentence(),
-    published: true,
-    authorId: user1Id,
-  }));
-
-  await prisma.post.createMany({
-    data: postsData,
-  });
-
-  await prisma.tagsOnPosts.createMany({
-    data: postsData.map((post) => ({
-      postId: post.id,
-      tagId: faker.random.arrayElement(tags).id,
-    })),
-  });
-
-  // create likes
-  await prisma.like.createMany({
-    data: usersData.map((user) => ({
-      authorId: user.id,
-      postId: faker.random.arrayElement(postsData).id,
-    })),
-  });
-
-  // create comments
-  await prisma.comment.createMany({
-    data: usersData.map((user) => ({
-      authorId: user.id,
-      postId: faker.random.arrayElement(postsData).id,
-      content: faker.random.words(),
-    })),
-  });
-
-  // create activities
-  const comments = await prisma.comment.findMany();
-  const likes = await prisma.like.findMany();
-  const follows = await prisma.follow.findMany();
-  await prisma.activity.createMany({
-    data: shuffle([
-      ...likes.map((like) => ({
-        postId: like.postId,
-        likeId: like.id,
-        ownerId: user1Id,
-        authorId: like.authorId,
-      })),
-      ...comments.map((comment) => ({
-        commentId: comment.id,
-        ownerId: user1Id,
-        authorId: comment.authorId,
-        postId: comment.postId,
-      })),
-      ...follows.map((follow) => ({
-        ownerId: user1Id,
-        authorId: follow.followerId,
-        followFollowerId: follow.followerId,
-        followFollowingId: follow.followingId,
-      })),
-    ]),
-  });
-}
-
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(() => {
-    prisma.$disconnect();
-  });
-
-function shuffle(array: any) {
-  let currentIndex = array.length,
-    randomIndex;
-
-  // While there remain elements to shuffle...
-  while (currentIndex != 0) {
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    // And swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex],
-      array[currentIndex],
-    ];
+  for (const name of tagNames) {
+    await tagActions.createTag({ name });
   }
 
-  return array;
+  // create users
+  // const user1Id = 'e141ecbf-0857-474b-9fc7-4d3f456135c5';
+  // const password = await bcrypt.hash('Password01!', 10);
+  // await prisma.user.create({
+  //   data: {
+  //     id: user1Id,
+  //     email: 'idarase@gmail.com',
+  //     name: 'Ilya Daraseliya',
+  //     nickname: 'darasus',
+  //     password,
+  //     image:
+  //       'https://imagedelivery.net/1Y4KoCbQQUt_e_VWvskl5g/ca74724d-1c39-4cc7-5bb3-237120eeda00/public',
+  //   },
+  // });
+
+  // const usersData = Array.from({ length: 10000 }).map(() => ({
+  //   id: cuid(),
+  //   email: `_${faker.random.alphaNumeric(5)}_${faker.internet
+  //     .email()
+  //     .toLowerCase()}`,
+  //   name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+  //   nickname: `${faker.internet
+  //     .userName()
+  //     .toLowerCase()}_${faker.random.alphaNumeric(5)}`,
+  //   password,
+  //   image: 'https://mytinylibrary.com/user-image.png',
+  // }));
+
+  // await prisma.user.createMany({
+  //   data: usersData,
+  // });
+
+  // // create follows
+  // await prisma.follow.createMany({
+  //   data: usersData.map((user) => ({
+  //     followerId: user.id,
+  //     followingId: user1Id,
+  //   })),
+  // });
+
+  // // create posts
+  // const tags = await prisma.tag.findMany();
+  // const postsData = Array.from({ length: 1000 }).map(() => ({
+  //   id: cuid(),
+  //   codeLanguage: CodeLanguage.JAVASCRIPT,
+  //   title: faker.lorem.sentence(),
+  //   description: faker.lorem.sentence(),
+  //   content: faker.lorem.sentence(),
+  //   published: true,
+  //   authorId: user1Id,
+  // }));
+
+  // await prisma.post.createMany({
+  //   data: postsData,
+  // });
+
+  // await prisma.tagsOnPosts.createMany({
+  //   data: postsData.map((post) => ({
+  //     postId: post.id,
+  //     tagId: faker.random.arrayElement(tags).id,
+  //   })),
+  // });
+
+  // // create likes
+  // await prisma.like.createMany({
+  //   data: usersData.map((user) => ({
+  //     authorId: user.id,
+  //     postId: faker.random.arrayElement(postsData).id,
+  //   })),
+  // });
+
+  // // create comments
+  // await prisma.comment.createMany({
+  //   data: usersData.map((user) => ({
+  //     authorId: user.id,
+  //     postId: faker.random.arrayElement(postsData).id,
+  //     content: faker.random.words(),
+  //   })),
+  // });
+
+  // // create activities
+  // const comments = await prisma.comment.findMany();
+  // const likes = await prisma.like.findMany();
+  // const follows = await prisma.follow.findMany();
+  // await prisma.activity.createMany({
+  //   data: shuffle([
+  //     ...likes.map((like) => ({
+  //       postId: like.postId,
+  //       likeId: like.id,
+  //       ownerId: user1Id,
+  //       authorId: like.authorId,
+  //     })),
+  //     ...comments.map((comment) => ({
+  //       commentId: comment.id,
+  //       ownerId: user1Id,
+  //       authorId: comment.authorId,
+  //       postId: comment.postId,
+  //     })),
+  //     ...follows.map((follow) => ({
+  //       ownerId: user1Id,
+  //       authorId: follow.followerId,
+  //       followFollowerId: follow.followerId,
+  //       followFollowingId: follow.followingId,
+  //     })),
+  //   ]),
+  // });
 }
+
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

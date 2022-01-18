@@ -1,21 +1,33 @@
 import * as cuid from 'cuid';
-import { Comment } from '../entities';
+import { Tag } from '../entities';
 import { graph } from '../redis.graph';
 
 export class TagActions {
-  private createTagQuery({ query, params }) {
+  private createQuery({ query, params }) {
     return graph.query(query, params).then((post) => {
       while (post.hasNext()) {
         const record = post.next();
-        return new Comment(record.get('comment'));
+        return new Tag(record.get('tag'));
       }
     });
   }
 
+  createTag({ name }) {
+    const params = {
+      name,
+      id: cuid(),
+    } as any;
+
+    return this.createQuery({
+      query: `CREATE (tag:Tag {id: $id, name: $name}) RETURN tag`,
+      params,
+    });
+  }
+
   getAllTags() {
-    return this.createTagQuery({
+    return this.createQuery({
       query: `
-          Match (tag:Tag)
+          MATCH (tag:Tag)
           RETURN tag
         `,
       params: null,

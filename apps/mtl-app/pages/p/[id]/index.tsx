@@ -70,42 +70,42 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const httpConnector = new HttpConnector();
-  const fetcher = new Fetcher(httpConnector);
-  const postId = ctx.query.id as string;
+  // const httpConnector = new HttpConnector();
+  // const fetcher = new Fetcher(httpConnector);
+  // const postId = ctx.query.id as string;
 
-  try {
-    const post = await fetcher.getPost({ postId });
+  // try {
+  //   const post = await fetcher.getPost({ postId });
 
-    await Promise.all([
-      queryClient.prefetchQuery(clientCacheKey.createPostKey({ postId }), () =>
-        Promise.resolve(post)
-      ),
-      queryClient.prefetchQuery(
-        clientCacheKey.createPostCommentsKey({ postId: post.id }),
-        () =>
-          Promise.resolve({
-            items: post.comments,
-            total: post.commentsCount,
-            count: post.comments.length,
-          })
-      ),
-    ]);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
-    if (e?.response?.status === 404) {
-      return {
-        notFound: true,
-      };
-    }
-  }
+  //   await Promise.all([
+  //     queryClient.prefetchQuery(clientCacheKey.createPostKey({ postId }), () =>
+  //       Promise.resolve(post)
+  //     ),
+  //     queryClient.prefetchQuery(
+  //       clientCacheKey.createPostCommentsKey({ postId: post.id }),
+  //       () =>
+  //         Promise.resolve({
+  //           items: post.comments,
+  //           total: post.commentsCount,
+  //           count: post.comments.length,
+  //         })
+  //     ),
+  //   ]);
+  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // } catch (e: any) {
+  //   if (e?.response?.status === 404) {
+  //     return {
+  //       notFound: true,
+  //     };
+  //   }
+  // }
 
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-      accessToken: session?.accessToken || null,
-      cookies: ctx.req?.headers?.cookie ?? '',
-      user: session?.user || null,
-    },
-  };
+  // return {
+  //   props: {
+  //     dehydratedState: dehydrate(queryClient),
+  //     accessToken: session?.accessToken || null,
+  //     cookies: ctx.req?.headers?.cookie ?? '',
+  //     user: session?.user || null,
+  //   },
+  // };
 };

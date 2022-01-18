@@ -1,3 +1,4 @@
+import { TUser } from '@mtl/types';
 import crypto = require('crypto');
 import cuid = require('cuid');
 import { User } from '../entities';
@@ -9,14 +10,18 @@ export class UserActions {
     return crypto.createHash('sha256').update(s).digest('hex');
   }
 
-  register({ email, password }: { email: string; password: string }) {
+  register({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }): Promise<TUser> {
     const params = { email } as any;
 
     if (!email || !password) {
       throw { email: 'Email or password is not provided', status: 400 };
     }
-
-    console.log('hello');
 
     return graph
       .query('MATCH (user:User {email: $email}) RETURN user', params)
@@ -50,7 +55,13 @@ export class UserActions {
       });
   }
 
-  login({ email, password }: { email: string; password: string }) {
+  login({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }): Promise<TUser> {
     if (!email || !password) {
       throw { email: 'Email or password is not provided', status: 400 };
     }
@@ -60,7 +71,7 @@ export class UserActions {
     console.log({ params });
 
     return graph
-      .query('MATCH (user:User {email: $email}) RETURN user', params)
+      .query('MATCH (user:User { email: $email }) RETURN user', params)
       .then((foundedUser) => {
         if (!foundedUser.hasNext()) {
           throw { username: 'Username does not exist', status: 400 };
@@ -78,7 +89,7 @@ export class UserActions {
       });
   }
 
-  getUserByEmail({ email }) {
+  getUserByEmail({ email }): Promise<TUser> {
     console.log({ email });
     const params = { email } as any;
 
@@ -96,7 +107,24 @@ export class UserActions {
       });
   }
 
-  verifyEmail({ email }) {
+  getUserByNickname({ nickname }): Promise<TUser> {
+    const params = { nickname } as any;
+
+    return graph
+      .query('MATCH (user:User {nickname: $nickname}) RETURN user', params)
+      .then((foundedUser) => {
+        if (!foundedUser.hasNext()) {
+          throw { username: 'User with this nickname not found', status: 404 };
+        } else {
+          while (foundedUser.hasNext()) {
+            const record = foundedUser.next() as any;
+            return new User(record.get('user'));
+          }
+        }
+      });
+  }
+
+  verifyEmail({ email }): Promise<TUser> {
     const params = { email } as any;
 
     return graph
@@ -122,7 +150,7 @@ export class UserActions {
       });
   }
 
-  changePassword({ email, password }) {
+  changePassword({ email, password }): Promise<TUser> {
     const params = { email } as any;
 
     return graph

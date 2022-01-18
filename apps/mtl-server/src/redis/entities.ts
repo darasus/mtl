@@ -5,18 +5,7 @@ export const Comment = function (_node) {
 };
 
 export const User = function (_node) {
-  const { nickname, name, email, id, createdAt, updatedAt, emailVerified } =
-    _node.properties;
-
-  _.extend(this, {
-    nickname,
-    name,
-    email,
-    id,
-    createdAt,
-    updatedAt,
-    emailVerified,
-  });
+  _.extend(this, _.omit(_node.properties, ['password']));
 };
 
 export const Post = function (_node) {
@@ -28,5 +17,13 @@ export const Like = function (_node) {
 };
 
 export const Tag = function (_node) {
+  _.extend(this, _node.properties);
+};
+
+export const Activity = function (_node) {
+  _.extend(this, _node.properties);
+};
+
+export const Follow = function (_node) {
   _.extend(this, _node.properties);
 };
