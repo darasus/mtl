@@ -3409,6 +3409,13 @@
     "@types/node" "*"
     "@types/responselike" "*"
 
+"@types/cli-progress@^3.9.2":
+  version "3.9.2"
+  resolved "https://registry.yarnpkg.com/@types/cli-progress/-/cli-progress-3.9.2.tgz#6ca355f96268af39bee9f9307f0ac96145639c26"
+  integrity sha512-VO5/X5Ij+oVgEVjg5u0IXVe3JQSKJX+Ev8C5x+0hPy0AuWyW+bF8tbajR7cPFnDGhs7pidztcac+ccrDtk5teA==
+  dependencies:
+    "@types/node" "*"
+
 "@types/connect@*":
   version "3.4.35"
   resolved "https://registry.yarnpkg.com/@types/connect/-/connect-3.4.35.tgz#5fcf6ae445e4021d1fc2219a4873cc73a3bb2ad1"

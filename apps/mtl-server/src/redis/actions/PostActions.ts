@@ -1,33 +1,35 @@
 import { ApiPage, TPost } from '@mtl/types';
+import { CodeLanguage } from '@prisma/client';
 import * as cuid from 'cuid';
 import { Post } from '../entities';
 import { graph } from '../redis.graph';
+import { TagActions } from './TagActions';
 
 export class PostActions {
-  private createQuery({ query, params }) {
+  private createQuery({ query, params }: { query: string; params: any }) {
     return graph.query(query, params).then((post) => {
       while (post.hasNext()) {
         const record = post.next();
-        return new Post(record.get('post'));
+        return Post(record.get('post'));
       }
     });
   }
 
-  private createListQuery({ query, params }) {
+  private createListQuery({ query, params }: { query: string; params: any }) {
     return graph.query(query, params).then((post) => {
       const list: TPost[] = [];
       while (post.hasNext()) {
         const record = post.next();
-        list.push(new Post(record.get('post')));
+        list.push(Post(record.get('post')));
       }
       return list;
     });
   }
 
-  fetchPost({ postId }) {
+  fetchPost({ postId }: { postId: string }) {
     const params = {
       id: postId,
-    } as any;
+    };
 
     return this.createQuery({
       query: `
@@ -38,7 +40,7 @@ export class PostActions {
     });
   }
 
-  createPost({
+  async createPost({
     title,
     content,
     description,
@@ -46,6 +48,14 @@ export class PostActions {
     tagIds,
     isPublished,
     userId,
+  }: {
+    title: string;
+    content: string;
+    description: string;
+    codeLanguage: CodeLanguage;
+    tagIds: string[];
+    isPublished: boolean;
+    userId: string;
   }) {
     const params = {
       id: cuid(),
@@ -57,9 +67,9 @@ export class PostActions {
       codeLanguage,
       isPublished,
       userId,
-    } as any;
+    };
 
-    return this.createQuery({
+    const post = await this.createQuery({
       query: `
           MATCH (author:User {id: $userId})
           CREATE (post:Post { id: $id, title: $title, content: $content, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, codeLanguage: $codeLanguage, isPublished: $isPublished })
@@ -69,9 +79,32 @@ export class PostActions {
         `,
       params,
     });
+
+    if (tagIds && tagIds.length > 0) {
+      const tagActions = new TagActions();
+      for (const tagId of tagIds) {
+        await tagActions.assignTagToPost({ tagId, postId: post?.id as string });
+      }
+    }
+
+    return post;
   }
 
-  updatePost({ id, title, content, description, codeLanguage, tagIds }) {
+  updatePost({
+    id,
+    title,
+    content,
+    description,
+    codeLanguage,
+    tagIds,
+  }: {
+    id: string;
+    title: string;
+    content: string;
+    description: string;
+    codeLanguage: CodeLanguage;
+    tagIds: string[];
+  }) {
     const params = {
       id,
       title,
@@ -80,7 +113,7 @@ export class PostActions {
       codeLanguage,
       updatedAt: new Date().toISOString(),
       tagIds,
-    } as any;
+    };
 
     return this.createQuery({
       query: `
@@ -92,11 +125,11 @@ export class PostActions {
     });
   }
 
-  publishPost({ postId }) {
+  publishPost({ postId }: { postId: string }) {
     const params = {
       id: postId,
       isPublished: true,
-    } as any;
+    };
 
     return this.createQuery({
       query: `
@@ -108,11 +141,11 @@ export class PostActions {
     });
   }
 
-  unpublishPost({ postId }) {
+  unpublishPost({ postId }: { postId: string }) {
     const params = {
       id: postId,
       isPublished: false,
-    } as any;
+    };
 
     return this.createQuery({
       query: `
@@ -124,10 +157,10 @@ export class PostActions {
     });
   }
 
-  deletePost({ postId }) {
+  deletePost({ postId }: { postId: string }) {
     const params = {
       id: postId,
-    } as any;
+    };
 
     return this.createQuery({
       query: `
@@ -138,10 +171,14 @@ export class PostActions {
     });
   }
 
-  async getUserPosts({ nickname }): Promise<ApiPage<TPost>> {
+  async getUserPosts({
+    nickname,
+  }: {
+    nickname: string;
+  }): Promise<ApiPage<TPost>> {
     const params = {
       nickname,
-    } as any;
+    };
 
     const posts = await this.createListQuery({
       query: `
@@ -155,7 +192,8 @@ export class PostActions {
       items: posts,
       count: posts.length,
       total: posts.length,
-      cursor: null,
+      currPage: 1,
+      nextPage: 1,
     };
   }
 }

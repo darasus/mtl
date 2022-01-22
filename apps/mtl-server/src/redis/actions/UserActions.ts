@@ -5,7 +5,7 @@ import { User } from '../entities';
 import { graph } from '../redis.graph';
 
 export class UserActions {
-  private hashPassword(email, password) {
+  private hashPassword(email: string, password: string) {
     const s = `${email}:${password}`;
     return crypto.createHash('sha256').update(s).digest('hex');
   }
@@ -16,7 +16,7 @@ export class UserActions {
   }: {
     email: string;
     password: string;
-  }): Promise<TUser> {
+  }): Promise<TUser | any> {
     const params = { email } as any;
 
     if (!email || !password) {
@@ -48,8 +48,9 @@ export class UserActions {
             .then((createdUser) => {
               while (createdUser.hasNext()) {
                 const record = createdUser.next();
-                return new User(record.get('user'));
+                return User(record.get('user'));
               }
+              return null;
             });
         }
       });
@@ -61,7 +62,7 @@ export class UserActions {
   }: {
     email: string;
     password: string;
-  }): Promise<TUser> {
+  }): Promise<TUser | any> {
     if (!email || !password) {
       throw { email: 'Email or password is not provided', status: 400 };
     }
@@ -83,13 +84,13 @@ export class UserActions {
             if (dbUser.password !== this.hashPassword(email, password)) {
               throw { password: 'Wrong password', status: 400 };
             }
-            return new User(record.get('user'));
+            return User(record.get('user'));
           }
         }
       });
   }
 
-  getUserByEmail({ email }): Promise<TUser> {
+  getUserByEmail({ email }: { email: string }): Promise<TUser | any> {
     console.log({ email });
     const params = { email } as any;
 
@@ -101,13 +102,13 @@ export class UserActions {
         } else {
           while (foundedUser.hasNext()) {
             const record = foundedUser.next() as any;
-            return new User(record.get('user'));
+            return User(record.get('user'));
           }
         }
       });
   }
 
-  getUserByNickname({ nickname }): Promise<TUser> {
+  getUserByNickname({ nickname }: { nickname: string }): Promise<TUser | any> {
     const params = { nickname } as any;
 
     return graph
@@ -118,13 +119,13 @@ export class UserActions {
         } else {
           while (foundedUser.hasNext()) {
             const record = foundedUser.next() as any;
-            return new User(record.get('user'));
+            return User(record.get('user'));
           }
         }
       });
   }
 
-  verifyEmail({ email }): Promise<TUser> {
+  verifyEmail({ email }: { email: string }): Promise<TUser | any> {
     const params = { email } as any;
 
     return graph
@@ -142,7 +143,7 @@ export class UserActions {
               .then((createdUser) => {
                 while (createdUser.hasNext()) {
                   const record = createdUser.next();
-                  return new User(record.get('user'));
+                  return User(record.get('user'));
                 }
               });
           }
@@ -150,7 +151,13 @@ export class UserActions {
       });
   }
 
-  changePassword({ email, password }): Promise<TUser> {
+  changePassword({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }): Promise<TUser | any> {
     const params = { email } as any;
 
     return graph
@@ -173,7 +180,7 @@ export class UserActions {
               .then((createdUser) => {
                 while (createdUser.hasNext()) {
                   const record = createdUser.next();
-                  return new User(record.get('user'));
+                  return User(record.get('user'));
                 }
               });
           }

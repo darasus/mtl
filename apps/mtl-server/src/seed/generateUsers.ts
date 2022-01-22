@@ -18,7 +18,7 @@ export const generateUsers = async () => {
 
   console.log('Creating users...');
 
-  const numOfUsers = 100;
+  const numOfUsers = 10;
 
   bar.start(numOfUsers, 0);
 

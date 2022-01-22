@@ -3,19 +3,25 @@ import { Comment } from '../entities';
 import { graph } from '../redis.graph';
 
 export class CommentActions {
-  private createCommentQuery({ query, params }) {
+  private createCommentQuery({
+    query,
+    params,
+  }: {
+    query: string;
+    params: any;
+  }) {
     return graph.query(query, params).then((post) => {
       while (post.hasNext()) {
         const record = post.next();
-        return new Comment(record.get('comment'));
+        return Comment(record.get('comment'));
       }
     });
   }
 
-  getComment({ commentId }) {
+  getComment({ commentId }: { commentId: string }) {
     const params = {
       id: commentId,
-    } as any;
+    };
 
     return this.createCommentQuery({
       query: `
@@ -26,13 +32,21 @@ export class CommentActions {
     });
   }
 
-  createComment({ content, authorId, postId }) {
+  createComment({
+    content,
+    authorId,
+    postId,
+  }: {
+    content: string;
+    authorId: string;
+    postId: string;
+  }) {
     const params = {
       id: cuid(),
       postId,
       authorId,
       content,
-    } as any;
+    };
 
     return this.createCommentQuery({
       query: `
@@ -47,10 +61,10 @@ export class CommentActions {
     });
   }
 
-  deleteComment({ commentId }) {
+  deleteComment({ commentId }: { commentId: string }) {
     const params = {
       id: commentId,
-    } as any;
+    };
 
     return this.createCommentQuery({
       query: `

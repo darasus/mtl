@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpStatus,
   Param,
   Post,
   Query,
@@ -24,17 +23,17 @@ import { ConfigService } from '@nestjs/config';
 import { ApiResponse } from '@mtl/api-types';
 import { getMyIdByReq } from '../utils/getMyIdByReq';
 import { Logger } from '../logger/logger.service';
-import { processErrorResponse, years } from '@mtl/utils';
+import { processErrorResponse } from '@mtl/utils';
 import { UserActions } from '../redis/actions/UserActions';
 import { PostActions } from '../redis/actions/PostActions';
 import { ActivityActions } from '../redis/actions/ActivityActions';
 
 export class UpdateUserDto {
-  newNickname: string;
-  email: string;
-  name: string;
-  password: string;
-  image: string;
+  newNickname!: string;
+  email!: string;
+  name!: string;
+  password!: string;
+  image!: string;
 }
 
 @Controller()
@@ -65,8 +64,7 @@ export class UserController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
     @Param('nickname') nickname: string,
-    @Query('take') take: string,
-    @Query('cursor') cursor: string
+    @Query('page') page = 0
   ): Promise<ApiResponse[Route.UserActivity]> {
     // const myId = getMyIdByReq(req);
     // const user = await this.userService.getUserByNickname({ nickname });
@@ -82,7 +80,10 @@ export class UserController {
     //   take: Number(take) || undefined,
     //   cursor,
     // });
-    return this.activityActions.getUserActivities({ nickname });
+    return this.activityActions.getUserActivities({
+      nickname,
+      page: Number(page),
+    });
   }
 
   @Get(Route.UserFollowCount)
@@ -90,7 +91,9 @@ export class UserController {
     @Param('nickname') nickname: string
   ): Promise<ApiResponse[Route.UserFollowCount]> {
     const user = await this.userService.getUserByNickname({ nickname });
-    return this.userService.getUserFollowerCount({ userId: user?.id });
+    return this.userService.getUserFollowerCount({
+      userId: user?.id as string,
+    });
   }
 
   @Get(Route.UserFollowingsCount)
@@ -98,7 +101,9 @@ export class UserController {
     @Param('nickname') nickname: string
   ): Promise<ApiResponse[Route.UserFollowingsCount]> {
     const user = await this.userService.getUserByNickname({ nickname });
-    return this.userService.getUserFollowingsCount({ userId: user?.id });
+    return this.userService.getUserFollowingsCount({
+      userId: user?.id as string,
+    });
   }
 
   @UseGuards(OptionalUserGuard)
@@ -114,7 +119,7 @@ export class UserController {
 
     return this.followService.doIFollow({
       followerUserId: myId,
-      followingUserId: user?.id,
+      followingUserId: user?.id as string,
     });
   }
 
@@ -125,12 +130,12 @@ export class UserController {
     const user = await this.userService.getUserByNickname({ nickname });
 
     const response = await this.followService.followUser({
-      followingUserId: user?.id,
+      followingUserId: user?.id as string,
       followerUserId: myId,
     });
 
     await this.activityService.addFollowActivity({
-      ownerId: user?.id,
+      ownerId: user?.id as string,
       authorId: myId,
       followFollowerId: response.followerId,
       followFollowingId: response.followingId,
@@ -173,12 +178,12 @@ export class UserController {
     const user = await this.userService.getUserByNickname({ nickname });
 
     await this.activityService.removeFollowActivity({
-      followFollowingId: user?.id,
+      followFollowingId: user?.id as string,
       followFollowerId: myId,
     });
 
     await this.followService.unfollowUser({
-      followingUserId: user?.id,
+      followingUserId: user?.id as string,
       followerUserId: myId,
     });
 
@@ -260,7 +265,7 @@ export class UserController {
       .catch((err) => res.status(400).send(processErrorResponse(err)));
 
     await this.userService.updateUserSettings({
-      userId: user?.id,
+      userId: user?.id as string,
       image: body.image,
       name: body.name,
       nickname: body.newNickname,

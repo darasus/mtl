@@ -1,12 +1,12 @@
-// import * as Prisma from '@prisma/client';
-
+import { ActivityType } from './ActivityType';
 import { BaseEntity } from './BaseEntity';
-
-// export type TActivity = Prisma.Activity;
+import { TPost } from './TPost';
+import { TUser } from './TUser';
 
 export interface TActivity extends BaseEntity {
   read: boolean;
-  type: string;
-  ownerId: string;
-  authorId: string;
+  type: ActivityType;
+  postId: string;
+  author: TUser;
+  post: TPost;
 }

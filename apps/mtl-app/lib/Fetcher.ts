@@ -288,17 +288,17 @@ export class Fetcher {
 
   getUserActivity = ({
     nickname,
-    cursor,
+    page,
   }: {
     nickname: string;
-    cursor: string;
+    page: number;
   }): Promise<ApiResponse[Route.UserActivity]> => {
     return this.httpConnector
       .get(
         createApiRoute({
           route: Route.UserActivity,
           variable: { nickname },
-          query: qs.stringify({ cursor }),
+          query: qs.stringify({ page }),
         })
       )
       .then((res) => res.data);

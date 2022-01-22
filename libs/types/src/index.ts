@@ -9,3 +9,5 @@ export * from './lib/TLike';
 
 export * from './lib/FeedType';
 export * from './lib/Route';
+export * from './lib/CodeLanguage';
+export * from './lib/ActivityType';

@@ -1,4 +1,3 @@
-import { Activity } from '.prisma/client';
 import { Box, Flex, Text } from '@chakra-ui/layout';
 import { MenuItem } from '@chakra-ui/menu';
 import {
@@ -6,22 +5,22 @@ import {
   ThumbUpIcon,
   UserAddIcon,
 } from '@heroicons/react/outline';
+import { TActivity } from '@mtl/types';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useMarkActivityAsReadMutation } from '../../hooks/mutation/useMarkActivityAsReadMutation';
 
-export const Notification = ({ activity }: { activity: Activity & any }) => {
+export const Notification = ({ activity }: { activity: TActivity }) => {
   const router = useRouter();
   const markAsReadMutation = useMarkActivityAsReadMutation({
     activityId: activity.id,
   });
-  const isLikeNotification = typeof activity.likeId === 'string';
-  const isCommentNotification = typeof activity.commentId === 'string';
-  const isFollowNotification =
-    typeof activity?.follow?.follower?.id === 'string';
+  const isLikeNotification = activity.type === 'LIKE';
+  const isCommentNotification = activity.type === 'COMMENT';
+  const isFollowNotification = activity.type === 'FOLLOW';
 
   const composeActivityMessage = React.useCallback(
-    (activity: Activity & any) => {
+    (activity: TActivity) => {
       if (isLikeNotification) {
         return (
           <>
@@ -45,7 +44,7 @@ export const Notification = ({ activity }: { activity: Activity & any }) => {
       if (isFollowNotification) {
         return (
           <>
-            <Text as="span">{activity?.follow?.follower?.name}</Text>
+            <Text as="span">{activity.author.name}</Text>
             <Text as="span" color="gray.500">{` followed you`}</Text>
           </>
         );
@@ -64,16 +63,16 @@ export const Notification = ({ activity }: { activity: Activity & any }) => {
       router.push(`/p/${activity.postId}`);
     }
     if (isFollowNotification) {
-      router.push(`/u/${activity?.follow?.follower?.nickname}`);
+      router.push(`/u/${activity.author.id}`);
     }
   }, [
     markAsReadMutation,
     router,
-    activity.postId,
-    activity?.follow,
     isLikeNotification,
     isCommentNotification,
     isFollowNotification,
+    activity.author.id,
+    activity.postId,
   ]);
 
   return (
@@ -90,7 +89,7 @@ export const Notification = ({ activity }: { activity: Activity & any }) => {
           </Text>
         </Box>
         <Flex alignItems="center" ml={2} minWidth={3}>
-          {activity.unread && (
+          {!activity.read && (
             <Box
               mt="7px"
               width={2}

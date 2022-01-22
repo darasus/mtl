@@ -1,9 +1,7 @@
-import * as cuid from 'cuid';
-import { Follow } from '../entities';
 import { graph } from '../redis.graph';
 
 export class FollowActions {
-  private createQuery({ query, params }) {
+  private createQuery({ query, params }: { query: string; params: any }) {
     return graph.query(query, params).then((post) => {
       while (post.hasNext()) {
         return true;
@@ -11,11 +9,17 @@ export class FollowActions {
     });
   }
 
-  createFollow({ followerId, followingId }): Promise<boolean | undefined> {
+  createFollow({
+    followerId,
+    followingId,
+  }: {
+    followerId: string;
+    followingId: string;
+  }): Promise<boolean | undefined> {
     const params = {
       followerId,
       followingId,
-    } as any;
+    };
 
     return this.createQuery({
       query: `

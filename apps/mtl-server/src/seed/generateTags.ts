@@ -1,5 +1,6 @@
 import { TagActions } from '../redis/actions/TagActions';
 import cliProgress = require('cli-progress');
+import { TTag } from '@mtl/types';
 
 const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
@@ -199,6 +200,7 @@ const tagNames = [
 const tagActions = new TagActions();
 
 export const generateTags = async () => {
+  const list: TTag[] = [];
   let currIndex = 0;
 
   // create tags
@@ -208,9 +210,12 @@ export const generateTags = async () => {
 
   for (const name of tagNames) {
     bar.update(currIndex + 1);
-    await tagActions.createTag({ name });
+    const tag = await tagActions.createTag({ name });
+    list.push(tag);
     currIndex++;
   }
 
   bar.stop();
+
+  return list;
 };
