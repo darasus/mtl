@@ -30,8 +30,8 @@ export const generateLikes = async ({
     bar.update(currIndex + 1);
 
     await likesActions.createLike({
-      authorId: sample(allUsers)?.id,
-      postId: sample(posts)?.id,
+      authorId: sample(allUsers)?.id as string,
+      postId: sample(posts)?.id as string,
     });
 
     currIndex++;

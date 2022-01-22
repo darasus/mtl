@@ -77,12 +77,9 @@ export class PostController {
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    console.log({ body });
-
     try {
       return this.postActions.createPost({ ...body, userId });
     } catch (error) {
-      console.log(error);
       return res.end(error);
     }
   }
@@ -254,10 +251,9 @@ export class PostController {
         tagIds: [],
         userId: '5f0e8b9b8b9c8a0f8c8b9c8',
       });
-      console.log({ post });
       return post;
     } catch (error) {
-      console.log(error);
+      return error;
     }
   }
 }

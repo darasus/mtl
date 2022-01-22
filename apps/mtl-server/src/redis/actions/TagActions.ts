@@ -4,12 +4,23 @@ import { Tag } from '../entities';
 import { graph } from '../redis.graph';
 
 export class TagActions {
-  private createQuery({ query, params }) {
+  private createQuery({ query, params }): Promise<TTag> {
     return graph.query(query, params).then((post) => {
       while (post.hasNext()) {
         const record = post.next();
-        return new Tag(record.get('tag'));
+        return Tag(record.get('tag'));
       }
+    });
+  }
+
+  private createListQuery({ query, params }): Promise<TTag[]> {
+    return graph.query(query, params).then((post) => {
+      const list: TTag[] = [];
+      while (post.hasNext()) {
+        const record = post.next();
+        list.push(Tag(record.get('tag')));
+      }
+      return list;
     });
   }
 
@@ -26,7 +37,7 @@ export class TagActions {
   }
 
   getAllTags(): Promise<TTag[]> {
-    return this.createQuery({
+    return this.createListQuery({
       query: `
           MATCH (tag:Tag)
           RETURN tag

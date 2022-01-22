@@ -34,12 +34,14 @@ export const generatePosts = async ({
       description: faker.lorem.sentence(),
       content: faker.lorem.sentence(),
       isPublished: true,
-      tagIds: [sample(tags)?.id],
+      tagIds: [sample(tags)?.id as string],
     });
 
     currIndex++;
 
-    list.push(post);
+    if (post) {
+      list.push(post);
+    }
   }
 
   bar.stop();

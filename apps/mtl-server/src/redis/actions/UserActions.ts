@@ -1,6 +1,5 @@
 import { TUser } from '@mtl/types';
 import crypto = require('crypto');
-import cuid = require('cuid');
 import { User } from '../entities';
 import { graph } from '../redis.graph';
 
@@ -13,7 +12,9 @@ export class UserActions {
   register({
     email,
     password,
+    id,
   }: {
+    id: string;
     email: string;
     password: string;
   }): Promise<TUser | any> {
@@ -30,7 +31,7 @@ export class UserActions {
           throw { email: 'Email already in use', status: 400 };
         } else {
           const params = {
-            id: cuid(),
+            id,
             email,
             emailVerified: false,
             nickname: email,
@@ -69,8 +70,6 @@ export class UserActions {
 
     const params = { email } as any;
 
-    console.log({ params });
-
     return graph
       .query('MATCH (user:User { email: $email }) RETURN user', params)
       .then((foundedUser) => {
@@ -80,7 +79,6 @@ export class UserActions {
           while (foundedUser.hasNext()) {
             const record = foundedUser.next() as any;
             const dbUser = record.get('user').properties;
-            console.log(email, password);
             if (dbUser.password !== this.hashPassword(email, password)) {
               throw { password: 'Wrong password', status: 400 };
             }
@@ -91,7 +89,6 @@ export class UserActions {
   }
 
   getUserByEmail({ email }: { email: string }): Promise<TUser | any> {
-    console.log({ email });
     const params = { email } as any;
 
     return graph

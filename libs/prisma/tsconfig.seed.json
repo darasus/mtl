@@ -12,7 +12,6 @@
   ],
   "compilerOptions": {
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "module": "commonjs",

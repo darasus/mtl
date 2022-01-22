@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Param,
   Post,
   Query,
@@ -66,24 +67,20 @@ export class UserController {
     @Param('nickname') nickname: string,
     @Query('page') page = 0
   ): Promise<ApiResponse[Route.UserActivity]> {
-    // const myId = getMyIdByReq(req);
-    // const user = await this.userService.getUserByNickname({ nickname });
+    const myId = getMyIdByReq(req);
+    const user = await this.userActions.getUserByEmail({ email: nickname });
 
-    // if (myId !== user?.id) {
-    //   res.status(403);
-    //   return null;
-    // }
+    if (myId !== user?.id) {
+      // res.status(HttpStatus.FORBIDDEN);
+      return null;
+    }
 
-    // res.status(HttpStatus.OK).send([]);
-    // return this.userService.getUserActivity({
-    //   userId: myId,
-    //   take: Number(take) || undefined,
-    //   cursor,
-    // });
-    return this.activityActions.getUserActivities({
-      nickname,
-      page: Number(page),
-    });
+    res.status(HttpStatus.OK).send(
+      await this.activityActions.getUserActivities({
+        nickname,
+        page: Number(page),
+      })
+    );
   }
 
   @Get(Route.UserFollowCount)

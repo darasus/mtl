@@ -6,7 +6,7 @@ export const Comment = function (_node: any) {
 };
 
 export const User = function (_node: any) {
-  _.extend({}, _.omit(_node.properties, ['password']));
+  return _.extend({}, _.omit(_node.properties, ['password']));
 };
 
 export const Post = function (_node: any): TPost {
