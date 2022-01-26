@@ -1,9 +1,9 @@
 import { BaseEntity } from './BaseEntity';
-import { TUser } from './TUser';
 
 export interface TComment extends BaseEntity {
   postId: string;
   authorId: string;
+  authorName: string;
+  authorImage: string;
   content: string;
-  author: TUser;
 }

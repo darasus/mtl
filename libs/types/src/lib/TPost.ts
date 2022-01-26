@@ -19,11 +19,11 @@ export interface TPost extends BaseEntity {
   content: string;
   description: string;
   published: boolean;
-  authorId: string;
+  // authorId: string;
   codeLanguage: CodeLanguage;
-  likeIds: string[];
-  commentIds: string[];
-  tagIds: string[];
+  // likeIds: string[];
+  // commentIds: string[];
+  // tagIds: string[];
   author: TUser;
   tags: TTag[];
   comments: TComment[];

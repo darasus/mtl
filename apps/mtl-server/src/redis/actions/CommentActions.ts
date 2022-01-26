@@ -46,13 +46,15 @@ export class CommentActions {
       postId,
       authorId,
       content,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     return this.createCommentQuery({
       query: `
           MATCH (author:User {id: $authorId})
           MATCH (post:Post {id: $postId})
-          CREATE (comment:Comment { id: $id, content: $content })
+          CREATE (comment:Comment { id: $id, content: $content, createdAt: $createdAt, updatedAt: $updatedAt })
           CREATE (comment)-[:COMMENTED_BY]->(author)
           CREATE (post)-[:HAS_COMMENT]->(comment)
           RETURN comment

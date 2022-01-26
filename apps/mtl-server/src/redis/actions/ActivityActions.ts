@@ -14,11 +14,7 @@ export class ActivityActions {
     return graph.query(query, params).then((post) => {
       while (post.hasNext()) {
         const record = post.next();
-        return Activity(
-          record.get('activity'),
-          record.get('author'),
-          record.get('post')
-        );
+        return Activity(record);
       }
     });
   }
@@ -43,13 +39,7 @@ export class ActivityActions {
       const list: TActivity[] = [];
       while (post.hasNext()) {
         const record = post.next();
-        list.push(
-          Activity(
-            record.get('activity'),
-            record.get('author'),
-            record.get('post')
-          )
-        );
+        list.push(Activity(record));
       }
       return list;
     });
@@ -80,7 +70,7 @@ export class ActivityActions {
         MATCH (post:Post {id: $postId})
         MATCH (owner:User {id: $ownerId})
         MATCH (author:User {id: $authorId})
-        CREATE (activity:Activity {id: $id, type: $type, postId: $postId, read: $read, createdAt: $createdAt, updatedAt: $updatedAt })
+        CREATE (activity:Activity {id: $id, type: $type, postId: $postId, authorId: $authorId, ownerId: $ownerId, read: $read, createdAt: $createdAt, updatedAt: $updatedAt })
         CREATE (activity)-[a:AUTHORED_BY]->(author)
         CREATE (activity)-[b:OWNED_BY]->(owner)
         CREATE (owner)-[c:HAS_ACTIVITY]->(activity)
@@ -90,7 +80,7 @@ export class ActivityActions {
     });
   }
 
-  createCommentActivity({
+  removeLikeActivity({
     postId,
     authorId,
     ownerId,
@@ -98,12 +88,36 @@ export class ActivityActions {
     postId: string;
     authorId: string;
     ownerId: string;
-  }): Promise<TActivity> {
+  }) {
     const params = {
-      id: cuid(),
       postId,
       authorId,
       ownerId,
+    };
+
+    return this.createQuery({
+      query: `
+        MATCH (activity:Activity {postId: $postId, authorId: $authorId, ownerId: $ownerId, type: 'LIKE'})
+        DELETE activity
+      `,
+      params,
+    });
+  }
+
+  createCommentActivity({
+    authorId,
+    ownerId,
+    commentId,
+  }: {
+    authorId: string;
+    ownerId: string;
+    commentId: string;
+  }): Promise<TActivity> {
+    const params = {
+      id: cuid(),
+      authorId,
+      ownerId,
+      commentId,
       type: 'COMMENT',
       read: false,
       createdAt: new Date().toISOString(),
@@ -115,7 +129,7 @@ export class ActivityActions {
         MATCH (post:Post {id: $postId})
         MATCH (owner:User {id: $ownerId})
         MATCH (author:User {id: $authorId})
-        CREATE (activity:Activity {id: $id, type: $type, postId: $postId, read: $read, createdAt: $createdAt, updatedAt: $updatedAt })
+        CREATE (activity:Activity {id: $id, type: $type, commentId: $commentId, authorId: $authorId, ownerId: $ownerId, read: $read, createdAt: $createdAt, updatedAt: $updatedAt })
         CREATE (activity)-[a:AUTHORED_BY]->(author)
         CREATE (activity)-[b:OWNED_BY]->(owner)
         CREATE (owner)-[c:HAS_ACTIVITY]->(activity)

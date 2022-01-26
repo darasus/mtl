@@ -43,15 +43,16 @@ export class UserActions {
           } as any;
           return graph
             .query(
-              'CREATE (user:User {id: $id, email: $email, password: $password, nickname: $nickname, name: $name, image: $image, emailVerified: $emailVerified, createdAt: $createdAt, updatedAt: $updatedAt }) RETURN user',
+              `
+              CREATE (user:User {id: $id, email: $email, password: $password, nickname: $nickname, name: $name, image: $image, emailVerified: $emailVerified, createdAt: $createdAt, updatedAt: $updatedAt })
+              RETURN user
+              `,
               params
             )
-            .then((createdUser) => {
-              while (createdUser.hasNext()) {
-                const record = createdUser.next();
-                return User(record.get('user'));
+            .then((res) => {
+              while (res.hasNext()) {
+                return User(res.next());
               }
-              return null;
             });
         }
       });
@@ -78,11 +79,11 @@ export class UserActions {
         } else {
           while (foundedUser.hasNext()) {
             const record = foundedUser.next() as any;
-            const dbUser = record.get('user').properties;
+            const dbUser = record.properties;
             if (dbUser.password !== this.hashPassword(email, password)) {
               throw { password: 'Wrong password', status: 400 };
             }
-            return User(record.get('user'));
+            return User(record);
           }
         }
       });
@@ -99,7 +100,7 @@ export class UserActions {
         } else {
           while (foundedUser.hasNext()) {
             const record = foundedUser.next() as any;
-            return User(record.get('user'));
+            return User(record);
           }
         }
       });
@@ -116,7 +117,7 @@ export class UserActions {
         } else {
           while (foundedUser.hasNext()) {
             const record = foundedUser.next() as any;
-            return User(record.get('user'));
+            return User(record);
           }
         }
       });
@@ -140,7 +141,7 @@ export class UserActions {
               .then((createdUser) => {
                 while (createdUser.hasNext()) {
                   const record = createdUser.next();
-                  return User(record.get('user'));
+                  return User(record);
                 }
               });
           }
@@ -177,7 +178,7 @@ export class UserActions {
               .then((createdUser) => {
                 while (createdUser.hasNext()) {
                   const record = createdUser.next();
-                  return User(record.get('user'));
+                  return User(record);
                 }
               });
           }

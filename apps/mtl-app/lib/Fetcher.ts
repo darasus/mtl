@@ -3,7 +3,7 @@ import qs from 'query-string';
 import { HttpConnector } from './HttpConnector';
 import ServerFormData from 'form-data';
 import { ApiResponse } from '@mtl/api-types';
-import { FeedType, Route } from '@mtl/types';
+import { ApiPage, ApiPages, FeedType, Route, TComment } from '@mtl/types';
 import { createApiRoute } from '@mtl/api-utils';
 import { rejectNil } from '@mtl/utils';
 
@@ -112,7 +112,7 @@ export class Fetcher {
     postId: string;
     take?: number;
     skip?: number;
-  }) =>
+  }): Promise<ApiPage<TComment>> =>
     this.httpConnector
       .get(`/api/post/${postId}/comments?${qs.stringify({ take, skip })}`)
       .then((res) => res.data);

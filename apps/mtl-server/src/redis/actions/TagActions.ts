@@ -7,8 +7,7 @@ export class TagActions {
   private createQuery({ query, params }): Promise<TTag> {
     return graph.query(query, params).then((post) => {
       while (post.hasNext()) {
-        const record = post.next();
-        return Tag(record.get('tag'));
+        return Tag(post.next());
       }
     });
   }
@@ -18,7 +17,7 @@ export class TagActions {
       const list: TTag[] = [];
       while (post.hasNext()) {
         const record = post.next();
-        list.push(Tag(record.get('tag')));
+        list.push(Tag(record));
       }
       return list;
     });
@@ -43,6 +42,18 @@ export class TagActions {
           RETURN tag
         `,
       params: null,
+    });
+  }
+
+  getTagsByPostId({ postId }): Promise<TTag[]> {
+    const params = { postId };
+
+    return this.createListQuery({
+      query: `
+          MATCH (post:Post {id: $postId})-[k:HAS_TAG]->(tag:Tag)
+          RETURN tag
+        `,
+      params,
     });
   }
 

@@ -22,6 +22,12 @@ import { ConfigService } from '@nestjs/config';
 import { ActivityController } from '../activity/activity.controller';
 import { PusherService } from '../pusher/pusher.service';
 import { Auth0Controller } from '../auth0/auth0.controller';
+import { ActivityActions } from '../redis/actions/ActivityActions';
+import { PostActions } from '../redis/actions/PostActions';
+import { FollowActions } from '../redis/actions/FollowActions';
+import { LikeActions } from '../redis/actions/LikeActions';
+import { TagActions } from '../redis/actions/TagActions';
+import { UserActions } from '../redis/actions/UserActions';
 
 @Module({
   imports: [AuthModule],
@@ -50,6 +56,13 @@ import { Auth0Controller } from '../auth0/auth0.controller';
     ConfigService,
     ActivityService,
     PusherService,
+    // redis actions
+    ActivityActions,
+    PostActions,
+    FollowActions,
+    LikeActions,
+    TagActions,
+    UserActions,
   ],
 })
 export class AppModule {}

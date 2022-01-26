@@ -12,7 +12,7 @@ export const OpenInRemoteCodeEditorButton = ({ post }: { post: TPost }) => {
     title: post.title,
     content: post.content as string,
     description: post.description as string,
-    tags: post.tags?.map((tag) => tag.tag.name),
+    tags: post.tags?.map((tag) => tag.name),
   });
 
   const commonProps = {

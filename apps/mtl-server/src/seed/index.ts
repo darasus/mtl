@@ -13,7 +13,7 @@ async function main() {
     const tags = await generateTags();
     const { me, users } = await generateUsers();
     await generateFollows({ me, users });
-    const posts = await generatePosts({ me, tags });
+    const posts = await generatePosts({ me, tags, users });
     await generateComments({ me, users, posts });
     await generateLikes({ me, users, posts });
     await generateActivities({ me, users, posts });

@@ -26,7 +26,7 @@ export const DesktopHeader: React.FC<Props> = React.memo(
     const { secondaryTextColor } = useColors();
     const breakpoint = useBreakpoint();
     const isMetaInfoVisible = breakpoint !== 'base' && showMetaInfo;
-    const isMyPost = me?.user?.id === post?.authorId;
+    const isMyPost = me?.user?.id === post?.author.id;
 
     return (
       <Box p={4}>
@@ -91,7 +91,7 @@ export const DesktopHeader: React.FC<Props> = React.memo(
                     </Box>
                     <Box>
                       <Text fontSize="sm" whiteSpace="nowrap">{`${post.tags
-                        ?.map((tag) => tag.tag.name.toLowerCase())
+                        ?.map((tag) => tag.name.toLowerCase())
                         .join(',')}`}</Text>
                     </Box>
                   </Flex>

@@ -146,7 +146,7 @@ export class UserController {
   async getUserPosts(
     @Req() req: Request,
     @Param('nickname') nickname: string
-  ): Promise<ApiResponse[Route.UserPosts]> {
+  ): Promise<ApiResponse[Route.UserPosts] | string> {
     // const tags = (req.query?.tags as string)?.split(',');
     // const cursor = req.query?.cursor as string;
     // const published =
@@ -165,7 +165,11 @@ export class UserController {
     //   published,
     // });
 
-    return this.postActions.getUserPosts({ nickname });
+    try {
+      return this.postActions.getUserPosts({ nickname });
+    } catch (error) {
+      return processErrorResponse(error);
+    }
   }
 
   @UseGuards(AuthGuard('jwt'))

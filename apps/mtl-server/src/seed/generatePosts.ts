@@ -12,8 +12,10 @@ const postActions = new PostActions();
 export const generatePosts = async ({
   me,
   tags,
+  users,
 }: {
   me: TUser;
+  users: TUser[];
   tags: TTag[];
 }) => {
   const list: TPost[] = [];
@@ -28,13 +30,17 @@ export const generatePosts = async ({
   for (const _ in Array.from({ length: numOfPosts })) {
     bar.update(currIndex + 1);
     const post = await postActions.createPost({
-      userId: me.id,
+      userId: sample([me.id, ...users.map((u) => u.id)]) as string,
       codeLanguage: CodeLanguage.JAVASCRIPT,
       title: faker.lorem.sentence(),
       description: faker.lorem.sentence(),
       content: faker.lorem.sentence(),
       isPublished: true,
-      tagIds: [sample(tags)?.id as string],
+      tagIds: [
+        sample(tags)?.id as string,
+        sample(tags)?.id as string,
+        sample(tags)?.id as string,
+      ],
     });
 
     currIndex++;

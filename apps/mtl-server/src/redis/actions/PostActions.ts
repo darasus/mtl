@@ -9,8 +9,7 @@ export class PostActions {
   private createQuery({ query, params }: { query: string; params: any }) {
     return graph.query(query, params).then((post) => {
       while (post.hasNext()) {
-        const record = post.next();
-        return Post(record.get('post'));
+        return Post(post.next());
       }
     });
   }
@@ -19,8 +18,7 @@ export class PostActions {
     return graph.query(query, params).then((post) => {
       const list: TPost[] = [];
       while (post.hasNext()) {
-        const record = post.next();
-        list.push(Post(record.get('post')));
+        list.push(Post(post.next()));
       }
       return list;
     });
@@ -182,8 +180,14 @@ export class PostActions {
 
     const posts = await this.createListQuery({
       query: `
-          MATCH (user:User {nickname: $nickname})-[p:POSTED]->(post:Post)
-          RETURN post
+          MATCH (author:User {nickname: $nickname})-[a:POSTED]->(post),
+                (post)-[c:HAS_COMMENT]->(comment),
+                (comment)-[b:COMMENTED_BY]->(commentAuthor),
+                (post)-[t:HAS_TAG]->(tag),
+                (post)-[l:LIKED_BY]->(author)
+          SET comment.authorName = commentAuthor.name SET comment.authorId = commentAuthor.id SET comment.authorImage = commentAuthor.image
+          WITH collect(distinct tag) as Tags, collect(distinct comment) as Comments, author, post, count(distinct comment) as CommentsCount, count(distinct l) as LikesCount
+          RETURN post, author, Comments, CommentsCount, Tags, LikesCount
         `,
       params,
     });

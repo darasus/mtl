@@ -72,9 +72,6 @@ export const Comments: React.FC<Props> = ({ postId }) => {
           </Flex>
         )}
         {(comments.data?.items || []).map((comment) => {
-          if (!comment.author) return null;
-          if (!comment.author.image) return null;
-
           return (
             <Box key={comment.id}>
               <Flex mt={1} flexDirection="column">
@@ -88,7 +85,7 @@ export const Comments: React.FC<Props> = ({ postId }) => {
                     mr={2}
                   >
                     <Image
-                      src={comment.author.image}
+                      src={comment.authorImage}
                       width="100"
                       height="100"
                       alt="Avatar"
@@ -96,10 +93,10 @@ export const Comments: React.FC<Props> = ({ postId }) => {
                   </Box>
                   <Box mr={2}>
                     <Text fontSize="sm" color={secondaryTextColor}>{`${
-                      comment.author.name
+                      comment.authorName
                     } - ${new Date(comment.createdAt).toDateString()}`}</Text>
                   </Box>
-                  {me?.user?.id === comment.author.id && (
+                  {me?.user?.id === comment.authorId && (
                     <DeleteCommentButton
                       commentId={comment.id}
                       postId={postId}
