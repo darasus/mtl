@@ -21,8 +21,13 @@ import { TagService } from '../tag/tag.service';
 import { ConfigService } from '@nestjs/config';
 import { ActivityController } from '../activity/activity.controller';
 import { PusherService } from '../pusher/pusher.service';
-import { CacheKeyService } from '../cache/cacheKey.service';
-import { CacheService } from '../cache/cache.service';
+import { Auth0Controller } from '../auth0/auth0.controller';
+import { ActivityActions } from '../redis/actions/ActivityActions';
+import { PostActions } from '../redis/actions/PostActions';
+import { FollowActions } from '../redis/actions/FollowActions';
+import { LikeActions } from '../redis/actions/LikeActions';
+import { TagActions } from '../redis/actions/TagActions';
+import { UserActions } from '../redis/actions/UserActions';
 
 @Module({
   imports: [AuthModule],
@@ -35,6 +40,7 @@ import { CacheService } from '../cache/cache.service';
     ScreenshotController,
     TagController,
     ActivityController,
+    Auth0Controller,
   ],
   providers: [
     AppService,
@@ -50,8 +56,13 @@ import { CacheService } from '../cache/cache.service';
     ConfigService,
     ActivityService,
     PusherService,
-    CacheKeyService,
-    CacheService,
+    // redis actions
+    ActivityActions,
+    PostActions,
+    FollowActions,
+    LikeActions,
+    TagActions,
+    UserActions,
   ],
 })
 export class AppModule {}

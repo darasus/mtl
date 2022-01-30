@@ -8,19 +8,18 @@ export const useUserActivityQuery = ({ nickname }: { nickname: string }) => {
 
   return useInfiniteQuery(
     clientCacheKey.createUserActivityKey({ nickname }),
-    ({ pageParam = undefined }) =>
-      fetcher.getUserActivity({ nickname, cursor: pageParam }),
+    ({ pageParam: page = undefined }) =>
+      fetcher.getUserActivity({
+        nickname,
+        page,
+      }),
     {
       staleTime: days(1),
       enabled: !!nickname,
       getNextPageParam: (lastPage, pages) => {
-        const localTotal = pages
-          .map((page) => page.count)
-          .reduce((prev, next) => prev + next, 0);
+        if (!lastPage.nextPage) return undefined;
 
-        if (localTotal === lastPage.total) return undefined;
-
-        return lastPage.cursor;
+        return lastPage.nextPage;
       },
     }
   );

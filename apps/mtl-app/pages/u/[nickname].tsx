@@ -9,7 +9,7 @@ import { getSession } from '@auth0/nextjs-auth0';
 import { HttpConnector } from '../../lib/HttpConnector';
 import { Fetcher } from '../../lib/Fetcher';
 import { getPlaiceholder, IGetPlaiceholderReturn } from 'plaiceholder';
-import { TPost, User } from '@mtl/types';
+import { TPost, TUser } from '@mtl/types';
 import { UserProfile } from '../../features/UserProfile';
 import { UserProfileTabs } from '../../features/UserProfileTabs';
 import { useUserPostsQuery } from '../../hooks/query/useUserPostsQuery';
@@ -62,66 +62,66 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const queryClient = new QueryClient();
   const session = await getSession(ctx.req, ctx.res);
 
-  if (!createIsFirstServerCall(ctx)) {
-    return {
-      props: {
-        accessToken: session?.accessToken || null,
-        cookies: ctx.req?.headers?.cookie ?? '',
-        user: session?.user || undefined,
-      },
-    };
-  }
-
-  const httpConnector = new HttpConnector();
-  const fetcher = new Fetcher(httpConnector);
-  const nickname = ctx.query.nickname as string;
-
-  let user: User | undefined;
-
-  try {
-    user = await fetcher.getUser({ nickname });
-
-    await Promise.all([
-      queryClient.prefetchQuery(
-        clientCacheKey.createUserKey({ nickname }),
-        () => Promise.resolve(user)
-      ),
-      queryClient.prefetchQuery(
-        clientCacheKey.createFollowersCountKey({ nickname }),
-        () => fetcher.getFollowersCount({ nickname })
-      ),
-      queryClient.prefetchQuery(
-        clientCacheKey.createFollowingCountKey({ nickname }),
-        () => fetcher.getFollowingsCount({ nickname })
-      ),
-      queryClient.prefetchQuery(
-        clientCacheKey.createUserTagsKey({ nickname }),
-        () => fetcher.fetchUserTags({ nickname })
-      ),
-    ]);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
-    if (e?.response?.status === 404) {
-      return {
-        notFound: true,
-      };
-    }
-  }
-
-  let userImage: IGetPlaiceholderReturn | null = null;
-  if (user?.image) {
-    userImage = await getPlaiceholder(user?.image, { size: 16 });
-  }
-
+  // if (!createIsFirstServerCall(ctx)) {
   return {
-    props: rejectNil({
-      dehydratedState: dehydrate(queryClient),
+    props: {
       accessToken: session?.accessToken || null,
       cookies: ctx.req?.headers?.cookie ?? '',
-      user: session?.user || null,
-      userProfileImageBase64: userImage?.base64,
-    }),
+      user: session?.user || undefined,
+    },
   };
+  // }
+
+  // const httpConnector = new HttpConnector();
+  // const fetcher = new Fetcher(httpConnector);
+  // const nickname = ctx.query.nickname as string;
+
+  // let user: User | undefined;
+
+  // try {
+  //   user = await fetcher.getUser({ nickname });
+
+  //   await Promise.all([
+  //     queryClient.prefetchQuery(
+  //       clientCacheKey.createUserKey({ nickname }),
+  //       () => Promise.resolve(user)
+  //     ),
+  //     queryClient.prefetchQuery(
+  //       clientCacheKey.createFollowersCountKey({ nickname }),
+  //       () => fetcher.getFollowersCount({ nickname })
+  //     ),
+  //     queryClient.prefetchQuery(
+  //       clientCacheKey.createFollowingCountKey({ nickname }),
+  //       () => fetcher.getFollowingsCount({ nickname })
+  //     ),
+  //     queryClient.prefetchQuery(
+  //       clientCacheKey.createUserTagsKey({ nickname }),
+  //       () => fetcher.fetchUserTags({ nickname })
+  //     ),
+  //   ]);
+  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // } catch (e: any) {
+  //   if (e?.response?.status === 404) {
+  //     return {
+  //       notFound: true,
+  //     };
+  //   }
+  // }
+
+  // let userImage: IGetPlaiceholderReturn | null = null;
+  // if (user?.image) {
+  //   userImage = await getPlaiceholder(user?.image, { size: 16 });
+  // }
+
+  // return {
+  //   props: rejectNil({
+  //     dehydratedState: dehydrate(queryClient),
+  //     accessToken: session?.accessToken || null,
+  //     cookies: ctx.req?.headers?.cookie ?? '',
+  //     user: session?.user || null,
+  //     userProfileImageBase64: userImage?.base64,
+  //   }),
+  // };
 };
 
 export default UserPage;

@@ -4,7 +4,6 @@ import { likeFragment } from '../fragments/likeFragment';
 import { tagsFragment } from '../fragments/tagsFragment';
 import { userFragment } from '../fragments/userFragment';
 import { PrismaService } from '../prisma/prisma.service';
-import { preparePost } from '../utils/preparePosts';
 
 @Injectable()
 export class FeedService {
@@ -92,30 +91,30 @@ export class FeedService {
       },
     });
 
-    if (posts.length === 0) {
-      return {
-        items: [],
-        count: 0,
-        total: 0,
-        cursor: null,
-      };
-    }
-
-    const lastPostInResults = posts[posts.length - 1];
-    const newCursor = lastPostInResults.id;
-
+    // if (posts.length === 0) {
     return {
-      items: posts
-        .map((post) => ({
-          ...post,
-          commentsCount: post.comments.length,
-          comments: post.comments.reverse().splice(-5),
-        }))
-        .map((post) => preparePost(post, userId)),
-      count: posts.length,
-      cursor: newCursor,
-      total,
+      items: [],
+      count: 0,
+      total: 0,
+      cursor: null,
     };
+    // }
+
+    // const lastPostInResults = posts[posts.length - 1];
+    // const newCursor = lastPostInResults.id;
+
+    // return {
+    //   items: posts
+    //     .map((post) => ({
+    //       ...post,
+    //       commentsCount: post.comments.length,
+    //       comments: post.comments.reverse().splice(-5),
+    //     }))
+    //     .map((post) => preparePost(post, userId)),
+    //   count: posts.length,
+    //   cursor: newCursor,
+    //   total,
+    // };
   }
 
   async fetchLatestFeed({
@@ -170,29 +169,29 @@ export class FeedService {
       },
     });
 
-    if (posts.length === 0) {
-      return {
-        items: [],
-        count: 0,
-        total: 0,
-        cursor: null,
-      };
-    }
-
-    const lastPostInResults = posts[posts.length - 1];
-    const newCursor = lastPostInResults.id;
-
+    // if (posts.length === 0) {
     return {
-      items: posts
-        .map((post) => ({
-          ...post,
-          commentsCount: post.comments.length,
-          comments: post.comments.reverse().splice(-5),
-        }))
-        .map((post) => preparePost(post, userId)),
-      count: posts.length,
-      cursor: newCursor,
-      total,
+      items: [],
+      count: 0,
+      total: 0,
+      cursor: null,
     };
+    // }
+
+    // const lastPostInResults = posts[posts.length - 1];
+    // const newCursor = lastPostInResults.id;
+
+    // return {
+    //   items: posts
+    //     .map((post) => ({
+    //       ...post,
+    //       commentsCount: post.comments.length,
+    //       comments: post.comments.reverse().splice(-5),
+    //     }))
+    //     .map((post) => preparePost(post, userId)),
+    //   count: posts.length,
+    //   cursor: newCursor,
+    //   total,
+    // };
   }
 }

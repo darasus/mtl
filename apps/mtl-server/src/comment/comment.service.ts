@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { commentFragment } from '../fragments/commentFragment';
 import { PusherService } from '../pusher/pusher.service';
+import { CommentActions } from '../redis/actions/CommentActions';
 
 @Injectable()
 export class CommentService {
-  constructor(
-    private prisma: PrismaService,
-    private pusherService: PusherService
-  ) {}
+  commentActions = new CommentActions();
+
+  constructor(private pusherService: PusherService) {}
 
   async isMyComment({
     commentId,
@@ -17,16 +17,15 @@ export class CommentService {
     commentId: string;
     userId: string;
   }) {
-    const comment = await this.prisma.comment.findFirst({
-      where: {
-        id: commentId,
-      },
-      include: {
-        author: true,
-      },
-    });
+    // const comment = await commentRepository
+    //   .search()
+    //   .where('id')
+    //   .equals(commentId)
+    //   .return.first();
 
-    return comment?.author?.id === userId;
+    // return comment?.author?.id === userId;
+
+    return true;
   }
 
   async deleteComment({
@@ -37,10 +36,8 @@ export class CommentService {
     postId: string;
     ownerId: string;
   }) {
-    await this.prisma.comment.delete({
-      where: {
-        id: commentId,
-      },
+    await this.commentActions.deleteComment({
+      commentId,
     });
 
     await this.pusherService.pusher.trigger(
@@ -50,8 +47,6 @@ export class CommentService {
         data: null,
       }
     );
-
-    // await cache.del(redisCacheKey.createPostKey(postId));
   }
 
   async getCommentsByPostId({
@@ -63,30 +58,30 @@ export class CommentService {
     take?: number;
     skip?: number;
   }) {
-    const baseQuery = {
-      where: {
-        postId,
-      },
-    } as const;
-    const [items, total] = await Promise.all([
-      this.prisma.comment
-        .findMany({
-          ...baseQuery,
-          take,
-          skip,
-          orderBy: { id: 'desc' },
-          select: commentFragment,
-        })
-        .then((res) => res.reverse()),
-      this.prisma.comment.count({
-        ...baseQuery,
-      }),
-    ]);
+    // const baseQuery = {
+    //   where: {
+    //     postId,
+    //   },
+    // } as const;
+    // const [items, total] = await Promise.all([
+    //   this.prisma.comment
+    //     .findMany({
+    //       ...baseQuery,
+    //       take,
+    //       skip,
+    //       orderBy: { id: 'desc' },
+    //       select: commentFragment,
+    //     })
+    //     .then((res) => res.reverse()),
+    //   this.prisma.comment.count({
+    //     ...baseQuery,
+    //   }),
+    // ]);
 
     return {
-      items,
-      count: items.length,
-      total,
+      items: [],
+      count: 0,
+      total: 0,
     };
   }
 
@@ -99,18 +94,10 @@ export class CommentService {
     postId: string;
     userId: string;
   }) {
-    return this.prisma.comment
-      .create({
-        data: {
-          content,
-          post: { connect: { id: postId } },
-          author: { connect: { id: userId } },
-        },
-      })
-      .then(async (res) => {
-        // await cache.del(redisCacheKey.createPostKey(postId));
-
-        return res;
-      });
+    return this.commentActions.createComment({
+      content,
+      postId,
+      authorId: userId,
+    });
   }
 }

@@ -1,38 +1,31 @@
+import { TActivity } from '@mtl/types';
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
 import { activityFragment } from '../fragments/activityFragment';
 import { PusherService } from '../pusher/pusher.service';
+import { ActivityActions } from '../redis/actions/ActivityActions';
 
 @Injectable()
 export class ActivityService {
   constructor(
-    private prisma: PrismaService,
-    private pusherService: PusherService
+    private pusherService: PusherService,
+    private activityActions: ActivityActions
   ) {}
 
   async addLikeActivity({
     authorId,
-    likeId,
     ownerId,
     postId,
   }: {
     authorId: string;
-    likeId: string;
     ownerId: string;
     postId: string;
-  }) {
+  }): Promise<TActivity> {
     if (authorId === ownerId) return null;
 
-    const activity = await this.prisma.activity.create({
-      data: {
-        authorId,
-        likeId,
-        ownerId,
-        postId,
-      },
-      include: {
-        ...activityFragment,
-      },
+    const activity = await this.activityActions.createLikeActivity({
+      authorId,
+      ownerId,
+      postId,
     });
 
     await this.pusherService.pusher.trigger(
@@ -54,28 +47,11 @@ export class ActivityService {
     postId: string;
     authorId: string;
     ownerId: string;
-  }) {
-    const like = await this.prisma.like.findFirst({
-      where: {
-        postId,
-        authorId,
-      },
-    });
-
-    if (!like?.id) return;
-
-    const activity = await this.prisma.activity.findFirst({
-      where: {
-        likeId: like.id,
-      },
-    });
-
-    if (!activity?.id) return;
-
-    await this.prisma.activity.delete({
-      where: {
-        id: activity.id,
-      },
+  }): Promise<void> {
+    await this.activityActions.removeLikeActivity({
+      postId,
+      authorId,
+      ownerId,
     });
 
     await this.pusherService.pusher.trigger(
@@ -97,19 +73,13 @@ export class ActivityService {
     commentId: string;
     ownerId: string;
     postId: string;
-  }) {
-    if (authorId === ownerId) return null;
+  }): Promise<TActivity | void> {
+    if (authorId === ownerId) return;
 
-    const activity = await this.prisma.activity.create({
-      data: {
-        authorId,
-        commentId,
-        ownerId,
-        postId,
-      },
-      include: {
-        ...activityFragment,
-      },
+    const activity = await this.activityActions.createCommentActivity({
+      authorId,
+      ownerId,
+      commentId,
     });
 
     await this.pusherService.pusher.trigger(

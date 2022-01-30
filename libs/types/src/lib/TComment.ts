@@ -1,5 +1,9 @@
-import * as Prisma from '@prisma/client';
+import { BaseEntity } from './BaseEntity';
 
-export type TComment = Prisma.Comment & {
-  author?: Omit<Prisma.User, 'password'> | null;
-};
+export interface TComment extends BaseEntity {
+  postId: string;
+  authorId: string;
+  authorName: string;
+  authorImage: string;
+  content: string;
+}

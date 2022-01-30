@@ -24,41 +24,39 @@ import { ConfigService } from '@nestjs/config';
 import { ApiResponse } from '@mtl/api-types';
 import { getMyIdByReq } from '../utils/getMyIdByReq';
 import { Logger } from '../logger/logger.service';
-import { CacheService } from '../cache/cache.service';
-import { CacheKeyService } from '../cache/cacheKey.service';
-import { processErrorResponse, years } from '@mtl/utils';
+import { processErrorResponse } from '@mtl/utils';
+import { UserActions } from '../redis/actions/UserActions';
+import { PostActions } from '../redis/actions/PostActions';
+import { ActivityActions } from '../redis/actions/ActivityActions';
 
 export class UpdateUserDto {
-  newNickname: string;
-  email: string;
-  name: string;
-  password: string;
-  image: string;
+  newNickname!: string;
+  email!: string;
+  name!: string;
+  password!: string;
+  image!: string;
 }
 
 @Controller()
 export class UserController {
   private readonly logger = new Logger();
+  private readonly userActions = new UserActions();
+  private readonly postActions = new PostActions();
+  private readonly activityActions = new ActivityActions();
 
   constructor(
     private readonly userService: UserService,
     private readonly followService: FollowService,
     private readonly activityService: ActivityService,
     private readonly prismaService: PrismaService,
-    private readonly configService: ConfigService,
-    private readonly cacheService: CacheService,
-    private readonly cacheKeyService: CacheKeyService
+    private readonly configService: ConfigService
   ) {}
 
   @Get(Route.User)
   async getUserById(
     @Param('nickname') nickname: string
   ): Promise<ApiResponse[Route.User]> {
-    return this.cacheService.fetch(
-      this.cacheKeyService.createUserKey({ nickname }),
-      () => this.userService.getUserByNickname({ nickname }),
-      years(1)
-    );
+    return this.userActions.getUserByNickname({ nickname });
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -67,23 +65,22 @@ export class UserController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
     @Param('nickname') nickname: string,
-    @Query('take') take: string,
-    @Query('cursor') cursor: string
+    @Query('page') page = 0
   ): Promise<ApiResponse[Route.UserActivity]> {
     const myId = getMyIdByReq(req);
-    const user = await this.userService.getUserByNickname({ nickname });
+    const user = await this.userActions.getUserByEmail({ email: nickname });
 
     if (myId !== user?.id) {
-      res.status(403);
+      // res.status(HttpStatus.FORBIDDEN);
       return null;
     }
 
-    res.status(HttpStatus.OK);
-    return this.userService.getUserActivity({
-      userId: myId,
-      take: Number(take) || undefined,
-      cursor,
-    });
+    res.status(HttpStatus.OK).send(
+      await this.activityActions.getUserActivities({
+        nickname,
+        page: Number(page),
+      })
+    );
   }
 
   @Get(Route.UserFollowCount)
@@ -91,7 +88,9 @@ export class UserController {
     @Param('nickname') nickname: string
   ): Promise<ApiResponse[Route.UserFollowCount]> {
     const user = await this.userService.getUserByNickname({ nickname });
-    return this.userService.getUserFollowerCount({ userId: user?.id });
+    return this.userService.getUserFollowerCount({
+      userId: user?.id as string,
+    });
   }
 
   @Get(Route.UserFollowingsCount)
@@ -99,7 +98,9 @@ export class UserController {
     @Param('nickname') nickname: string
   ): Promise<ApiResponse[Route.UserFollowingsCount]> {
     const user = await this.userService.getUserByNickname({ nickname });
-    return this.userService.getUserFollowingsCount({ userId: user?.id });
+    return this.userService.getUserFollowingsCount({
+      userId: user?.id as string,
+    });
   }
 
   @UseGuards(OptionalUserGuard)
@@ -115,7 +116,7 @@ export class UserController {
 
     return this.followService.doIFollow({
       followerUserId: myId,
-      followingUserId: user?.id,
+      followingUserId: user?.id as string,
     });
   }
 
@@ -126,12 +127,12 @@ export class UserController {
     const user = await this.userService.getUserByNickname({ nickname });
 
     const response = await this.followService.followUser({
-      followingUserId: user?.id,
+      followingUserId: user?.id as string,
       followerUserId: myId,
     });
 
     await this.activityService.addFollowActivity({
-      ownerId: user?.id,
+      ownerId: user?.id as string,
       authorId: myId,
       followFollowerId: response.followerId,
       followFollowingId: response.followingId,
@@ -145,26 +146,30 @@ export class UserController {
   async getUserPosts(
     @Req() req: Request,
     @Param('nickname') nickname: string
-  ): Promise<ApiResponse[Route.UserPosts]> {
-    const tags = (req.query?.tags as string)?.split(',');
-    const cursor = req.query?.cursor as string;
-    const published =
-      typeof req.query?.published === 'string'
-        ? JSON.parse(req.query?.published)
-        : undefined;
+  ): Promise<ApiResponse[Route.UserPosts] | string> {
+    // const tags = (req.query?.tags as string)?.split(',');
+    // const cursor = req.query?.cursor as string;
+    // const published =
+    //   typeof req.query?.published === 'string'
+    //     ? JSON.parse(req.query?.published)
+    //     : undefined;
 
-    const myId = getMyIdByReq(req);
-    const user = await this.userService.getUserByNickname({ nickname });
+    // const myId = getMyIdByReq(req);
+    // const user = await this.userService.getUserByNickname({ nickname });
 
-    const posts = await this.userService.getUserPosts({
-      userId: user?.id,
-      isMe: !!myId && myId === user?.id,
-      tags,
-      cursor,
-      published,
-    });
+    // const posts = await this.userService.getUserPosts({
+    //   userId: user?.id,
+    //   isMe: !!myId && myId === user?.id,
+    //   tags,
+    //   cursor,
+    //   published,
+    // });
 
-    return posts;
+    try {
+      return this.postActions.getUserPosts({ nickname });
+    } catch (error) {
+      return processErrorResponse(error);
+    }
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -174,12 +179,12 @@ export class UserController {
     const user = await this.userService.getUserByNickname({ nickname });
 
     await this.activityService.removeFollowActivity({
-      followFollowingId: user?.id,
+      followFollowingId: user?.id as string,
       followFollowerId: myId,
     });
 
     await this.followService.unfollowUser({
-      followingUserId: user?.id,
+      followingUserId: user?.id as string,
       followerUserId: myId,
     });
 
@@ -190,7 +195,8 @@ export class UserController {
   async getUserTags(
     @Param('nickname') nickname: string
   ): Promise<ApiResponse[Route.UserTags]> {
-    return this.userService.getUserTags({ nickname });
+    return [];
+    // return this.userService.getUserTags({ nickname });
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -260,7 +266,7 @@ export class UserController {
       .catch((err) => res.status(400).send(processErrorResponse(err)));
 
     await this.userService.updateUserSettings({
-      userId: user?.id,
+      userId: user?.id as string,
       image: body.image,
       name: body.name,
       nickname: body.newNickname,
@@ -268,9 +274,9 @@ export class UserController {
       email: body.email,
     });
 
-    await this.cacheService.del(
-      this.cacheKeyService.createUserKey({ nickname })
-    );
+    // await this.cacheService.del(
+    //   this.cacheKeyService.createUserKey({ nickname })
+    // );
 
     return { status: 'ok' };
   }

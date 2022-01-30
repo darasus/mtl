@@ -19,12 +19,10 @@ import { ActivityService } from '../activity/activity.service';
 import { OptionalUserGuard } from '../guards/OptionalUserGuard';
 import { LikeService } from '../like/like.service';
 import { AuthGuard } from '@nestjs/passport';
-import { TPost, Route } from '@mtl/types';
+import { Route } from '@mtl/types';
 import { Response, Request } from 'express';
-import { CacheService } from '../cache/cache.service';
-import { CacheKeyService } from '../cache/cacheKey.service';
 import { ApiResponse } from '@mtl/api-types';
-import { years } from '@mtl/utils';
+import { PostActions } from '../redis/actions/PostActions';
 
 export class CreatePostDto {
   @IsNotEmpty()
@@ -36,7 +34,7 @@ export class CreatePostDto {
   @IsNotEmpty()
   codeLanguage: Prisma.CodeLanguage;
   @IsNotEmpty()
-  tagId: string;
+  tagIds: string[];
   @IsNotEmpty()
   isPublished: boolean;
 }
@@ -51,7 +49,7 @@ export class UpdatePostDto {
   @IsNotEmpty()
   codeLanguage: Prisma.CodeLanguage;
   @IsNotEmpty()
-  tagId: string;
+  tagIds: string[];
 }
 
 export class AddPostCommentDto {
@@ -61,16 +59,16 @@ export class AddPostCommentDto {
 
 @Controller()
 export class PostController {
+  postActions = new PostActions();
+
   constructor(
     private readonly postService: PostService,
     private readonly commentService: CommentService,
     private readonly activityService: ActivityService,
-    private readonly likeService: LikeService,
-    private readonly cacheService: CacheService,
-    private readonly cachekeyService: CacheKeyService
+    private readonly likeService: LikeService
   ) {}
 
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   @Post('post/create')
   async createPost(
     @Req() req: Request,
@@ -79,7 +77,11 @@ export class PostController {
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    return this.postService.createPost(userId, body);
+    try {
+      return this.postActions.createPost({ ...body, userId });
+    } catch (error) {
+      return res.end(error);
+    }
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -89,31 +91,7 @@ export class PostController {
     @Body() body: UpdatePostDto,
     @Param('postId') postId: string
   ) {
-    const post = await this.postService.updatePost(body, postId);
-
-    // clear post cache
-    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
-
-    return post;
-  }
-
-  @UseGuards(AuthGuard('jwt'))
-  @Post('post/save')
-  async markActivityAsRead(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-    @Body() body: CreatePostDto
-  ) {
-    const userId = req?.user?.sub?.split('|')?.[1];
-
-    const post = this.postService.savePost(
-      {
-        title: body.title,
-        content: body.content,
-        description: body.description,
-      },
-      userId
-    );
+    const post = await this.postService.updatePost({ ...body, postId });
 
     return post;
   }
@@ -139,9 +117,6 @@ export class PostController {
       commentId: comment.id,
       ownerId: post?.authorId as string,
     });
-
-    // clear post cache
-    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
 
     return { status: 'ok' };
   }
@@ -178,13 +153,8 @@ export class PostController {
     @Param('postId') postId: string
   ): Promise<ApiResponse[Route.Post]> {
     const userId = req?.user?.sub?.split('|')?.[1];
-    const post = await this.cacheService.fetch(
-      this.cachekeyService.createPostKey({ postId }),
-      () => this.postService.fetchPost({ postId, userId }),
-      years(1)
-    );
 
-    return post;
+    return this.postService.fetchPost({ postId, userId });
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -196,11 +166,7 @@ export class PostController {
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    const post = await this.cacheService.fetch<TPost>(
-      this.cachekeyService.createPostKey({ postId }),
-      () => this.postService.fetchPost({ postId, userId }),
-      years(1)
-    );
+    const post = await this.postService.fetchPost({ postId, userId });
 
     if (!post) {
       return res.status(400).send({ status: 'failure' });
@@ -211,9 +177,6 @@ export class PostController {
     }
 
     const like = await this.likeService.likePost(postId, userId);
-
-    // clear post cache
-    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
 
     await this.activityService.addLikeActivity({
       authorId: userId,
@@ -234,11 +197,7 @@ export class PostController {
   ) {
     const userId = req?.user?.sub?.split('|')?.[1];
 
-    const post = await this.cacheService.fetch<TPost>(
-      this.cachekeyService.createPostKey({ postId }),
-      () => this.postService.fetchPost({ postId, userId }),
-      years(1)
-    );
+    const post = await this.postService.fetchPost({ postId, userId });
 
     if (!post) {
       return res.status(400).send({ status: 'failure' });
@@ -256,9 +215,6 @@ export class PostController {
 
     await this.likeService.unlikePost(postId, userId);
 
-    // clear post cache
-    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
-
     return { status: 'ok' };
   }
 
@@ -269,9 +225,6 @@ export class PostController {
     @Res({ passthrough: true }) res: Response,
     @Param('postId') postId: string
   ) {
-    // clear post cache
-    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
-
     return this.postService.publishPost(postId);
   }
 
@@ -282,14 +235,25 @@ export class PostController {
     @Res({ passthrough: true }) res: Response,
     @Param('postId') postId: string
   ) {
-    // clear post cache
-    await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));
-
     return this.postService.unpublishPost(postId);
   }
 
-  @Get(Route.RandomPost)
-  async getRandomPost(): Promise<ApiResponse[Route.RandomPost]> {
-    return this.postService.getRandomPost();
+  @Post('test/postCreate')
+  async createPost1() {
+    const { createPost } = new PostActions();
+    try {
+      const post = await createPost({
+        content: 'content',
+        description: 'description',
+        title: 'title',
+        codeLanguage: 'JAVASCRIPT',
+        isPublished: true,
+        tagIds: [],
+        userId: '5f0e8b9b8b9c8a0f8c8b9c8',
+      });
+      return post;
+    } catch (error) {
+      return error;
+    }
   }
 }

@@ -2,7 +2,7 @@ import {
   ApiPage,
   TPost,
   Route,
-  User,
+  TUser,
   TComment,
   NonCursorApiPages,
   TTag,
@@ -18,7 +18,7 @@ export type ApiResponse = {
   [Route.RandomPost]: TPost;
   [Route.PostScreenshot]: any;
   [Route.Tags]: TTag[];
-  [Route.User]: User;
+  [Route.User]: TUser;
   [Route.UserActivity]: ApiPage<TActivity>;
   [Route.UserFollowCount]: number;
   [Route.UserFollowingsCount]: number;

@@ -17,7 +17,7 @@ export const ActivityBadge = () => {
     useUserActivityQuery({ nickname: me?.user?.nickname as string });
   const [showUnread, setShowUnread] = React.useState(false);
   const [lastReadDate, setLastReadDate] =
-    useLocalStorage<Date>('last_unread_date');
+    useLocalStorage<string>('last_unread_date');
   const channel = useChannel(`activity-user-${me?.user?.id}`);
 
   const handleMarkAllAsRead = React.useCallback(() => {
