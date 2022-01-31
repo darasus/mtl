@@ -7,6 +7,7 @@ import { commentFragment } from '../fragments/commentFragment';
 import { tagsFragment } from '../fragments/tagsFragment';
 import { preparePost } from '../utils/preparePosts';
 import { activityFragment } from '../fragments/activityFragment';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -23,12 +24,24 @@ export class UserService {
     return this.user({ where: { id: userId } });
   }
 
-  getUserByNickname({ nickname }: { nickname: string }) {
-    return this.user({ where: { nickname } });
+  async getUserByNickname({ nickname }: { nickname: string }) {
+    const user = await this.user({ where: { nickname } });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user;
   }
 
-  getUserByEmail(email: string) {
-    return this.user({ where: { email } });
+  async getUserByEmail({ email }: { email: string }) {
+    const user = await this.user({ where: { email } });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user;
   }
 
   getUserFollowerCount({ userId }: { userId: string }) {
@@ -270,6 +283,80 @@ export class UserService {
     });
 
     return tags;
+  }
+
+  async register({
+    id,
+    email,
+    password: newPassword,
+  }: {
+    id: string;
+    email: string;
+    password: string;
+  }) {
+    const password = await bcrypt.hash(newPassword, 10);
+    return this.prisma.user.create({
+      data: {
+        image: 'https://www.mytinylibrary.com/user-image.png',
+        email,
+        nickname: email,
+        id,
+        name: email,
+        password,
+      },
+    });
+  }
+
+  async login({ email, password }: { email: string; password: string }) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const isValid = await bcrypt.compare(password, user.password);
+
+    if (!isValid) {
+      throw new Error('User not found');
+    }
+
+    return user;
+  }
+
+  async verifyEmail({ email }: { email: string }) {
+    return this.prisma.user.update({
+      where: {
+        email,
+      },
+      data: {
+        emailVerified: true,
+      },
+    });
+  }
+
+  async changePassword({
+    email,
+    password: newPassword,
+  }: {
+    email: string;
+    password: string;
+  }) {
+    const password = await bcrypt.hash(newPassword, 10);
+    return this.prisma.user.update({
+      where: {
+        email,
+      },
+      data: {
+        password,
+      },
+    });
+  }
+  async deleteUser({ id }: { id: string }) {
+    // TODO: implement
   }
 }
 

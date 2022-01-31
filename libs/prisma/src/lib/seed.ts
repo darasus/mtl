@@ -1,4 +1,4 @@
-import * as cuid from 'cuid';
+import cuid = require('cuid');
 import * as faker from 'faker';
 import * as bcrypt from 'bcrypt';
 import { CodeLanguage } from '.prisma/client';
@@ -234,7 +234,7 @@ async function main() {
   await prisma.user.create({
     data: {
       id: user1Id,
-      email: 'idarase@gmail.com',
+      email: 'test@test.com',
       name: 'Ilya Daraseliya',
       nickname: 'darasus',
       password,
