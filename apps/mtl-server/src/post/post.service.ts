@@ -7,27 +7,34 @@ import { commentFragment } from '../fragments/commentFragment';
 import { tagsFragment } from '../fragments/tagsFragment';
 import { preparePost } from '../utils/preparePosts';
 import { TPost } from '@mtl/types';
+import { CacheService } from '../cache/cache.service';
+import { CacheKeyService } from '../cache/cacheKey.service';
 
 @Injectable()
 export class PostService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private cacheService: CacheService,
+    private cacheKeyService: CacheKeyService
+  ) {}
 
-  async updatePost(
-    {
-      title,
-      content,
-      description,
-      codeLanguage,
-      tagId,
-    }: {
-      title: string;
-      content: string;
-      description: string;
-      codeLanguage: Prisma.CodeLanguage;
-      tagId: string;
-    },
-    postId: string
-  ) {
+  async updatePost({
+    postId,
+    title,
+    content,
+    description,
+    codeLanguage,
+    tagId,
+    userId,
+  }: {
+    postId: string;
+    title: string;
+    content: string;
+    description: string;
+    codeLanguage: Prisma.CodeLanguage;
+    tagId: string;
+    userId: string;
+  }): Promise<TPost> {
     const oldPost = await this.prisma.post.findFirst({
       where: {
         id: postId,
@@ -84,9 +91,16 @@ export class PostService {
       },
     });
 
-    // await cache.del(redisCacheKey.createPostKey(postId));
+    await this.cacheService.del(this.cacheKeyService.createPostKey({ postId }));
 
-    return post;
+    return preparePost(
+      {
+        ...post,
+        commentsCount: post.comments.length,
+        comments: post.comments.slice(-5),
+      },
+      userId
+    );
   }
 
   async unpublishPost(postId: string) {

@@ -3,7 +3,7 @@ import formats = require('dd-trace/ext/formats');
 import { ddTracer } from '../trace';
 
 export class Logger implements LoggerService {
-  do(level, message) {
+  do(level: string, message: string) {
     const span = ddTracer.scope().active();
     const time = new Date().toISOString();
     const record = { time, level, message };

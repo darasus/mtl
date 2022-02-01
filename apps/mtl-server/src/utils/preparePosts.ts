@@ -7,7 +7,7 @@ export type InputPost = Prisma.Post & {
   comments: Prisma.Comment[];
   commentsCount: number;
   tags: (Prisma.TagsOnPosts & { tag: Prisma.Tag })[];
-  author: Omit<Prisma.User, 'password'> | null;
+  author: Omit<Prisma.User, 'password'>;
 };
 
 export const preparePost = (post: InputPost, userId?: string): TPost => {
@@ -23,5 +23,6 @@ export const preparePost = (post: InputPost, userId?: string): TPost => {
     ...R.omit(['likes'], post),
     likesCount: post.likes.length,
     isLikedByMe,
+    isMyPost: post.author?.id === userId,
   };
 };

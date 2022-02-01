@@ -9,7 +9,7 @@ import { getSession } from '@auth0/nextjs-auth0';
 import { HttpConnector } from '../../lib/HttpConnector';
 import { Fetcher } from '../../lib/Fetcher';
 import { getPlaiceholder, IGetPlaiceholderReturn } from 'plaiceholder';
-import { TPost, User } from '@mtl/types';
+import { TPost, TUser } from '@mtl/types';
 import { UserProfile } from '../../features/UserProfile';
 import { UserProfileTabs } from '../../features/UserProfileTabs';
 import { useUserPostsQuery } from '../../hooks/query/useUserPostsQuery';
@@ -76,7 +76,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const fetcher = new Fetcher(httpConnector);
   const nickname = ctx.query.nickname as string;
 
-  let user: User | undefined;
+  let user: TUser | null = null;
 
   try {
     user = await fetcher.getUser({ nickname });
@@ -109,6 +109,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   let userImage: IGetPlaiceholderReturn | null = null;
+
   if (user?.image) {
     userImage = await getPlaiceholder(user?.image, { size: 16 });
   }

@@ -13,8 +13,8 @@ model Post {
   content      String?
   description  String?
   published    Boolean       @default(false)
-  author       User?         @relation(fields: [authorId], references: [id])
-  authorId     String?
+  author       User          @relation(fields: [authorId], references: [id])
+  authorId     String
   likes        Like[]
   comments     Comment[]
   codeLanguage CodeLanguage?

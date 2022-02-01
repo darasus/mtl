@@ -82,12 +82,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         Promise.resolve(post)
       ),
       queryClient.prefetchQuery(
-        clientCacheKey.createPostCommentsKey({ postId: post.id }),
+        clientCacheKey.createPostCommentsKey({ postId: post?.id as string }),
         () =>
           Promise.resolve({
-            items: post.comments,
-            total: post.commentsCount,
-            count: post.comments.length,
+            items: post?.comments,
+            total: post?.commentsCount,
+            count: post?.comments.length,
           })
       ),
     ]);

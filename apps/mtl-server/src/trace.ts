@@ -2,7 +2,7 @@ import dd, { Tracer } from 'dd-trace';
 import priority = require('dd-trace/ext/priority');
 import tags = require('dd-trace/ext/tags');
 
-const createConfig = (env) => ({
+const createConfig = (env: Record<string, string | undefined>) => ({
   runtimeMetrics: true,
   logInjection: true,
   analytics: true,

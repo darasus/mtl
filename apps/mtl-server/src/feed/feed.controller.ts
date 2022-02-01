@@ -36,5 +36,12 @@ export class FeedController {
     if (feedType === FeedType.Latest) {
       return this.feedService.fetchLatestFeed(params);
     }
+
+    return {
+      count: 0,
+      cursor: null,
+      items: [],
+      total: 0,
+    };
   }
 }

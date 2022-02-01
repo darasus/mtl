@@ -28,35 +28,35 @@ import { years } from '@mtl/utils';
 
 export class CreatePostDto {
   @IsNotEmpty()
-  title: string;
+  title!: string;
   @IsNotEmpty()
-  content: string;
+  content!: string;
   @IsNotEmpty()
-  description: string;
+  description!: string;
   @IsNotEmpty()
-  codeLanguage: Prisma.CodeLanguage;
+  codeLanguage!: Prisma.CodeLanguage;
   @IsNotEmpty()
-  tagId: string;
+  tagId!: string;
   @IsNotEmpty()
-  isPublished: boolean;
+  isPublished!: boolean;
 }
 
 export class UpdatePostDto {
   @IsNotEmpty()
-  title: string;
+  title!: string;
   @IsNotEmpty()
-  content: string;
+  content!: string;
   @IsNotEmpty()
-  description: string;
+  description!: string;
   @IsNotEmpty()
-  codeLanguage: Prisma.CodeLanguage;
+  codeLanguage!: Prisma.CodeLanguage;
   @IsNotEmpty()
-  tagId: string;
+  tagId!: string;
 }
 
 export class AddPostCommentDto {
   @IsNotEmpty()
-  content: string;
+  content!: string;
 }
 
 @Controller()
@@ -86,10 +86,12 @@ export class PostController {
   @Put('post/:postId/update')
   async updatePost(
     @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
     @Body() body: UpdatePostDto,
     @Param('postId') postId: string
   ) {
-    const post = await this.postService.updatePost(body, postId);
+    const userId = req?.user?.sub?.split('|')?.[1];
+    const post = await this.postService.updatePost({ ...body, postId, userId });
 
     // clear post cache
     await this.cacheService.del(this.cachekeyService.createPostKey({ postId }));

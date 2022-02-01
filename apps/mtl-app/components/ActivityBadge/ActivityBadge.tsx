@@ -25,7 +25,7 @@ export const ActivityBadge = () => {
   }, [mutation]);
 
   const fisrtItem = React.useMemo(
-    () => data?.pages?.[0].items?.[0],
+    () => data?.pages?.[0]?.items?.[0],
     [data?.pages]
   );
 
@@ -108,7 +108,7 @@ export const ActivityBadge = () => {
               </Flex>
             )}
             {data?.pages?.map((page) =>
-              page.items?.map((activity) => (
+              page?.items?.map((activity) => (
                 <Notification key={activity.id} activity={activity} />
               ))
             )}

@@ -15,7 +15,7 @@ import { ActivityService } from '../activity/activity.service';
 import { FollowService } from '../follow/follow.service';
 import { OptionalUserGuard } from '../guards/OptionalUserGuard';
 import { PrismaService } from '../prisma/prisma.service';
-import { Route } from '@mtl/types';
+import { Route, TUser } from '@mtl/types';
 import axios from 'axios';
 import { Response, Request } from 'express';
 
@@ -29,11 +29,11 @@ import { CacheKeyService } from '../cache/cacheKey.service';
 import { processErrorResponse, years } from '@mtl/utils';
 
 export class UpdateUserDto {
-  newNickname: string;
-  email: string;
-  name: string;
-  password: string;
-  image: string;
+  newNickname!: string;
+  email!: string;
+  name!: string;
+  password!: string;
+  image!: string;
 }
 
 @Controller()
@@ -75,7 +75,12 @@ export class UserController {
 
     if (myId !== user?.id) {
       res.status(403);
-      return null;
+      return {
+        count: 0,
+        cursor: null,
+        items: [],
+        total: 0,
+      };
     }
 
     res.status(HttpStatus.OK);

@@ -86,7 +86,7 @@ export class UserService {
         authorId: userId,
         ...(isMe ? {} : { published: true }),
         ...(typeof published === 'boolean' ? { published } : {}),
-        ...(tags?.length > 0
+        ...(tags && tags?.length > 0
           ? {
               tags: {
                 every: {
@@ -360,6 +360,6 @@ export class UserService {
   }
 }
 
-function getUniqueListBy<T>(arr: Array<T>, key: string) {
+function getUniqueListBy<T>(arr: Array<T>, key: keyof T) {
   return [...new Map(arr.map((item) => [item[key], item])).values()];
 }

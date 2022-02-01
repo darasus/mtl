@@ -8,10 +8,10 @@ export class PusherService {
 
   constructor(configService: ConfigService) {
     this.pusher = new Pusher({
-      appId: configService.get('pusher.appId'),
-      key: configService.get('pusher.key'),
-      secret: configService.get('pusher.secret'),
-      cluster: configService.get('pusher.cluster'),
+      appId: configService.get('pusher.appId') as string,
+      key: configService.get('pusher.key') as string,
+      secret: configService.get('pusher.secret') as string,
+      cluster: configService.get('pusher.cluster') as string,
       useTLS: configService.get('pusher.useTLS'),
     });
   }
