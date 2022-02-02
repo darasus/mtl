@@ -16,7 +16,6 @@ import { OpenInRemoteCodeEditorButton } from './OpenInRemoteCodeEditorButton';
 
 interface Props {
   postId: string;
-  isMyPost: boolean;
   showActionMenu?: boolean;
   showMetaInfo?: boolean;
   isPostLoading?: boolean;
@@ -25,7 +24,6 @@ interface Props {
 
 export const Post: React.FC<Props> = React.memo(function Post({
   postId,
-  isMyPost,
   showActionMenu = true,
   showMetaInfo = true,
   isPostStatusVisible,
@@ -72,7 +70,7 @@ export const Post: React.FC<Props> = React.memo(function Post({
                 <Box mr={2} />
                 <OpenInRemoteCodeEditorButton post={post} />
                 <Box flexGrow={1} />
-                <ActionMenu isMyPost={isMyPost} post={post} />
+                <ActionMenu post={post} />
               </Flex>
             </Box>
             <Box>

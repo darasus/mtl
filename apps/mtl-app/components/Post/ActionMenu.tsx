@@ -22,11 +22,10 @@ import { Role, useMe } from '../../hooks/useMe';
 import { TPost } from '@mtl/types';
 
 interface Props {
-  isMyPost: boolean;
   post: TPost;
 }
 
-export const ActionMenu: React.FC<Props> = ({ isMyPost, post }) => {
+export const ActionMenu: React.FC<Props> = ({ post }) => {
   const me = useMe();
   const router = useRouter();
   const { mutateAsync: deletePost, isLoading: isDeleting } =
@@ -78,7 +77,7 @@ export const ActionMenu: React.FC<Props> = ({ isMyPost, post }) => {
     'sm'
   );
 
-  if (isMyPost || me?.user?.role === Role.ADMIN) {
+  if (post.isMyPost || me?.user?.role === Role.ADMIN) {
     return (
       <Menu>
         {buttonComponent}

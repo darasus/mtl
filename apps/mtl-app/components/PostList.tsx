@@ -32,11 +32,7 @@ export const PostList = ({
       {posts.map((post) => {
         return (
           <Box key={post.id} mb={6}>
-            <Post
-              postId={post.id}
-              isMyPost={post.authorId === me?.user?.id}
-              isPostStatusVisible
-            />
+            <Post postId={post.id} isPostStatusVisible />
           </Box>
         );
       })}

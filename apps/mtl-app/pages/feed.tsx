@@ -32,10 +32,7 @@ const Feed: React.FC = () => {
           return page.items?.map((post) => {
             return (
               <Box key={post.id} mb={6}>
-                <Post
-                  postId={post.id}
-                  isMyPost={post.authorId === me?.user?.id}
-                />
+                <Post postId={post.id} />
               </Box>
             );
           });

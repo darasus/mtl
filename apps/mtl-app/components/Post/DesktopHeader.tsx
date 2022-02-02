@@ -26,7 +26,6 @@ export const DesktopHeader: React.FC<Props> = React.memo(
     const { secondaryTextColor } = useColors();
     const breakpoint = useBreakpoint();
     const isMetaInfoVisible = breakpoint !== 'base' && showMetaInfo;
-    const isMyPost = me?.user?.id === post?.authorId;
 
     return (
       <Box p={4}>
@@ -99,7 +98,7 @@ export const DesktopHeader: React.FC<Props> = React.memo(
               </Box>
             </Flex>
           )}
-          {isPostStatusVisible && isMyPost && (
+          {isPostStatusVisible && post.isMyPost && (
             <>
               <Flex flexGrow={1} />
               <Flex>
