@@ -10,7 +10,7 @@ interface Props {
 export const Intro: React.FC<Props> = ({ withSignIn }) => {
   const textSize = useBreakpointValue({
     base: 'lg',
-    sm: '5xl',
+    md: '5xl',
   });
 
   return (
@@ -20,7 +20,7 @@ export const Intro: React.FC<Props> = ({ withSignIn }) => {
           {'=>'}
         </Text>
         <Text as="span" color="gray.600" fontWeight="light">
-          this is
+          This is
         </Text>
         <Text as="span" color="yellow.300">
           {'==='}

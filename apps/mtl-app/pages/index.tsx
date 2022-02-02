@@ -1,10 +1,10 @@
 import { Box } from '@chakra-ui/react';
 import React from 'react';
-import { Layout } from '../layouts/Layout';
 import { Head } from '../components/Head';
 import { Intro } from '../components/Intro';
 import { useMe } from '../hooks/useMe';
 import { useRouter } from 'next/router';
+import { HomeLayout } from '../layouts/HomeLayout';
 
 const Index: React.FC = () => {
   const router = useRouter();
@@ -22,13 +22,13 @@ const Index: React.FC = () => {
   return (
     <>
       <Head title="Home" urlPath="" />
-      <Layout>
+      <HomeLayout>
         {!isMeLoading && (
           <Box height="100%">
             <Intro withSignIn />
           </Box>
         )}
-      </Layout>
+      </HomeLayout>
     </>
   );
 };
